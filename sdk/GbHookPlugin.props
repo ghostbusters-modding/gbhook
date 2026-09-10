@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  gbhook: a mod loader for Ghostbusters: The Video Game Remastered
+  Copyright (C) 2026 Colin Sullivan and contributors
+  SPDX-License-Identifier: GPL-2.0-only
+
+  Shared settings for every mod DLL. The static CRT is not a style choice: every module owns its own
+  heap, so nothing may be allocated on one side of the ABI and freed on the other. docs/ABI.md.
+  Import it after Microsoft.Cpp.props:  <Import Project="..\gbhook\sdk\GbHookPlugin.props" />
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- This file ships inside gbhook, so the SDK root is one level up from it wherever a mod is checked out. -->
+    <GbHookRoot Condition="'$(GbHookRoot)'==''">$(MSBuildThisFileDirectory)..\</GbHookRoot>
+    <OutDir>$(ProjectDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\obj\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(GbHookRoot)sdk\include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
+      <!-- Async: a mod guards its own engine calls with __try/__except. -->
+      <ExceptionHandling>Async</ExceptionHandling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ConformanceMode>true</ConformanceMode>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization Condition="'$(Configuration)'=='Release'">MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
