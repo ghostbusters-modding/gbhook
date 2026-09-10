@@ -35,8 +35,8 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)sdk\include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions> 
+      <AdditionalIncludeDirectories>$(ProjectDir)sdk\include;$(ProjectDir)src;$(ProjectDir)third_party\minhook\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -50,6 +50,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>src\core\GbHook.def</ModuleDefinitionFile>
+      <AdditionalDependencies>$(ProjectDir)third_party\minhook\lib\libMinHook.x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -60,11 +61,23 @@
     <ClCompile Include="src\core\Framework.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\core\Settings.cpp" />
+    <ClCompile Include="src\core\HookBroker.cpp" />
+    <ClCompile Include="src\registry\PatchRegistry.cpp" />
+    <ClCompile Include="src\registry\VtableRegistry.cpp" />
+    <ClCompile Include="src\core\ProcessMemory.cpp" />
+    <ClCompile Include="src\core\FaultLogger.cpp" />
     <ClCompile Include="src\format\Ini.cpp" />
     <ClCompile Include="src\format\LogLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
+    <ClInclude Include="src\core\HookBroker.h" />
+    <ClInclude Include="src\registry\Memory.h" />
+    <ClInclude Include="src\registry\PatchRegistry.h" />
+    <ClInclude Include="src\registry\VtableRegistry.h" />
+    <ClInclude Include="src\core\ProcessMemory.h" />
+    <ClInclude Include="src\core\FaultLogger.h" />
+    <ClInclude Include="src\core\Seh.h" />
     <ClInclude Include="src\format\Ini.h" />
     <ClInclude Include="src\format\LogLine.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />

@@ -15,7 +15,7 @@ ROOT  := ..
 BIN   := bin
 
 CXXFLAGS   := -std=c++20 -Wall -Wextra -I. -I$(ROOT)/src -I$(ROOT)/sdk/include
-CROSSFLAGS := $(CXXFLAGS) -Wno-cast-function-type -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_WARNINGS -static
+CROSSFLAGS := $(CXXFLAGS) -Wno-cast-function-type -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_WARNINGS -I$(ROOT)/third_party/minhook/include -static
 
 # Pure packages: no windows.h, built and tested here. A package may include only the ones listed as its deps.
 PURE_PKGS     := format registry
@@ -44,7 +44,7 @@ endef
 $(foreach p,$(PURE_PKGS),$(eval $(call suite_rule,$(p))))
 
 cross: | $(BIN)
-> $(CROSS) $(CROSSFLAGS) -shared -o $(BIN)/dinput8.dll $(WIN_SRC) $(ROOT)/src/core/GbHook.def
+> $(CROSS) $(CROSSFLAGS) -shared -o $(BIN)/dinput8.dll $(WIN_SRC) stub/MinHookStub.cpp $(ROOT)/src/core/GbHook.def
 > @echo "cross: linked $(BIN)/dinput8.dll"
 
 $(BIN):
