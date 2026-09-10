@@ -54,6 +54,50 @@ typedef enum GbhHookFlags {
 /* The most bytes one patch_write may cover. */
 #define GBH_MAX_PATCH_BYTES     64
 
+/* ---------------------------------------------------------------------------
+ *  The manifest: what only the binary can assert. Everything else lives in mod.ini.
+ *  Read out of the DLL file without running it, so every field is an inline array.
+ * ------------------------------------------------------------------------- */
+#define GBH_MANIFEST_MAGIC      "GBHOOKMF"
+#define GBH_MAX_EXCLUSIVE       16
+
+typedef struct GbhManifest {
+    char     magic[9];                            /* GBH_MANIFEST_MAGIC, NUL included */
+    uint32_t struct_size;                         /* sizeof(GbhManifest) at build time */
+    uint32_t abi_version;                         /* GBHOOK_ABI_VERSION; cross-checked against mod.ini */
+    char     id[64];                              /* cross-checked against mod.ini */
+    char     target_md5[40];                      /* GBHOOK_TARGET_MD5 */
+    char     exclusive_hooks[GBH_MAX_EXCLUSIVE][64];  /* "ghost+0xHEX", terminated by an empty entry */
+} GbhManifest;
+
+#if defined(_WIN32)
+#  define GBHOOK_EXPORT __declspec(dllexport)
+#else
+#  define GBHOOK_EXPORT __attribute__((visibility("default")))
+#endif
+
+/* Looked up by exported name in a file that is never executed, so it must not be C++-mangled. */
+#ifdef __cplusplus
+#  define GBHOOK_LINKAGE extern "C"
+#else
+#  define GBHOOK_LINKAGE
+#endif
+
+#define GBH_EXPORT_MANIFEST     "GbhPluginManifest"   /* data, required */
+#define GBH_EXPORT_INIT         "GbhPluginInit"       /* code, required */
+
+/* GBHOOK_PLUGIN("gb.mymod"); at file scope in exactly one translation unit. */
+#define GBHOOK_PLUGIN(id_) \
+    GBHOOK_LINKAGE GBHOOK_EXPORT const GbhManifest GbhPluginManifest = { \
+        GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5, {{0}} }
+
+/* Long form, for exclusive hook claims:
+ *   GBHOOK_PLUGIN_EXCLUSIVE("gb.coop") { "ghost+0x46A110", "" } GBHOOK_PLUGIN_END; */
+#define GBHOOK_PLUGIN_EXCLUSIVE(id_) \
+    GBHOOK_LINKAGE GBHOOK_EXPORT const GbhManifest GbhPluginManifest = { \
+        GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5,
+#define GBHOOK_PLUGIN_END }
+
 #ifdef __cplusplus
 }   /* extern "C" */
 #endif
