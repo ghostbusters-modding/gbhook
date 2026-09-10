@@ -4,3 +4,4 @@ tests/bin/
 *.aps
 .vs/
 local/
+mods/
