@@ -6,6 +6,8 @@
 #include "Framework.h"
 #include "FaultLogger.h"
 #include "HookBroker.h"
+#include "mod/Discovery.h"
+#include "mod/ContentBuild.h"
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
 {
@@ -25,6 +27,12 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     FaultLogger::Install();
 
     Settings::Load();
+
+    // Discovery reads files only, so it runs before any service exists; a conflict is named while all parties are inert.
+    Mods::Scan();
+
+    // Build each mod's loose tree into a cached POD and decide what to mount; the mount waits for the front-end pump.
+    ContentBuild::Build();
 
     HookBroker::VerifyAll("boot");
     Log::Write("BOOT", "boot complete");

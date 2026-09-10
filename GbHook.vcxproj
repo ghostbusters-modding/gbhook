@@ -68,6 +68,17 @@
     <ClCompile Include="src\core\FaultLogger.cpp" />
     <ClCompile Include="src\format\Ini.cpp" />
     <ClCompile Include="src\format\LogLine.cpp" />
+    <ClCompile Include="src\format\ModIni.cpp" />
+    <ClCompile Include="src\format\Manifest.cpp" />
+    <ClCompile Include="src\format\PeExport.cpp" />
+    <ClCompile Include="src\modset\ModSet.cpp" />
+    <ClCompile Include="src\mod\PeFile.cpp" />
+    <ClCompile Include="src\mod\Discovery.cpp" />
+    <ClCompile Include="src\pod\Pod.cpp" />
+    <ClCompile Include="src\pod\TreeHash.cpp" />
+    <ClCompile Include="src\modset\Content.cpp" />
+    <ClCompile Include="src\services\Pods.cpp" />
+    <ClCompile Include="src\mod\ContentBuild.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -80,6 +91,18 @@
     <ClInclude Include="src\core\Seh.h" />
     <ClInclude Include="src\format\Ini.h" />
     <ClInclude Include="src\format\LogLine.h" />
+    <ClInclude Include="src\format\ModIni.h" />
+    <ClInclude Include="src\format\Manifest.h" />
+    <ClInclude Include="src\format\Pe.h" />
+    <ClInclude Include="src\format\PeExport.h" />
+    <ClInclude Include="src\modset\ModSet.h" />
+    <ClInclude Include="src\mod\PeFile.h" />
+    <ClInclude Include="src\mod\Discovery.h" />
+    <ClInclude Include="src\pod\Pod.h" />
+    <ClInclude Include="src\pod\TreeHash.h" />
+    <ClInclude Include="src\modset\Content.h" />
+    <ClInclude Include="src\services\Pods.h" />
+    <ClInclude Include="src\mod\ContentBuild.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <None Include="src\core\GbHook.def" />
   </ItemGroup>
