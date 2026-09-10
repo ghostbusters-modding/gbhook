@@ -1,0 +1,6 @@
+build/
+tests/bin/
+*.user
+*.aps
+.vs/
+local/
