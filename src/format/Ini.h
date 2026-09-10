@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
-// The one ini grammar behind gbhook.ini and mod.ini. No windows.h; tests/test_ini.cpp is the spec.
+// The one ini grammar behind gbhook.ini and mod.ini. No windows.h; tests/format/test_ini.cpp is the spec.
 
 #include <string>
 #include <vector>
