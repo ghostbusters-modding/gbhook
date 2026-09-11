@@ -66,6 +66,7 @@
     <ClCompile Include="src\registry\VtableRegistry.cpp" />
     <ClCompile Include="src\core\ProcessMemory.cpp" />
     <ClCompile Include="src\core\FaultLogger.cpp" />
+    <ClCompile Include="src\format\Dante.cpp" />
     <ClCompile Include="src\format\Ini.cpp" />
     <ClCompile Include="src\format\LogLine.cpp" />
     <ClCompile Include="src\format\ModIni.cpp" />
@@ -97,6 +98,13 @@
     <ClCompile Include="src\services\Loop.cpp" />
     <ClCompile Include="src\services\InputInject.cpp" />
     <ClCompile Include="src\services\Hud.cpp" />
+    <ClCompile Include="src\menu\Rows.cpp" />
+    <ClCompile Include="src\menu\ModsPage.cpp" />
+    <ClCompile Include="src\menu\LevelsPage.cpp" />
+    <ClCompile Include="src\services\Files.cpp" />
+    <ClCompile Include="src\services\NativeMenu.cpp" />
+    <ClCompile Include="src\services\ModsMenu.cpp" />
+    <ClCompile Include="src\services\LevelsMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -107,6 +115,7 @@
     <ClInclude Include="src\core\ProcessMemory.h" />
     <ClInclude Include="src\core\FaultLogger.h" />
     <ClInclude Include="src\core\Seh.h" />
+    <ClInclude Include="src\format\Dante.h" />
     <ClInclude Include="src\format\Ini.h" />
     <ClInclude Include="src\format\LogLine.h" />
     <ClInclude Include="src\format\ModIni.h" />
@@ -139,6 +148,13 @@
     <ClInclude Include="src\services\Loop.h" />
     <ClInclude Include="src\services\InputInject.h" />
     <ClInclude Include="src\services\Hud.h" />
+    <ClInclude Include="src\menu\Rows.h" />
+    <ClInclude Include="src\menu\ModsPage.h" />
+    <ClInclude Include="src\menu\LevelsPage.h" />
+    <ClInclude Include="src\services\Files.h" />
+    <ClInclude Include="src\services\NativeMenu.h" />
+    <ClInclude Include="src\services\ModsMenu.h" />
+    <ClInclude Include="src\services\LevelsMenu.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />
     <ClInclude Include="sdk\include\gb\HookTargets.h" />

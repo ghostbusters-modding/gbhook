@@ -8,6 +8,7 @@
 #include "../core/HookBroker.h"
 #include "../core/Seh.h"
 #include "../services/Events.h"
+#include "../services/NativeMenu.h"
 
 #include <windows.h>
 #include <vector>
@@ -140,6 +141,7 @@ namespace Host
         e->status.state = State::Failed;
         e->status.note  = why ? why : "disabled";
         Events::DisableOwner(e->status.id.c_str());
+        NativeMenu::DropOwner(e->status.id.c_str());
         Log::Writef("MODS", "DISABLED %s: %s", e->status.id.c_str(), e->status.note.c_str());
     }
 

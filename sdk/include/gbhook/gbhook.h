@@ -120,6 +120,33 @@ typedef void (*GbhLevelFn)(int phase, const char* level, int ok, void* user);
  * arguments only. Return GBH_OK, or point *err at a static string and return a GbhStatus. */
 typedef int (*GbhCommandFn)(int argc, const char* const* argv, const char** err, void* user);
 
+/* ---------------------------------------------------------------------------
+ *  The game's own main menu. A claimed row is un-hidden and its activation routed to you, and from inside that
+ *  callback a real page can be pushed, built from the rows you publish. A page may push another from inside its
+ *  activate, nesting the way the game's own screens do; ESC pops one page. Game thread throughout.
+ *  Rows are slots on screen, top to bottom: Career, Online, Mods, a free slot, Options, Extras, Exit. Online and
+ *  the free slot are claimable and stay hidden until claimed. The others are refused with GBH_ERR_CONFLICT.
+ * ------------------------------------------------------------------------- */
+typedef void (*GbhRowFn)(int row, void* user);
+
+#define GBH_ROW_ONLINE          1
+#define GBH_ROW_FREE            3
+
+#define GBH_NATIVE_LABEL_CAP    40
+#define GBH_NATIVE_MAX_ROWS     40
+#define GBH_NATIVE_STAY         0     /* rebuild and redraw this page; also the answer after pushing a child page */
+#define GBH_NATIVE_CLOSE        1     /* pop this page, back to the one under it */
+#define GBH_NATIVE_CLOSE_ALL    2     /* pop every page, back to the main menu, one close animation each */
+#define GBH_NATIVE_INERT        -1    /* a row action for a header or a text line: never activates */
+
+typedef struct GbhNativeMenuDesc {
+    uint32_t    struct_size;
+    void      (*build)(void* user);                 /* publish rows with native_submenu_add_row; on open and after every activation */
+    int       (*activate)(int action, void* user);  /* the chosen row's action; GBH_NATIVE_STAY or GBH_NATIVE_CLOSE */
+    void*       user;
+    const char* title;                              /* verbatim; a leading '@' names a localisation key; NULL keeps the donor's */
+} GbhNativeMenuDesc;
+
 /* One VM global registration. `ptr` is live game memory: game thread only, stale after the next level prepare. */
 typedef struct GbhRegistryEntry {
     void*    ptr;
@@ -210,6 +237,17 @@ typedef struct GbhApi {
 
     /* -- level flow: chain to a level from the front end or in play. A checkpoint waits until the level is live -- */
     int  (*level_chain)(const char* level, const char* checkpoint);
+
+    /* -- native menu: the game's own front end. Claims are exclusive, refused by name -- */
+    int  (*native_row_claim)(int row, GbhRowFn fn, void* user);
+    int  (*native_row_label)(int row, const char* label);           /* your row, verbatim, re-applied after every refill */
+    int  (*native_submenu_open)(const GbhNativeMenuDesc* desc);     /* inside your row callback, or a page's activate */
+    int  (*native_submenu_add_row)(const char* label, int action);  /* from inside build() only; GBH_NATIVE_MAX_ROWS at most */
+    void (*native_submenu_refresh)(void);                           /* rebuild and re-label the open page; cheap when unchanged */
+
+    /* -- files: the engine's own asset enumerator and stream. Engine main thread only, else GBH_ERR_WRONG_THREAD -- */
+    int (*file_list)(const char* dir, const char* pattern, void (*cb)(const char* name, void* user), void* user);
+    int (*file_read)(const char* path, void* buf, int cap);         /* bytes copied; a null buf and cap 0 answers the size */
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

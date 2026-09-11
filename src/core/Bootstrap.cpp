@@ -11,10 +11,13 @@
 #include "mod/Host.h"
 #include "services/Commands.h"
 #include "services/Events.h"
+#include "services/Files.h"
 #include "services/FrameHook.h"
 #include "services/InputInject.h"
 #include "services/LevelFlow.h"
 #include "services/Loop.h"
+#include "services/ModsMenu.h"
+#include "services/NativeMenu.h"
 #include "services/Pods.h"
 #include "services/Pump.h"
 #include "services/VmHook.h"
@@ -55,6 +58,8 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
         Pump::Park([](void*) { return ContentBuild::Mount(); }, nullptr, "content mount");
 
     // The other contended detours, hooked once and fanned out. Before EARLY, so a mod may subscribe from its init.
+    // The buses exist before any detour can fire one: a bus that waits for its first subscriber has no lock yet.
+    Events::Init();
     FrameHook::Install();
     VmHook::Install();
     LevelFlow::InstallFlowHooks();
@@ -64,11 +69,17 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     InputInject::RegisterCommands();
     LevelFlow::RegisterCommands();
     Pods::RegisterCommands();
+    Files::RegisterCommands();
 
     Framework::NoteStage(GBH_STAGE_EARLY);
     Host::Init(GBH_STAGE_EARLY);
     Framework::NoteStage(GBH_STAGE_BOOT);
     Host::Init(GBH_STAGE_BOOT);
+
+    // The game's own front end: the row broker, then gbhook's page on the row the shipped menu hides.
+    NativeMenu::Install();
+    ModsMenu::Install();
+
     Framework::NoteStage(GBH_STAGE_READY);
     Host::Init(GBH_STAGE_READY);
 

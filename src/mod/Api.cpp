@@ -8,10 +8,12 @@
 #include "../core/HookBroker.h"
 #include "../services/Commands.h"
 #include "../services/Events.h"
+#include "../services/Files.h"
 #include "../services/FrameHook.h"
 #include "../services/Game.h"
 #include "../services/Hud.h"
 #include "../services/InputInject.h"
+#include "../services/NativeMenu.h"
 #include "../services/Registry.h"
 #include "input/Dik.h"
 
@@ -178,6 +180,38 @@ namespace
         return Commands::Execute(line);
     }
 
+    // ---- the native front end ----------------------------------------------------
+    int  NativeRowClaim(int row, GbhRowFn fn, void* user) { return NativeMenu::ClaimRow(Who(GBH_CALLER()), row, fn, user); }
+    int  NativeRowLabel(int row, const char* label)       { return NativeMenu::SetRowLabel(Who(GBH_CALLER()), row, label); }
+    int  NativeOpen(const GbhNativeMenuDesc* d)           { return NativeMenu::OpenPage(d); }
+    int  NativeAddRow(const char* label, int action)      { return NativeMenu::AddRow(label, action); }
+    void NativeRefresh()                                  { NativeMenu::Refresh(); }
+
+    // ---- files: the engine's tables take no lock, so only the thread the engine itself runs on -----
+    int FileList(const char* dir, const char* pattern, void (*cb)(const char*, void*), void* user)
+    {
+        if (!pattern || !cb) return GBH_ERR_ARG;
+        if (!FrameHook::IsEngineThread()) return GBH_ERR_WRONG_THREAD;
+        std::vector<std::string> names;
+        const int n = Files::List(dir, pattern, names);
+        if (n < 0) return n;
+        for (const std::string& s : names) cb(s.c_str(), user);   // borrowed for the call only
+        return (int)names.size();
+    }
+
+    int FileRead(const char* path, void* buf, int cap)
+    {
+        if (!path || cap < 0 || (cap > 0 && !buf)) return GBH_ERR_ARG;
+        if (!FrameHook::IsEngineThread()) return GBH_ERR_WRONG_THREAD;
+        std::vector<unsigned char> bytes;
+        const int n = Files::Read(path, bytes);
+        if (n < 0) return n;
+        if (!buf && cap == 0) return n;
+        if (n > cap) return GBH_ERR_TRUNCATED;
+        if (n > 0) memcpy(buf, bytes.data(), (size_t)n);
+        return n;
+    }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -246,6 +280,14 @@ namespace Api
         g_api.input_dik_from_name = InputDikFromName;
         g_api.hud_message         = HudMessage;
         g_api.level_chain         = LevelChain;
+
+        g_api.native_row_claim       = NativeRowClaim;
+        g_api.native_row_label       = NativeRowLabel;
+        g_api.native_submenu_open    = NativeOpen;
+        g_api.native_submenu_add_row = NativeAddRow;
+        g_api.native_submenu_refresh = NativeRefresh;
+        g_api.file_list              = FileList;
+        g_api.file_read              = FileRead;
 
         g_built = true;
         return &g_api;

@@ -188,4 +188,31 @@ namespace gbh
     {
         return api() ? api()->level_chain(stem, checkpoint) : GBH_ERR_STATE;
     }
+
+    // ---- the game's own main menu ----
+    inline int  native_row_claim(int row, GbhRowFn fn, void* user = nullptr)  { return api() ? api()->native_row_claim(row, fn, user) : GBH_ERR_STATE; }
+    inline int  native_row_label(int row, const char* label)                  { return api() ? api()->native_row_label(row, label) : GBH_ERR_STATE; }
+    inline int  native_submenu_open(const GbhNativeMenuDesc& d)               { return api() ? api()->native_submenu_open(&d) : GBH_ERR_STATE; }
+    inline int  native_submenu_add_row(const char* label, int action)         { return api() ? api()->native_submenu_add_row(label, action) : GBH_ERR_STATE; }
+    inline void native_submenu_refresh()                                      { if (api()) api()->native_submenu_refresh(); }
+
+    // ---- files, engine main thread only: a command, on_frame or on_pump ----
+    inline std::vector<std::string> files(const char* dir, const char* pattern)
+    {
+        std::vector<std::string> out;
+        if (!api()) return out;
+        api()->file_list(dir, pattern, [](const char* name, void* user) { static_cast<std::vector<std::string>*>(user)->push_back(name); }, &out);
+        return out;
+    }
+    inline std::vector<unsigned char> file_read(const char* path)
+    {
+        std::vector<unsigned char> out;
+        if (!api()) return out;
+        const int n = api()->file_read(path, nullptr, 0);
+        if (n <= 0) return out;
+        out.resize(static_cast<size_t>(n));
+        const int got = api()->file_read(path, out.data(), n);
+        out.resize(got > 0 ? static_cast<size_t>(got) : 0);
+        return out;
+    }
 }
