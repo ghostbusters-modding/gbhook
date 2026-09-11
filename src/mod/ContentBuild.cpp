@@ -19,6 +19,7 @@
 namespace
 {
     std::vector<ContentBuild::Planned> g_planned;
+    std::unordered_map<std::string, std::string> g_summary;
     bool g_done    = false;
     bool g_mounted = false;
 
@@ -103,6 +104,33 @@ namespace
         return true;
     }
 
+    // A cache folder whose mod is gone is gbhook's own dead weight. A refused or disabled mod keeps its cache:
+    // the hash makes that free, and it is used again the moment the mod is fixed or switched back on.
+    void PruneOrphans(const std::string& cacheRoot)
+    {
+        WIN32_FIND_DATAA fd;
+        HANDLE h = FindFirstFileA((cacheRoot + "\\*").c_str(), &fd);
+        if (h == INVALID_HANDLE_VALUE) return;
+        std::vector<std::string> orphans;
+        do
+        {
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || fd.cFileName[0] == '.') continue;
+            bool known = false;
+            for (const ModSet::Record& r : Mods::Result().records)
+                if (!r.mod.id.empty() && _stricmp(r.mod.id.c_str(), fd.cFileName) == 0) { known = true; break; }
+            if (!known) orphans.push_back(fd.cFileName);
+        } while (FindNextFileA(h, &fd));
+        FindClose(h);
+
+        for (const std::string& id : orphans)
+        {
+            const std::string dir = cacheRoot + "\\" + id;
+            PruneCache(dir);
+            if (RemoveDirectoryA(dir.c_str())) Log::Writef("MODS", "cache for '%s' removed: no such mod in any root", id.c_str());
+            else Log::Writef("MODS", "cache for '%s' has no mod behind it, but its folder would not go (error %lu)", id.c_str(), GetLastError());
+        }
+    }
+
     // Every file name reachable through PATCH.POD's chain, engine backslash form. Empty if there is no chain.
     void ScanChain(std::vector<std::string>& names)
     {
@@ -153,6 +181,7 @@ namespace ContentBuild
                         (int)chain.size());
 
         const std::string gameDir = Framework::GameDir();
+        PruneOrphans(gameDir + "\\gbhook\\cache");
         int built = 0, cached = 0, disabled = 0, skipped = 0;
         std::unordered_map<std::string, std::string> shipped;   // lowered relpath -> the first mod shipping it
 
@@ -195,6 +224,7 @@ namespace ContentBuild
             case Content::Action::Disabled:
                 ++disabled;
                 Log::Writef("MODS", "content %s: off -- %s", r.mod.id.c_str(), v.reason.c_str());
+                g_summary[r.mod.id] = "off, " + v.reason;
                 break;
 
             case Content::Action::MountCached:
@@ -203,6 +233,7 @@ namespace ContentBuild
                 const std::string rel = "gbhook\\cache\\" + r.mod.id + "\\" + v.hash + ".POD";
                 Log::Writef("MODS", "content %s: cached, %s", r.mod.id.c_str(), rel.c_str());
                 g_planned.push_back({ r.mod.id, rel });
+                g_summary[r.mod.id] = std::to_string(loose.size()) + " file(s), cached";
                 break;
             }
 
@@ -230,12 +261,14 @@ namespace ContentBuild
                     ++built;
                     Log::Writef("MODS", "content %s: built %d file(s) -> %s", r.mod.id.c_str(), (int)loose.size(), relPod.c_str());
                     g_planned.push_back({ r.mod.id, relPod });
+                    g_summary[r.mod.id] = std::to_string(loose.size()) + " file(s) built";
                 }
                 else
                 {
                     sink.Close();
                     DeleteFileA(absPod.c_str());
                     Log::Writef("MODS", "content %s: build FAILED -- %s", r.mod.id.c_str(), why.c_str());
+                    g_summary[r.mod.id] = "build failed, " + why;
                 }
                 break;
             }
@@ -249,6 +282,13 @@ namespace ContentBuild
 
     const std::vector<Planned>& Plans()  { return g_planned; }
 
+    const char* Summary(const char* id)
+    {
+        if (!id) return "";
+        auto it = g_summary.find(id);
+        return it == g_summary.end() ? "" : it->second.c_str();
+    }
+
     bool Mount()
     {
         if (g_mounted) return true;
@@ -259,8 +299,12 @@ namespace ContentBuild
         for (const Planned& p : g_planned)
         {
             const char* err = nullptr;
-            if (Pods::Mount(p.cachePod.c_str(), &err)) ++ok;
-            else Log::Writef("MODS", "content %s: mount FAILED -- %s", p.id.c_str(), err ? err : "no reason given");
+            if (Pods::Mount(p.cachePod.c_str(), &err)) { ++ok; g_summary[p.id] += ", mounted"; }
+            else
+            {
+                Log::Writef("MODS", "content %s: mount FAILED -- %s", p.id.c_str(), err ? err : "no reason given");
+                g_summary[p.id] += std::string(", mount failed: ") + (err ? err : "no reason given");
+            }
         }
         Log::Writef("MODS", "content: %d of %d archive(s) mounted", ok, (int)g_planned.size());
         return true;

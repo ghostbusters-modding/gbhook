@@ -26,4 +26,7 @@ namespace ContentBuild
     // Mount every planned archive through Pods::Mount. Main thread at the front end, and once only.
     // False means the engine's pod object is not up yet: call again next tick.
     bool Mount();
+
+    // What happened to one mod's content, in a phrase for the Mods page. "" for a mod without content.
+    const char* Summary(const char* id);
 }
