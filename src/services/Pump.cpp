@@ -7,7 +7,10 @@
 #include <cstring>
 
 #include "Pump.h"
+#include "Commands.h"
 #include "Events.h"
+#include "FrameHook.h"
+#include "LevelFlow.h"
 #include "../core/Framework.h"
 #include "../core/HookBroker.h"
 #include "../core/Seh.h"
@@ -84,6 +87,15 @@ namespace
         }
         if (g_jobCount) RunJobs();
         Events::FirePump();
+
+        // While the game tick is parked this is the main thread's only visit, so it runs what the tick would have.
+        if (!FrameHook::TickRecently())
+        {
+            Commands::Drain();
+            LevelFlow::RunFrontEndLoadIfPending();
+        }
+        else
+            LevelFlow::ArmDeferredCheckpoint();
     }
 }
 

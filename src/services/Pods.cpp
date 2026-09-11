@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "Pods.h"
+#include "Commands.h"
 #include "../core/Framework.h"
 #include "../core/Seh.h"
 
@@ -235,8 +236,33 @@ namespace
     }
 }
 
+namespace
+{
+    int CmdPod(int argc, const char* const* argv, const char** err, void*)
+    {
+        if (argc >= 1 && _stricmp(argv[0], "list") == 0)
+        {
+            if (!Pods::List()) { *err = "could not read the engine's pod table"; return GBH_ERR; }
+            return GBH_OK;
+        }
+        if (argc >= 2 && _stricmp(argv[0], "mount") == 0)
+        {
+            const char* why = nullptr;
+            if (!Pods::Mount(argv[1], &why)) { *err = why ? why : "mount failed"; return GBH_ERR; }
+            return GBH_OK;
+        }
+        *err = "usage: pod list | pod mount <NAME.POD>";
+        return GBH_ERR_ARG;
+    }
+}
+
 namespace Pods
 {
+    void RegisterCommands()
+    {
+        Commands::Register(nullptr, "pod", CmdPod, nullptr, "list | mount <NAME.POD>", Commands::kGameThread);
+    }
+
     bool Ready()
     {
         if (!gameBase) return false;

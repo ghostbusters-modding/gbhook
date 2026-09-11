@@ -16,4 +16,8 @@ namespace Globals
 
     // CGame + 0x08: the current level stem, "firehouse", NUL-terminated in place. "" at the front end.
     static constexpr uintptr_t cgameLevelStem = 0x08;
+
+    // The 600-byte scan-code table the WM_KEYDOWN handler writes and the game reads, and its index mask word.
+    static constexpr uintptr_t scanTable     = 0x2523F00;
+    static constexpr uintptr_t scanTableMask = 0xDD6774;
 }

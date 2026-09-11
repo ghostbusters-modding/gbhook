@@ -6,10 +6,14 @@
 #include "Host.h"
 #include "../core/Framework.h"
 #include "../core/HookBroker.h"
+#include "../services/Commands.h"
 #include "../services/Events.h"
 #include "../services/FrameHook.h"
 #include "../services/Game.h"
+#include "../services/Hud.h"
+#include "../services/InputInject.h"
 #include "../services/Registry.h"
+#include "input/Dik.h"
 
 #include <windows.h>
 #include <cstdarg>
@@ -152,6 +156,28 @@ namespace
         return GBH_OK;
     }
 
+    // ---- commands, input, hud, level ------------------------------------------
+    // Game thread by default: almost every mod command ends up touching a GB:: native.
+    int CommandRegister(const char* name, GbhCommandFn fn, void* user, const char* help)
+    {
+        return Commands::Register(Who(GBH_CALLER()), name, fn, user, help, Commands::kGameThread);
+    }
+    int  CommandRun(const char* line)         { return Commands::Execute(line); }
+    int  CommandQueue(const char* line)       { return Commands::Queue(line); }
+    void InputSetKey(int dik, int down)       { InputInject::SetKey(dik, down != 0); }
+    int  InputDikFromName(const char* name)   { return Dik::FromName(name); }
+    void HudMessage(const char* t, float s)   { Hud::Message(t, s); }
+
+    // Through the command channel, so it is queued onto the right thread and logged like any other level change.
+    int LevelChain(const char* level, const char* checkpoint)
+    {
+        if (!level || !*level) return GBH_ERR_ARG;
+        char line[256];
+        if (checkpoint && *checkpoint) _snprintf_s(line, sizeof line, _TRUNCATE, "level %s %s", level, checkpoint);
+        else                           _snprintf_s(line, sizeof line, _TRUNCATE, "level %s", level);
+        return Commands::Execute(line);
+    }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -212,6 +238,14 @@ namespace Api
         g_api.level_name        = LevelName;
         g_api.registry_snapshot = RegistrySnapshot;
         g_api.registry_find     = RegistryFind;
+
+        g_api.command_register    = CommandRegister;
+        g_api.command_run         = CommandRun;
+        g_api.command_queue       = CommandQueue;
+        g_api.input_set_key       = InputSetKey;
+        g_api.input_dik_from_name = InputDikFromName;
+        g_api.hud_message         = HudMessage;
+        g_api.level_chain         = LevelChain;
 
         g_built = true;
         return &g_api;

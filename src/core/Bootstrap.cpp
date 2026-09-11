@@ -9,9 +9,13 @@
 #include "mod/Discovery.h"
 #include "mod/ContentBuild.h"
 #include "mod/Host.h"
+#include "services/Commands.h"
 #include "services/Events.h"
 #include "services/FrameHook.h"
+#include "services/InputInject.h"
 #include "services/LevelFlow.h"
+#include "services/Loop.h"
+#include "services/Pods.h"
 #include "services/Pump.h"
 #include "services/VmHook.h"
 
@@ -55,6 +59,12 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     VmHook::Install();
     LevelFlow::InstallFlowHooks();
 
+    // The command channel: the framework's own, then each service's. Before EARLY, so a mod may register from init.
+    Commands::Init();
+    InputInject::RegisterCommands();
+    LevelFlow::RegisterCommands();
+    Pods::RegisterCommands();
+
     Framework::NoteStage(GBH_STAGE_EARLY);
     Host::Init(GBH_STAGE_EARLY);
     Framework::NoteStage(GBH_STAGE_BOOT);
@@ -66,5 +76,7 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     Host::LogStatus();
     Events::LogSummary();
     Log::Write("BOOT", "boot complete");
+
+    Loop::Run();   // this thread is the loop thread from here on; it never returns
     return 0;
 }

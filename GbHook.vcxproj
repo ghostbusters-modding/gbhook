@@ -90,6 +90,13 @@
     <ClCompile Include="src\services\Registry.cpp" />
     <ClCompile Include="src\services\VmHook.cpp" />
     <ClCompile Include="src\services\LevelFlow.cpp" />
+    <ClCompile Include="src\cmd\Line.cpp" />
+    <ClCompile Include="src\cmd\Table.cpp" />
+    <ClCompile Include="src\input\Dik.cpp" />
+    <ClCompile Include="src\services\Commands.cpp" />
+    <ClCompile Include="src\services\Loop.cpp" />
+    <ClCompile Include="src\services\InputInject.cpp" />
+    <ClCompile Include="src\services\Hud.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -125,10 +132,18 @@
     <ClInclude Include="src\services\Registry.h" />
     <ClInclude Include="src\services\VmHook.h" />
     <ClInclude Include="src\services\LevelFlow.h" />
+    <ClInclude Include="src\cmd\Line.h" />
+    <ClInclude Include="src\cmd\Table.h" />
+    <ClInclude Include="src\input\Dik.h" />
+    <ClInclude Include="src\services\Commands.h" />
+    <ClInclude Include="src\services\Loop.h" />
+    <ClInclude Include="src\services\InputInject.h" />
+    <ClInclude Include="src\services\Hud.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />
     <ClInclude Include="sdk\include\gb\HookTargets.h" />
     <ClInclude Include="sdk\include\gb\Globals.h" />
+    <ClInclude Include="sdk\include\gb\Offsets.h" />
     <None Include="src\core\GbHook.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

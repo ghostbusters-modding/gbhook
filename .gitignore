@@ -6,3 +6,4 @@ tests/bin/
 .vscode/
 local/
 mods/
+.harness/

@@ -16,4 +16,7 @@ namespace Pods
     // Mount <gamedir>\<name> and its whole header chain through the engine's own CPod::mountPod, then re-sort.
     // `name` is relative to the game directory. On failure *err points at a static or engine reason.
     bool Mount(const char* name, const char** err);
+
+    // `pod list` and `pod mount <name>`, game thread: nothing in CPod locks.
+    void RegisterCommands();
 }

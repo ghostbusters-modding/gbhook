@@ -116,6 +116,10 @@ typedef enum GbhLevelPhase {
 } GbhLevelPhase;
 typedef void (*GbhLevelFn)(int phase, const char* level, int ok, void* user);
 
+/* A command handler. The framework routes it to the game thread, so a GB:: native is safe inside. argv holds the
+ * arguments only. Return GBH_OK, or point *err at a static string and return a GbhStatus. */
+typedef int (*GbhCommandFn)(int argc, const char* const* argv, const char** err, void* user);
+
 /* One VM global registration. `ptr` is live game memory: game thread only, stale after the next level prepare. */
 typedef struct GbhRegistryEntry {
     void*    ptr;
@@ -191,6 +195,21 @@ typedef struct GbhApi {
     const char* (*level_name)(void);            /* the stem, "" at the front end */
     int         (*registry_snapshot)(GbhRegistryEntry* buf, int cap);      /* this generation; a null buf and cap 0 answers the total */
     int         (*registry_find)(const char* name, GbhRegistryEntry* out); /* exact, then substring, case-insensitive */
+
+    /* -- commands: registered as "<id>.<name>", reached from gbhook.cmd, other mods and the framework -- */
+    int (*command_register)(const char* name, GbhCommandFn fn, void* user, const char* help);
+    int (*command_run)(const char* line);     /* now, or queued when the handler needs the game thread */
+    int (*command_queue)(const char* line);   /* on the game thread at the next frame, the front end included */
+
+    /* -- input: the engine's own scan-code table, the one the game reads. SendInput never reaches it -- */
+    void (*input_set_key)(int dik, int down);          /* DIK_* code; held at down until up, like a real key */
+    int  (*input_dik_from_name)(const char* name);     /* "W", "ENTER", "LSHIFT", "F5"; -1 when unknown */
+
+    /* -- hud: the engine's own message line at the top of the screen. Any thread; needs a live level -- */
+    void (*hud_message)(const char* text, float seconds);
+
+    /* -- level flow: chain to a level from the front end or in play. A checkpoint waits until the level is live -- */
+    int  (*level_chain)(const char* level, const char* checkpoint);
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

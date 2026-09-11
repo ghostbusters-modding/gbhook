@@ -171,4 +171,21 @@ namespace gbh
     {
         return api() && api()->registry_find(name, &out) == GBH_OK;
     }
+
+    // ---- commands: registered as "<id>.<name>"; the handler runs on the game thread ----
+    inline int command_register(const char* name, GbhCommandFn fn, void* user = nullptr, const char* help = "")
+    {
+        return api() ? api()->command_register(name, fn, user, help) : GBH_ERR_STATE;
+    }
+    inline int run(const char* line)   { return api() ? api()->command_run(line)   : GBH_ERR_STATE; }
+    inline int queue(const char* line) { return api() ? api()->command_queue(line) : GBH_ERR_STATE; }
+
+    // ---- input, hud, level ----
+    inline int  dik(const char* name)                       { return api() ? api()->input_dik_from_name(name) : -1; }
+    inline void key(int dik, bool down)                     { if (api()) api()->input_set_key(dik, down ? 1 : 0); }
+    inline void hud(const char* text, float seconds = 3.0f) { if (api()) api()->hud_message(text, seconds); }
+    inline int  level(const char* stem, const char* checkpoint = nullptr)
+    {
+        return api() ? api()->level_chain(stem, checkpoint) : GBH_ERR_STATE;
+    }
 }

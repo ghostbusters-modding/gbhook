@@ -2,6 +2,7 @@
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
 #include "FrameHook.h"
+#include "Commands.h"
 #include "Events.h"
 #include "Pump.h"
 #include "../core/Framework.h"
@@ -28,6 +29,7 @@ namespace
         if (InterlockedCompareExchange(&g_firstSeen, 1, 0) == 0)
             Log::Writef("FRAME", "first frame on thread %lu -- the frame bus is live", GetCurrentThreadId());
 
+        Commands::Drain();
         Events::FireFrame();
         if (oTick) oTick(a, b, c, d);
     }
