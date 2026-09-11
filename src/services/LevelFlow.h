@@ -13,18 +13,18 @@ namespace LevelFlow
     // `level` and `checkpoint`.
     void RegisterCommands();
 
-    // Chain to `level`, a stem or a .lvl name. Never with a checkpoint: the engine loads and then drops the level.
+    // Chain to `level`, a stem or a .lvl name. A checkpoint goes through DeferCheckpoint or LoadCheckpoint.
     bool ChainToLevel(const char* level);
+
+    // Reload the live level at `checkpoint`, a script name or a display name it registers.
     bool LoadCheckpoint(const char* checkpoint);
 
-    // A checkpoint armed with a front-end load makes the engine drop the level a second later: parked instead.
+    // Queue a checkpoint for the next level's begin
     void DeferCheckpoint(const char* checkpoint);
     bool FrontEndLoadPending();
 
-    // Pump only. The first runs the whole level inside the call while the tick is parked; the second arms a
-    // deferred checkpoint on the first live tick.
+    // Pump only: runs the whole level inside the call while the tick is parked.
     void RunFrontEndLoadIfPending();
-    void ArmDeferredCheckpoint();
 
     // The stem of the last prepared level, "" before any. Any thread.
     const char* CurrentLevel();

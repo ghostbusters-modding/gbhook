@@ -28,6 +28,8 @@ namespace HookTargets
 
     // Level prepare. Its return is the moment a level's object table is stamped and its actors are addressable.
     static constexpr uintptr_t levelPrepare = 0x1EED30;
+    // Begin-level's profile sync, void __fastcall(CGame*): after the script registered its checkpoints
+    static constexpr uintptr_t levelBeginSync = 0x27C8F0;
 
     // The per-frame network pump, CTRINetwork vtable+0x18: the main thread's only per-frame visit at the front end.
     static constexpr uintptr_t pump = 0x3CA3A0;

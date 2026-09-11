@@ -45,13 +45,10 @@ namespace
         GBH_SEH_EXCEPT { return 0; }
     }
 
-    // The checkpoint rides the same route as `level <stem> <checkpoint>`: parked until the level is live.
     void Chain(void*)
     {
         if (!LevelFlow::ChainToLevel(g_chain)) { Log::Writef("LEVEL", "'%s' could not be chained from the menu", g_chain); return; }
-        if (!g_chainCp[0]) return;
-        if (LevelFlow::FrontEndLoadPending()) LevelFlow::DeferCheckpoint(g_chainCp);
-        else if (!LevelFlow::LoadCheckpoint(g_chainCp)) Log::Writef("LEVEL", "checkpoint '%s' could not be armed", g_chainCp);
+        if (g_chainCp[0]) LevelFlow::DeferCheckpoint(g_chainCp);
     }
 
     int Choose(const char* level, const char* checkpoint)

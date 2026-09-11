@@ -26,6 +26,11 @@ namespace
     constexpr uintptr_t kActionPend   = 0x20D43CD;   // u8  front-end action pending
     constexpr uintptr_t kChainFlag    = 0x4A9F1;     // CGame + 0x4A9F1, u8 "this load is a chain"
 
+    // The live level's checkpoint table, filled by its setupLevel(): the engine's loads speak the display name.
+    constexpr uintptr_t kCpTable      = 0x4A9F4;     // CGame + 0x4A9F4, 25 rows
+    constexpr size_t    kCpRow        = 0x304;       // +0 display name, +0x100 level, +0x200 prototype, +0x300 valid
+    constexpr int       kCpRows       = 25;
+
     // The boot flow's own case-5 load, run from the pump: the top menu screen never returns an action, so an
     // armed pending level sits unconsumed at the front end. docs/engine/RE_NOTES.md 13.22 and 13.23.
     constexpr uintptr_t kFeMgrPtr      = 0xDD14D0;
@@ -44,6 +49,28 @@ namespace
     char          g_feLoadLvl[64]    = { 0 };
     volatile LONG g_feLoadPending    = 0;
     char          g_feCheckpoint[128] = { 0 };
+
+    // Begin-level's profile sync: the table is filled by then and the pending name is resolved right after 
+    typedef void (__fastcall* tSync)(void*);
+    tSync oSync = nullptr;
+    int  CheckpointRow(void* gg, const char* name, char* out, size_t cap, int* rowOut, char* known, size_t knownCap);
+    bool WritePendingCheckpoint(const char* cp);
+    void __fastcall SyncDetour(void* gg)
+    {
+        if (g_feCheckpoint[0])
+        {
+            char display[0x100], known[1024];
+            int row = -1;
+            const int r = CheckpointRow(gg, g_feCheckpoint, display, sizeof display, &row, known, sizeof known);
+            if (r == 0 && WritePendingCheckpoint(display))
+                Log::Writef("LEVEL", "checkpoint '%s' armed at begin-level as '%s' (row %d)", g_feCheckpoint, display, row);
+            else
+                Log::Writef("LEVEL", "checkpoint '%s' is not one this level registers; it has: %s", g_feCheckpoint,
+                            known[0] ? known : "(none)");
+            g_feCheckpoint[0] = 0;
+        }
+        if (oSync) oSync(gg);
+    }
 
     // ---- guarded writes into the engine, plain-C frames ----------------------
     // Begin-level consults the chain flag once: at 0 the pending checkpoint becomes the profile's resume row.
@@ -68,15 +95,44 @@ namespace
         GBH_SEH_EXCEPT { return false; }
     }
 
-    bool ArmCheckpoint(const char* cp)
+    bool SetReloadFlag()
     {
+        GBH_SEH_TRY { *reinterpret_cast<unsigned char*>(gameBase + kReloadFlag) = 1; return true; }
+        GBH_SEH_EXCEPT { return false; }
+    }
+
+    bool WritePendingCheckpoint(const char* cp)
+    {
+        GBH_SEH_TRY { strncpy_s(reinterpret_cast<char*>(gameBase + kPendingCp), 0x100, cp, _TRUNCATE); return true; }
+        GBH_SEH_EXCEPT { return false; }
+    }
+
+    // The row whose prototype is "void <name>()", or whose display name is `name` already: its index and name. 
+    int CheckpointRow(void* gg, const char* name, char* out, size_t cap, int* rowOut, char* known, size_t knownCap)
+    {
+        // 0 = found, 1 = no such row (the registered display names land in `known`), -1 = the table is unreadable.
+        if (!gg) return -1;
         GBH_SEH_TRY
         {
-            strncpy_s(reinterpret_cast<char*>(gameBase + kPendingCp), 0x100, cp, _TRUNCATE);
-            *reinterpret_cast<unsigned char*>(gameBase + kReloadFlag) = 1;
-            return true;
+            char proto[0x110];
+            _snprintf_s(proto, sizeof proto, _TRUNCATE, "void %s()", name);
+            known[0] = 0;
+            for (int i = 0; i < kCpRows; ++i)
+            {
+                const char* row = reinterpret_cast<const char*>(gg) + kCpTable + (size_t)i * kCpRow;
+                if (*reinterpret_cast<const int*>(row + 0x300) == 0 || !row[0]) continue;
+                if (_stricmp(row + 0x200, proto) == 0 || _stricmp(row, name) == 0)
+                {
+                    lstrcpynA(out, row, (int)cap);
+                    *rowOut = i;
+                    return 0;
+                }
+                if (known[0]) strncat_s(known, knownCap, ", ", _TRUNCATE);
+                strncat_s(known, knownCap, row, _TRUNCATE);
+            }
+            return 1;
         }
-        GBH_SEH_EXCEPT { return false; }
+        GBH_SEH_EXCEPT { return -1; }
     }
 
     bool ArmFrontEnd(const char* file)
@@ -205,11 +261,7 @@ namespace
     {
         if (argc < 1) { *err = "usage: level <stem> [checkpoint]"; return GBH_ERR_ARG; }
         if (!LevelFlow::ChainToLevel(argv[0])) { *err = "could not arm the level chain"; return GBH_ERR; }
-        if (argc >= 2)
-        {
-            if (LevelFlow::FrontEndLoadPending()) LevelFlow::DeferCheckpoint(argv[1]);
-            else if (!LevelFlow::LoadCheckpoint(argv[1])) { *err = "level armed, but the checkpoint could not be"; return GBH_ERR; }
-        }
+        if (argc >= 2) LevelFlow::DeferCheckpoint(argv[1]);
         return GBH_OK;
     }
 
@@ -235,6 +287,10 @@ namespace LevelFlow
         if (!HookBroker::Install(nullptr, gameBase + HookTargets::GTFO, (void*)&GtfoDetour, (void**)&oGtfo,
                                  GBH_HOOK_EXCLUSIVE))
             Log::Write("LEVEL", "script-fault hook FAILED to install; script faults go unlogged");
+
+        if (!HookBroker::Install(nullptr, gameBase + HookTargets::levelBeginSync, (void*)&SyncDetour, (void**)&oSync,
+                                 GBH_HOOK_EXCLUSIVE))
+            Log::Write("LEVEL", "begin-level sync hook FAILED to install; checkpoints cannot be armed");
     }
 
     void RegisterCommands()
@@ -269,18 +325,31 @@ namespace LevelFlow
         return true;
     }
 
+    // Begin-level resolves the pending name against the same table and invokes the row's prototype 
     bool LoadCheckpoint(const char* checkpoint)
     {
         if (!gameBase || !checkpoint || !*checkpoint) return false;
-        if (!ArmCheckpoint(checkpoint)) return false;
-        Log::Writef("LEVEL", "checkpoint '%s' armed", checkpoint);
+        char display[0x100], known[1024];
+        int row = -1;
+        const int r = CheckpointRow(Game::Singleton(), checkpoint, display, sizeof display, &row, known, sizeof known);
+        if (r < 0) { Log::Write("LEVEL", "checkpoint table unreadable: no level is live"); return false; }
+        if (r > 0)
+        {
+            Log::Writef("LEVEL", "'%s' is not a checkpoint the live level registered; it has: %s", checkpoint,
+                        known[0] ? known : "(none)");
+            return false;
+        }
+        // The name itself is written at the reload's begin-level 
+        lstrcpynA(g_feCheckpoint, checkpoint, (int)sizeof g_feCheckpoint);
+        if (!SetReloadFlag()) return false;
+        Log::Writef("LEVEL", "checkpoint '%s' ('%s') queued; the level reloads and begins there", checkpoint, display);
         return true;
     }
 
     void DeferCheckpoint(const char* checkpoint)
     {
         lstrcpynA(g_feCheckpoint, checkpoint ? checkpoint : "", (int)sizeof g_feCheckpoint);
-        Log::Writef("LEVEL", "checkpoint '%s' deferred until the level is live", g_feCheckpoint);
+        Log::Writef("LEVEL", "checkpoint '%s' queued for the level's begin", g_feCheckpoint);
     }
 
     bool FrontEndLoadPending() { return g_feLoadPending != 0; }
@@ -313,15 +382,6 @@ namespace LevelFlow
         if (void* pb = FeDeref(kPostBPtr)) FeCall1("postLevelB", kFnPostLevelB, pb);
         FeVtblCall("gGame+0x28", gg, 0x28);
         Log::Write("LEVEL", "front end resumes");
-    }
-
-    void ArmDeferredCheckpoint()
-    {
-        if (!g_feCheckpoint[0]) return;
-        char cp[128];
-        lstrcpynA(cp, g_feCheckpoint, (int)sizeof cp);
-        g_feCheckpoint[0] = 0;
-        LoadCheckpoint(cp);
     }
 
     const char* CurrentLevel() { return g_lastLevel; }

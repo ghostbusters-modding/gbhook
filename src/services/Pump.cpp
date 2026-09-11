@@ -94,8 +94,6 @@ namespace
             Commands::Drain();
             LevelFlow::RunFrontEndLoadIfPending();
         }
-        else
-            LevelFlow::ArmDeferredCheckpoint();
     }
 }
 
