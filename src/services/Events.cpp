@@ -64,6 +64,7 @@ namespace
 
     void ReportBudget(int kind)
     {
+        if (!g_ready) return;
         Bus::Over over[Bus::kMaxSubs];
         const long long budgetTicks = kFrameBudgetUs * g_qpcFreq / 1000000LL;
         EnterCriticalSection(&g_lock);
@@ -112,6 +113,8 @@ namespace
 
 namespace Events
 {
+    void Init() { EnsureReady(); }
+
     GbhSub Subscribe(Kind kind, const char* owner, void* fn, void* user)
     {
         EnsureReady();
@@ -142,6 +145,7 @@ namespace Events
 
     void FireFrame()
     {
+        if (!g_ready) return;
         FireTimed(Frame);
         if (++g_frames >= kBudgetWindow) { g_frames = 0; ReportBudget(Frame); }
     }

@@ -11,6 +11,9 @@ namespace Events
 {
     enum Kind { Frame = 0, Pump, Level, Actor, KindCount };
 
+    // Creates the tables and their lock. Bootstrap calls it before any detour that fires a bus can install.
+    void Init();
+
     // `owner` is a mod id, or nullptr for the framework. `fn` is the typedef for `kind`.
     GbhSub Subscribe(Kind kind, const char* owner, void* fn, void* user);
     void   Unsubscribe(GbhSub s);
