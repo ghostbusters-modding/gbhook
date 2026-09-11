@@ -3,5 +3,6 @@ tests/bin/
 *.user
 *.aps
 .vs/
+.vscode/
 local/
 mods/
