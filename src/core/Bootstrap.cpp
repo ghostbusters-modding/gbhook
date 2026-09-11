@@ -8,6 +8,7 @@
 #include "HookBroker.h"
 #include "mod/Discovery.h"
 #include "mod/ContentBuild.h"
+#include "mod/Host.h"
 #include "services/Pump.h"
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
@@ -31,6 +32,11 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
 
     // Discovery reads files only, so it runs before any service exists; a conflict is named while all parties are inert.
     Mods::Scan();
+    Settings::Attach(Mods::Result());
+
+    // PREBOOT straight after the scan: its one job is beating the engine's boot screens, and the build below takes time.
+    Framework::NoteStage(GBH_STAGE_PREBOOT);
+    Host::Init(GBH_STAGE_PREBOOT);
 
     // Build each mod's loose tree into a cached POD and decide what to mount.
     ContentBuild::Build();
@@ -40,7 +46,15 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     if (!ContentBuild::Plans().empty())
         Pump::Park([](void*) { return ContentBuild::Mount(); }, nullptr, "content mount");
 
+    Framework::NoteStage(GBH_STAGE_EARLY);
+    Host::Init(GBH_STAGE_EARLY);
+    Framework::NoteStage(GBH_STAGE_BOOT);
+    Host::Init(GBH_STAGE_BOOT);
+    Framework::NoteStage(GBH_STAGE_READY);
+    Host::Init(GBH_STAGE_READY);
+
     HookBroker::VerifyAll("boot");
+    Host::LogStatus();
     Log::Write("BOOT", "boot complete");
     return 0;
 }

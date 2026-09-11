@@ -4,3 +4,5 @@
 
 # Where mods are looked for. Comma-separated, <gamedir>-relative or absolute.
 mods.root = mods
+
+# A mod's own settings live under its id. gb.qol.bootskip = 0 turns off QoL's boot-screen skip.

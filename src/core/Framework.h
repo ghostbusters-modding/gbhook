@@ -43,12 +43,21 @@ namespace Log
     void WritefFrom(const char* id, const char* tag, const char* fmt, ...);
 }
 
+namespace ModSet { struct Result; }
+
 namespace Settings
 {
-    // <gamedir>\gbhook.ini. Loaded once; returned pointers stay valid for the life of the process.
+    // <gamedir>\gbhook.ini, loaded once. Attach folds in each accepted mod's [settings]; pointers are stable after it.
     void        Load();
+    void        Attach(const ModSet::Result& mods);
     const char* Get(const char* key, const char* dflt);
     int         GetInt(const char* key, int dflt);
     float       GetFloat(const char* key, float dflt);
     bool        GetBool(const char* key, bool dflt);
+
+    // A mod's view: gbhook.ini "<id>.<key>", then its own default, then dflt. A null id is the framework's view.
+    const char* GetFor(const char* id, const char* key, const char* dflt);
+    int         GetIntFor(const char* id, const char* key, int dflt);
+    float       GetFloatFor(const char* id, const char* key, float dflt);
+    bool        GetBoolFor(const char* id, const char* key, bool dflt);
 }

@@ -98,6 +98,65 @@ typedef struct GbhManifest {
         GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5,
 #define GBHOOK_PLUGIN_END }
 
+/* ---------------------------------------------------------------------------
+ *  The API table. Handed to GbhPluginInit, valid for the life of the process; entries are only appended.
+ *  No entry takes a mod handle: the caller is derived from the return address. Returned strings are ours,
+ *  valid until this thread's next call. Every buffer is the caller's; nothing transfers ownership.
+ * ------------------------------------------------------------------------- */
+typedef struct GbhApi {
+    uint32_t struct_size;
+    uint32_t abi_version;
+
+    /* -- environment ----------------------------------------------------- */
+    void*       (*game_base)(void);           /* ghost.exe module base */
+    const char* (*game_dir)(void);            /* directory holding ghost.exe, no trailing separator */
+    const char* (*mod_dir)(void);             /* this mod's gbhook/ folder */
+    uint32_t    (*framework_version)(void);   /* (major << 16) | (minor << 8) | patch */
+
+    /* -- memory: the framework heap, for anything handed across this table -- */
+    void* (*alloc)(size_t n);
+    void* (*realloc)(void* p, size_t n);
+    void  (*free)(void* p);
+
+    /* -- log: <gamedir>\gbhook.log, attributed to the calling mod. `tag` names the subsystem -- */
+    void (*log)(const char* tag, const char* line);
+    void (*logf)(const char* tag, const char* fmt, ...);
+
+    /* -- settings: gbhook.ini "<id>.<key>", then the mod's own [settings] default, then dflt -- */
+    const char* (*setting)(const char* key, const char* dflt);
+    int         (*setting_int)(const char* key, int dflt);
+    float       (*setting_float)(const char* key, float dflt);
+    int         (*setting_bool)(const char* key, int dflt);
+
+    /* -- hooks: the one MinHook in the process. `target` is absolute; `original` receives the trampoline -- */
+    GbhHook (*hook_create)(void* target, void* detour, void** original, uint32_t flags);
+    int     (*hook_enable)(GbhHook h);
+    int     (*hook_disable)(GbhHook h);
+    int     (*hook_enable_batch)(const GbhHook* hooks, int count);   /* together: no half-armed window */
+
+    /* -- patches: recorded, arbitrated against detours, re-verified. At most GBH_MAX_PATCH_BYTES -- */
+    GbhPatch (*patch_write)(void* at, const void* bytes, size_t n);
+    int      (*patch_revert)(GbhPatch p);
+
+    /* -- vtables: one copy per shipped table, slots claimed per mod, every vptr swap recorded -- */
+    void* (*vtable_clone)(void* original, int slots);
+    int   (*vtable_slot)(void* clone, int slot, void* fn, void** original_fn);
+    int   (*vtable_apply)(void* object, void* clone);
+    void* (*vtable_original)(void* clone, int slot);
+
+    /* -- introspection: every mod discovery saw, accepted ones first in code order -- */
+    int         (*mod_count)(void);
+    const char* (*mod_id_at)(int i);
+    int         (*mod_is_loaded)(const char* id);
+} GbhApi;
+
+/* True when the framework is new enough to carry `member`. */
+#define gbh_api_has(api, member) \
+    ((api) != 0 && (api)->struct_size >= (offsetof(GbhApi, member) + sizeof((api)->member)))
+
+/* Exported as GbhPluginInit. Called once at the mod's stage; anything but GBH_OK leaves the mod inert. */
+typedef int (*GbhPluginInitFn)(const GbhApi* api);
+
 #ifdef __cplusplus
 }   /* extern "C" */
 #endif

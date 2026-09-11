@@ -80,6 +80,9 @@
     <ClCompile Include="src\services\Pods.cpp" />
     <ClCompile Include="src\mod\ContentBuild.cpp" />
     <ClCompile Include="src\services\Pump.cpp" />
+    <ClCompile Include="src\modset\SettingsTable.cpp" />
+    <ClCompile Include="src\mod\Host.cpp" />
+    <ClCompile Include="src\mod\Api.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -105,7 +108,11 @@
     <ClInclude Include="src\services\Pods.h" />
     <ClInclude Include="src\mod\ContentBuild.h" />
     <ClInclude Include="src\services\Pump.h" />
+    <ClInclude Include="src\modset\SettingsTable.h" />
+    <ClInclude Include="src\mod\Host.h" />
+    <ClInclude Include="src\mod\Api.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
+    <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />
     <ClInclude Include="sdk\include\gb\HookTargets.h" />
     <None Include="src\core\GbHook.def" />
   </ItemGroup>
