@@ -4,12 +4,59 @@
 #include "FaultLogger.h"
 #include "Framework.h"
 
+#include <cstdio>
+#include <cstring>
+
 namespace
 {
     unsigned long long g_lo = 0, g_hi = 0;
     unsigned long long g_seen[32] = { 0 };
     int  g_seenN = 0;
     bool g_installed = false;
+    volatile LONG g_inHandler = 0;   // a fault while walking the stack must not re-enter this handler
+
+    // The instruction's module and offset, "ghost+0x..." for the exe.
+    void Where(unsigned long long at, char* out, size_t cap)
+    {
+        if (at >= g_lo && at < g_hi) { _snprintf_s(out, cap, _TRUNCATE, "ghost+0x%llX", at - g_lo); return; }
+        HMODULE m = nullptr;
+        char file[MAX_PATH] = { 0 };
+        if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                               (LPCSTR)at, &m) && m && GetModuleFileNameA(m, file, sizeof file))
+        {
+            const char* leaf = strrchr(file, '\\');
+            _snprintf_s(out, cap, _TRUNCATE, "%s+0x%llX", leaf ? leaf + 1 : file, at - (unsigned long long)m);
+        }
+        else
+            _snprintf_s(out, cap, _TRUNCATE, "%llX (no module)", at);
+    }
+
+    // The callers of the faulting instruction, unwound from the exception context with the modules' own tables.
+    void LogStack(const CONTEXT* faulting)
+    {
+        CONTEXT ctx = *faulting;
+        for (int i = 0; i < 24; ++i)
+        {
+            DWORD64 base = 0;
+            RUNTIME_FUNCTION* fn = RtlLookupFunctionEntry(ctx.Rip, &base, nullptr);
+            if (!fn)
+            {
+                // A leaf function: the return address sits at the top of the stack.
+                ctx.Rip = *reinterpret_cast<DWORD64*>(ctx.Rsp);
+                ctx.Rsp += 8;
+            }
+            else
+            {
+                void* handlerData = nullptr;
+                DWORD64 establisher = 0;
+                RtlVirtualUnwind(UNW_FLAG_NHANDLER, base, ctx.Rip, fn, &ctx, &handlerData, &establisher, nullptr);
+            }
+            if (!ctx.Rip) break;
+            char w[MAX_PATH + 32];
+            Where(ctx.Rip, w, sizeof w);
+            Log::Writef("FAULT", "  caller %2d: %s", i + 1, w);
+        }
+    }
 
     LONG CALLBACK FaultVeh(EXCEPTION_POINTERS* ep)
     {
@@ -25,22 +72,25 @@ namespace
         const unsigned long long at =
             (unsigned long long)ep->ExceptionRecord->ExceptionAddress;
 
-        // Only ghost.exe's own code. Our guarded probes fault inside this module by design.
-        if (at < g_lo || at >= g_hi) return EXCEPTION_CONTINUE_SEARCH;
-
         // One line per site, or a repeating fault fills the file.
         for (int i = 0; i < g_seenN; ++i)
             if (g_seen[i] == at) return EXCEPTION_CONTINUE_SEARCH;
         if (g_seenN < 32) g_seen[g_seenN++] = at;
 
-        const unsigned long long rel = at - (unsigned long long)gameBase;
         const unsigned long long data =
             (code == 0xC0000005 && ep->ExceptionRecord->NumberParameters >= 2)
                 ? ep->ExceptionRecord->ExceptionInformation[1] : 0;
 
-        Log::Writef("FAULT", "code=%08X at ghost+0x%llX data=0x%llX -- first chance. "
+        if (InterlockedCompareExchange(&g_inHandler, 1, 0) != 0) return EXCEPTION_CONTINUE_SEARCH;
+
+        char where[MAX_PATH + 32];
+        Where(at, where, sizeof where);
+        Log::Writef("FAULT", "code=%08X at %s data=0x%llX on thread %lu -- first chance. "
                              "If the game dies right after this, THIS is the site.",
-                    code, rel, data);
+                    code, where, data, GetCurrentThreadId());
+        if (ep->ContextRecord) LogStack(ep->ContextRecord);
+
+        InterlockedExchange(&g_inHandler, 0);
         return EXCEPTION_CONTINUE_SEARCH;
     }
 }
@@ -64,7 +114,7 @@ namespace FaultLogger
         if (AddVectoredExceptionHandler(0, FaultVeh))
         {
             g_installed = true;
-            Log::Write("BOOT", "crash forensics armed (VEH over ghost.exe code)");
+            Log::Write("BOOT", "crash forensics armed (every first-chance fault is named by module)");
         }
     }
 }

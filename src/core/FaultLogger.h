@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
-// A vectored handler that names a fault inside ghost.exe as a ghost-relative address, then lets it continue.
+// A vectored handler that names every first-chance fault by module and offset, once per site, then lets it continue.
 
 namespace FaultLogger
 {
