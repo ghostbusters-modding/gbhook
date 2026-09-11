@@ -209,5 +209,18 @@ int main()
         CHECK_EQ(r.records[0].warnings[0], "version in mod.ini is ignored: previews/modinfo.ini states it");
     }
 
+    // disabled = 1: listed as off, never accepted, no refusal text, and judged no further (a missing DLL is fine).
+    {
+        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "plugin = A.dll\ndisabled = 1\n"), Binary::Missing),
+                                     Cand("B", Ini("gb.b", "requires = gb.a\n")) });
+        const Record* a = Find(r, "A");
+        CHECK(a && !a->accepted && a->disabled);
+        CHECK_EQ(a->refusal, "");
+        CHECK_EQ(a->order, -1);
+        const Record* b = Find(r, "B");
+        CHECK(b && !b->accepted && !b->disabled);
+        CHECK_EQ(b->refusal, "requires 'gb.a', which is disabled in its mod.ini");
+    }
+
     return check::Done("modset");
 }

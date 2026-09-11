@@ -34,6 +34,9 @@ namespace
         r.warnings = c.ini.warnings;
         if (!c.ini.refusal.empty()) { r.refusal = c.ini.refusal; return r; }
 
+        // Off in mod.ini: listed, never loaded, no content. Judged no further, so a missing DLL does not matter.
+        if (r.mod.disabled) { r.disabled = true; return r; }
+
         if (!r.mod.plugin.empty())
         {
             const std::string& p = r.mod.plugin;
@@ -101,12 +104,13 @@ namespace ModSet
                 if (!r.accepted) continue;
                 for (const std::string& need : r.mod.requires_)
                 {
-                    bool present = false, refused = false;
+                    bool present = false, refused = false, off = false;
                     for (const Record& x : recs)
-                        if (x.mod.id == need) { if (x.accepted) present = true; else refused = true; }
+                        if (x.mod.id == need) { if (x.accepted) present = true; else if (x.disabled) off = true; else refused = true; }
                     if (present) continue;
                     r.accepted = false;
-                    r.refusal  = "requires '" + need + "', which " + (refused ? "was refused" : "is not present");
+                    r.refusal  = "requires '" + need + "', which " +
+                                 (off ? "is disabled in its mod.ini" : refused ? "was refused" : "is not present");
                     changed    = true;
                     break;
                 }

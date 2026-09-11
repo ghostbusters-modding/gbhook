@@ -131,7 +131,7 @@ namespace Mods
 
         g_result = ModSet::Resolve(found);
 
-        int accepted = 0, refused = 0;
+        int accepted = 0, off = 0, refused = 0;
         for (const ModSet::Record& r : g_result.records)
         {
             if (r.accepted)
@@ -141,6 +141,11 @@ namespace Mods
                             r.order + 1, r.mod.id.c_str(), r.mod.version.c_str(),
                             ModIni::StageName(r.mod.stage), r.mod.priority, r.folder.c_str(),
                             r.mod.plugin.empty() ? "" : ", plugin ", r.mod.plugin.c_str());
+            }
+            else if (r.disabled)
+            {
+                ++off;
+                Log::Writef("MODS", "OFF %s (%s): disabled in mod.ini", r.mod.id.c_str(), r.folder.c_str());
             }
             else
             {
@@ -153,8 +158,8 @@ namespace Mods
         for (const std::string& c : g_result.conflicts)
             Log::Writef("MODS", "CONFLICT %s", c.c_str());
 
-        Log::Writef("MODS", "%d folder(s) with gbhook/, %d accepted, %d refused, %d asset-only left to the Mod Manager",
-                    (int)found.size(), accepted, refused, assetOnly);
+        Log::Writef("MODS", "%d folder(s) with gbhook/, %d accepted, %d off, %d refused, %d asset-only left to the Mod Manager",
+                    (int)found.size(), accepted, off, refused, assetOnly);
     }
 
     const ModSet::Result&           Result()       { return g_result; }

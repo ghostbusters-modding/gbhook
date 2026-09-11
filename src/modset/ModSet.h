@@ -34,7 +34,8 @@ namespace ModSet
         ModIni::Mod              mod;
         std::vector<std::string> exclusiveHooks;   // from the manifest
         bool                     accepted = false;
-        int                      order    = -1;    // position in the code order, accepted only
+        bool                     disabled = false;   // mod.ini disabled = 1: listed, never loaded, no content
+        int                      order    = -1;      // position in the code order, accepted only
         std::string              refusal;
         std::vector<std::string> warnings;
     };

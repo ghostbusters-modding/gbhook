@@ -131,7 +131,9 @@ namespace HookBroker
         if (Entry* prior = Find(target))
         {
             // Either side asserting exclusivity makes this a conflict. Naming both parties is the point.
-            if (prior->exclusive || (flags & GBH_HOOK_EXCLUSIVE))
+            if (strcmp(prior->owner, who) == 0)
+                Log::Writef("HOOK", "%s: '%s' already holds it -- one detour per address", Where(target, w, sizeof w), who);
+            else if (prior->exclusive || (flags & GBH_HOOK_EXCLUSIVE))
                 Log::Writef("HOOK", "CONFLICT %s: '%s' wants it, '%s' already owns it -- refusing "
                                     "(declare it in your manifest)", Where(target, w, sizeof w), who, prior->owner);
             else

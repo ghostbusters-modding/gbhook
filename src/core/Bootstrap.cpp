@@ -9,7 +9,11 @@
 #include "mod/Discovery.h"
 #include "mod/ContentBuild.h"
 #include "mod/Host.h"
+#include "services/Events.h"
+#include "services/FrameHook.h"
+#include "services/LevelFlow.h"
 #include "services/Pump.h"
+#include "services/VmHook.h"
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
 {
@@ -46,6 +50,11 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     if (!ContentBuild::Plans().empty())
         Pump::Park([](void*) { return ContentBuild::Mount(); }, nullptr, "content mount");
 
+    // The other contended detours, hooked once and fanned out. Before EARLY, so a mod may subscribe from its init.
+    FrameHook::Install();
+    VmHook::Install();
+    LevelFlow::InstallFlowHooks();
+
     Framework::NoteStage(GBH_STAGE_EARLY);
     Host::Init(GBH_STAGE_EARLY);
     Framework::NoteStage(GBH_STAGE_BOOT);
@@ -55,6 +64,7 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
 
     HookBroker::VerifyAll("boot");
     Host::LogStatus();
+    Events::LogSummary();
     Log::Write("BOOT", "boot complete");
     return 0;
 }

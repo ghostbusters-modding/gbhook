@@ -7,6 +7,7 @@
 #include "../core/Framework.h"
 #include "../core/HookBroker.h"
 #include "../core/Seh.h"
+#include "../services/Events.h"
 
 #include <windows.h>
 #include <vector>
@@ -34,7 +35,8 @@ namespace
             e.dir       = Mods::GbhookDir(r);
             e.module    = nullptr;
             e.status.id = r.mod.id;
-            if (!r.accepted) { e.status.state = Host::State::Failed; e.status.note = r.refusal; }
+            if (r.disabled)      { e.status.state = Host::State::Off;    e.status.note = "disabled in mod.ini"; }
+            else if (!r.accepted) { e.status.state = Host::State::Failed; e.status.note = r.refusal; }
             g_entries->push_back(e);
         }
     }
@@ -137,6 +139,7 @@ namespace Host
         if (!e || e->status.state == State::Failed) return;
         e->status.state = State::Failed;
         e->status.note  = why ? why : "disabled";
+        Events::DisableOwner(e->status.id.c_str());
         Log::Writef("MODS", "DISABLED %s: %s", e->status.id.c_str(), e->status.note.c_str());
     }
 
@@ -184,6 +187,7 @@ namespace Host
         {
             const char* state = e.status.state == State::Loaded  ? "loaded"  :
                                 e.status.state == State::NoCode  ? "no code" :
+                                e.status.state == State::Off     ? "off"     :
                                 e.status.state == State::Failed  ? "FAILED"  : "pending";
             Log::Writef("MODS", "  %-24s %-8s %-8s %s", e.status.id.c_str(), e.rec->mod.version.c_str(), state,
                         e.status.note.c_str());

@@ -10,8 +10,10 @@
 #include "services/Pods.h"
 
 #include <windows.h>
+#include <cctype>
 #include <cstdio>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace
@@ -152,6 +154,7 @@ namespace ContentBuild
 
         const std::string gameDir = Framework::GameDir();
         int built = 0, cached = 0, disabled = 0, skipped = 0;
+        std::unordered_map<std::string, std::string> shipped;   // lowered relpath -> the first mod shipping it
 
         for (const ModSet::Record& r : Mods::Result().records)
         {
@@ -160,6 +163,18 @@ namespace ContentBuild
             const std::string modRoot = r.root + "\\" + r.folder;
             std::vector<TreeHash::File> loose;
             WalkLoose(modRoot, "", loose);
+
+            // Two mods shipping one loose path is resolved by the engine's mount order and said nowhere else.
+            for (const TreeHash::File& lf : loose)
+            {
+                std::string key = lf.relpath;
+                for (char& ch : key) ch = (char)tolower((unsigned char)ch);
+                auto it = shipped.find(key);
+                if (it == shipped.end()) shipped.emplace(key, r.mod.id);
+                else if (it->second != r.mod.id)
+                    Log::Writef("MODS", "CONFLICT content %s shipped by both '%s' and '%s' -- code order decides, silently",
+                                lf.relpath.c_str(), it->second.c_str(), r.mod.id.c_str());
+            }
 
             const std::string cacheDir = gameDir + "\\gbhook\\cache\\" + r.mod.id;
 

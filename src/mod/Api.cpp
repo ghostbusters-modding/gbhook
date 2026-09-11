@@ -6,11 +6,16 @@
 #include "Host.h"
 #include "../core/Framework.h"
 #include "../core/HookBroker.h"
+#include "../services/Events.h"
+#include "../services/FrameHook.h"
+#include "../services/Game.h"
+#include "../services/Registry.h"
 
 #include <windows.h>
 #include <cstdarg>
 #include <cstring>
 #include <string>
+#include <vector>
 
 #if defined(_MSC_VER)
 #  include <intrin.h>
@@ -98,6 +103,55 @@ namespace
     const char* ModIdAt(int i)            { return Host::IdAt(i); }
     int         ModIsLoaded(const char* id) { return Host::IsLoaded(id) ? 1 : 0; }
 
+    // ---- events -------------------------------------------------------------
+    GbhSub OnFrame(GbhFrameFn f, void* u) { return Events::Subscribe(Events::Frame, Who(GBH_CALLER()), (void*)f, u); }
+    GbhSub OnPump(GbhFrameFn f, void* u)  { return Events::Subscribe(Events::Pump,  Who(GBH_CALLER()), (void*)f, u); }
+    GbhSub OnLevel(GbhLevelFn f, void* u) { return Events::Subscribe(Events::Level, Who(GBH_CALLER()), (void*)f, u); }
+    GbhSub OnActor(GbhActorFn f, void* u) { return Events::Subscribe(Events::Actor, Who(GBH_CALLER()), (void*)f, u); }
+    void   Unsubscribe(GbhSub s)          { Events::Unsubscribe(s); }
+
+    // ---- game model ---------------------------------------------------------
+    void*    GameSingleton() { return Game::Singleton(); }
+    void*    LocalPlayer()   { return Game::LocalPlayer(); }
+    uint32_t GameThreadId()  { return (uint32_t)FrameHook::GameThreadId(); }
+    int      IsGameThread()  { return FrameHook::IsGameThread() ? 1 : 0; }
+
+    thread_local char t_stem[64];
+    const char* LevelName()
+    {
+        Game::LevelStem(t_stem, sizeof t_stem);
+        return t_stem;
+    }
+
+    void Fill(GbhRegistryEntry& o, const Registry::Entry& e)
+    {
+        memset(&o, 0, sizeof o);
+        o.ptr        = e.ptr;
+        o.generation = e.generation;
+        strncpy_s(o.cls,  e.cls.c_str(),  _TRUNCATE);
+        strncpy_s(o.name, e.name.c_str(), _TRUNCATE);
+    }
+
+    int RegistrySnapshot(GbhRegistryEntry* buf, int cap)
+    {
+        if (!buf && cap == 0) return Registry::Count();
+        if (!buf || cap <= 0) return GBH_ERR_ARG;
+        std::vector<Registry::Entry> list;
+        Registry::Snapshot(list);
+        const int n = (int)list.size() < cap ? (int)list.size() : cap;
+        for (int i = 0; i < n; ++i) Fill(buf[i], list[(size_t)i]);
+        return n;
+    }
+
+    int RegistryFind(const char* name, GbhRegistryEntry* out)
+    {
+        if (!name || !out) return GBH_ERR_ARG;
+        Registry::Entry e;
+        if (!Registry::Find(name, e)) return GBH_ERR_NOT_FOUND;
+        Fill(*out, e);
+        return GBH_OK;
+    }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -144,6 +198,20 @@ namespace Api
         g_api.mod_count     = ModCount;
         g_api.mod_id_at     = ModIdAt;
         g_api.mod_is_loaded = ModIsLoaded;
+
+        g_api.on_frame            = OnFrame;
+        g_api.on_pump             = OnPump;
+        g_api.on_level            = OnLevel;
+        g_api.on_actor_registered = OnActor;
+        g_api.unsubscribe         = Unsubscribe;
+
+        g_api.game_singleton    = GameSingleton;
+        g_api.local_player      = LocalPlayer;
+        g_api.game_thread_id    = GameThreadId;
+        g_api.is_game_thread    = IsGameThread;
+        g_api.level_name        = LevelName;
+        g_api.registry_snapshot = RegistrySnapshot;
+        g_api.registry_find     = RegistryFind;
 
         g_built = true;
         return &g_api;

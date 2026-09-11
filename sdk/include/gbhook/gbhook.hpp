@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <string>
+#include <vector>
 
 namespace gbh
 {
@@ -119,4 +120,55 @@ namespace gbh
     private:
         void* clone_;
     };
+
+    // ---- events: a Sub unsubscribes when it dies. release() keeps it for the process, which is the usual case ----
+    class Sub
+    {
+    public:
+        Sub() = default;
+        explicit Sub(GbhSub s) : s_(s) {}
+        Sub(const Sub&) = delete;
+        Sub& operator=(const Sub&) = delete;
+        Sub(Sub&& o) noexcept : s_(o.s_) { o.s_ = nullptr; }
+        Sub& operator=(Sub&& o) noexcept { reset(); s_ = o.s_; o.s_ = nullptr; return *this; }
+        ~Sub() { reset(); }
+
+        bool   active() const { return s_ != nullptr; }
+        GbhSub release()      { GbhSub s = s_; s_ = nullptr; return s; }
+        void   reset()        { if (s_ && api()) api()->unsubscribe(s_); s_ = nullptr; }
+    private:
+        GbhSub s_ = nullptr;
+    };
+
+    inline Sub on_frame(GbhFrameFn fn, void* user = nullptr)            { return api() ? Sub(api()->on_frame(fn, user)) : Sub(); }
+    inline Sub on_pump(GbhFrameFn fn, void* user = nullptr)             { return api() ? Sub(api()->on_pump(fn, user)) : Sub(); }
+    inline Sub on_level(GbhLevelFn fn, void* user = nullptr)            { return api() ? Sub(api()->on_level(fn, user)) : Sub(); }
+    inline Sub on_actor_registered(GbhActorFn fn, void* user = nullptr) { return api() ? Sub(api()->on_actor_registered(fn, user)) : Sub(); }
+
+    // ---- game model ----
+    inline void* game_singleton() { return api() ? api()->game_singleton() : nullptr; }
+    inline void* local_player()   { return api() ? api()->local_player() : nullptr; }
+    inline bool  is_game_thread() { return api() && api()->is_game_thread() != 0; }
+    inline std::string level_name()
+    {
+        const char* s = api() ? api()->level_name() : nullptr;
+        return s ? std::string(s) : std::string();
+    }
+
+    // The vector owns its storage in your module; the framework only fills the buffer it is handed.
+    inline std::vector<GbhRegistryEntry> registry()
+    {
+        std::vector<GbhRegistryEntry> out;
+        if (!api()) return out;
+        int n = api()->registry_snapshot(nullptr, 0);
+        if (n <= 0) return out;
+        out.resize(static_cast<size_t>(n) + 64);   // headroom for registrations landing between the two calls
+        n = api()->registry_snapshot(out.data(), static_cast<int>(out.size()));
+        out.resize(n > 0 ? static_cast<size_t>(n) : 0);
+        return out;
+    }
+    inline bool registry_find(const char* name, GbhRegistryEntry& out)
+    {
+        return api() && api()->registry_find(name, &out) == GBH_OK;
+    }
 }

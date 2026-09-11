@@ -44,6 +44,7 @@ typedef enum GbhStatus {
 /* Opaque handles. Zero is never valid. */
 typedef struct GbhHookT*   GbhHook;    /* one installed detour */
 typedef struct GbhPatchT*  GbhPatch;   /* one recorded byte patch */
+typedef struct GbhSubT*    GbhSub;     /* one event subscription */
 
 typedef enum GbhHookFlags {
     GBH_HOOK_NONE      = 0,
@@ -99,6 +100,31 @@ typedef struct GbhManifest {
 #define GBHOOK_PLUGIN_END }
 
 /* ---------------------------------------------------------------------------
+ *  Events. Every callback runs under the framework's guard: the first fault names the mod and the event,
+ *  drops that one subscription for the process, and the game continues. Order is registration order.
+ * ------------------------------------------------------------------------- */
+/* Game thread, once per frame while a level is live. A shared budget on the engine's critical path: keep it short. */
+typedef void (*GbhFrameFn)(void* user);
+
+/* Game thread, during a level load, once per Dante VM global registration: cls "CGhostbuster", name "Egon". */
+typedef void (*GbhActorFn)(const char* cls, const char* name, void* ptr, void* user);
+
+/* Game thread. `level` is the stem, "firehouse". At PREPARE_END, `ok` says whether the engine accepted the level. */
+typedef enum GbhLevelPhase {
+    GBH_LEVEL_PREPARE_BEGIN = 0,
+    GBH_LEVEL_PREPARE_END   = 1
+} GbhLevelPhase;
+typedef void (*GbhLevelFn)(int phase, const char* level, int ok, void* user);
+
+/* One VM global registration. `ptr` is live game memory: game thread only, stale after the next level prepare. */
+typedef struct GbhRegistryEntry {
+    void*    ptr;
+    char     cls[48];
+    char     name[64];
+    uint32_t generation;   /* bumped at every level prepare */
+} GbhRegistryEntry;
+
+/* ---------------------------------------------------------------------------
  *  The API table. Handed to GbhPluginInit, valid for the life of the process; entries are only appended.
  *  No entry takes a mod handle: the caller is derived from the return address. Returned strings are ours,
  *  valid until this thread's next call. Every buffer is the caller's; nothing transfers ownership.
@@ -138,7 +164,8 @@ typedef struct GbhApi {
     GbhPatch (*patch_write)(void* at, const void* bytes, size_t n);
     int      (*patch_revert)(GbhPatch p);
 
-    /* -- vtables: one copy per shipped table, slots claimed per mod, every vptr swap recorded -- */
+    /* -- vtables: one copy per shipped table, slots claimed per mod, every vptr swap recorded and re-verified by the
+     *    integrity sweep, so apply only to objects that live for the process -- */
     void* (*vtable_clone)(void* original, int slots);
     int   (*vtable_slot)(void* clone, int slot, void* fn, void** original_fn);
     int   (*vtable_apply)(void* object, void* clone);
@@ -148,6 +175,22 @@ typedef struct GbhApi {
     int         (*mod_count)(void);
     const char* (*mod_id_at)(int i);
     int         (*mod_is_loaded)(const char* id);
+
+    /* -- events: the contended detours, hooked once and fanned out. Subscribe; never hook these yourself -- */
+    GbhSub (*on_frame)(GbhFrameFn fn, void* user);              /* the per-level tick */
+    GbhSub (*on_pump)(GbhFrameFn fn, void* user);               /* the main thread every frame, front end included */
+    GbhSub (*on_level)(GbhLevelFn fn, void* user);
+    GbhSub (*on_actor_registered)(GbhActorFn fn, void* user);
+    void   (*unsubscribe)(GbhSub s);                            /* idempotent; a stale or null handle is ignored */
+
+    /* -- game model: guarded reads, any thread. A pointer handed back is live game memory -- */
+    void*       (*game_singleton)(void);        /* CGame*, NULL very early */
+    void*       (*local_player)(void);          /* NULL in menus and during loads */
+    uint32_t    (*game_thread_id)(void);        /* 0 until the first frame */
+    int         (*is_game_thread)(void);
+    const char* (*level_name)(void);            /* the stem, "" at the front end */
+    int         (*registry_snapshot)(GbhRegistryEntry* buf, int cap);      /* this generation; a null buf and cap 0 answers the total */
+    int         (*registry_find)(const char* name, GbhRegistryEntry* out); /* exact, then substring, case-insensitive */
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

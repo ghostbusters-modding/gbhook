@@ -83,6 +83,13 @@
     <ClCompile Include="src\modset\SettingsTable.cpp" />
     <ClCompile Include="src\mod\Host.cpp" />
     <ClCompile Include="src\mod\Api.cpp" />
+    <ClCompile Include="src\bus\Bus.cpp" />
+    <ClCompile Include="src\services\Events.cpp" />
+    <ClCompile Include="src\services\FrameHook.cpp" />
+    <ClCompile Include="src\services\Game.cpp" />
+    <ClCompile Include="src\services\Registry.cpp" />
+    <ClCompile Include="src\services\VmHook.cpp" />
+    <ClCompile Include="src\services\LevelFlow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -111,9 +118,17 @@
     <ClInclude Include="src\modset\SettingsTable.h" />
     <ClInclude Include="src\mod\Host.h" />
     <ClInclude Include="src\mod\Api.h" />
+    <ClInclude Include="src\bus\Bus.h" />
+    <ClInclude Include="src\services\Events.h" />
+    <ClInclude Include="src\services\FrameHook.h" />
+    <ClInclude Include="src\services\Game.h" />
+    <ClInclude Include="src\services\Registry.h" />
+    <ClInclude Include="src\services\VmHook.h" />
+    <ClInclude Include="src\services\LevelFlow.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />
     <ClInclude Include="sdk\include\gb\HookTargets.h" />
+    <ClInclude Include="sdk\include\gb\Globals.h" />
     <None Include="src\core\GbHook.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,6 +7,7 @@
 #include <cstring>
 
 #include "Pump.h"
+#include "Events.h"
 #include "../core/Framework.h"
 #include "../core/HookBroker.h"
 #include "../core/Seh.h"
@@ -82,6 +83,7 @@ namespace
             Log::Writef("PUMP", "first tick, main thread %lu", (unsigned long)g_thread);
         }
         if (g_jobCount) RunJobs();
+        Events::FirePump();
     }
 }
 
