@@ -7,6 +7,7 @@
 #include "modset/Content.h"
 #include "pod/Pod.h"
 #include "pod/TreeHash.h"
+#include "services/Pods.h"
 
 #include <windows.h>
 #include <cstdio>
@@ -16,7 +17,8 @@
 namespace
 {
     std::vector<ContentBuild::Planned> g_planned;
-    bool g_done = false;
+    bool g_done    = false;
+    bool g_mounted = false;
 
     bool IsDir(const std::string& p)
     {
@@ -231,4 +233,21 @@ namespace ContentBuild
     }
 
     const std::vector<Planned>& Plans()  { return g_planned; }
+
+    bool Mount()
+    {
+        if (g_mounted) return true;
+        if (!Pods::Ready()) return false;
+        g_mounted = true;
+
+        int ok = 0;
+        for (const Planned& p : g_planned)
+        {
+            const char* err = nullptr;
+            if (Pods::Mount(p.cachePod.c_str(), &err)) ++ok;
+            else Log::Writef("MODS", "content %s: mount FAILED -- %s", p.id.c_str(), err ? err : "no reason given");
+        }
+        Log::Writef("MODS", "content: %d of %d archive(s) mounted", ok, (int)g_planned.size());
+        return true;
+    }
 }

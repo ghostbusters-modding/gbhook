@@ -7,6 +7,9 @@
 
 namespace Pods
 {
+    // True once CPod::init has run. Quiet, so a per-tick poll leaves nothing in the log.
+    bool Ready();
+
     // Dump the mounted slot table to the log. False only if the pod object itself could not be read.
     bool List();
 

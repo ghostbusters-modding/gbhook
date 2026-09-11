@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
 // Boot-time content: build each mod's loose tree into a cached POD, decide what to mount, stand down for GBMM.
-// The Windows glue over the pure pod/ and modset/ units. The mount itself is Pods::Mount, timed by the caller.
+// The Windows glue over the pure pod/ and modset/ units. Mount() does the mounts; the caller times it off the pump.
 
 #include <string>
 #include <vector>
@@ -22,4 +22,8 @@ namespace ContentBuild
 
     // The result of the last Build(), for whoever performs the mounts.
     const std::vector<Planned>& Plans();
+
+    // Mount every planned archive through Pods::Mount. Main thread at the front end, and once only.
+    // False means the engine's pod object is not up yet: call again next tick.
+    bool Mount();
 }

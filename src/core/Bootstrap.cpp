@@ -8,6 +8,7 @@
 #include "HookBroker.h"
 #include "mod/Discovery.h"
 #include "mod/ContentBuild.h"
+#include "services/Pump.h"
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
 {
@@ -31,8 +32,13 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     // Discovery reads files only, so it runs before any service exists; a conflict is named while all parties are inert.
     Mods::Scan();
 
-    // Build each mod's loose tree into a cached POD and decide what to mount; the mount waits for the front-end pump.
+    // Build each mod's loose tree into a cached POD and decide what to mount.
     ContentBuild::Build();
+
+    // The mount needs the engine's pod object, so it is parked on the pump and runs from the first front-end ticks.
+    Pump::Install();
+    if (!ContentBuild::Plans().empty())
+        Pump::Park([](void*) { return ContentBuild::Mount(); }, nullptr, "content mount");
 
     HookBroker::VerifyAll("boot");
     Log::Write("BOOT", "boot complete");

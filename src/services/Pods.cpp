@@ -224,8 +224,8 @@ namespace
     bool NameIsSane(const char* name, const char** err)
     {
         if (!name || !*name)             { *err = "usage: pod mount <NAME.POD>"; return false; }
-        if (strlen(name) >= 64)          { *err = "archive name is too long"; return false; }
-        // A path relative to the game directory is allowed (gbhook\content\X.POD
+        if (strlen(name) >= 128)         { *err = "archive name is too long"; return false; }
+        // A path relative to the game directory is allowed (gbhook\cache\<id>\<hash>.POD
         // is how boot-time content arrives); an absolute path, a drive, a
         // wildcard or '..' is not.
         if (strpbrk(name, "/:*?\"<>|"))  { *err = "give a file name relative to the game directory"; return false; }
@@ -237,6 +237,16 @@ namespace
 
 namespace Pods
 {
+    bool Ready()
+    {
+        if (!gameBase) return false;
+        void* gp = nullptr;
+        void* gg = nullptr;
+        SafeRead(gameBase + kRvaGPod,     &gp, sizeof gp, "gPod");
+        SafeRead(gameBase + kRvaGhostPod, &gg, sizeof gg, "gGhostPod");
+        return gp != nullptr || gg != nullptr;
+    }
+
     bool List()
     {
         void* pod = GPod();
@@ -255,6 +265,13 @@ namespace Pods
         // 1. the file has to be there, and be at least a POD6 header long.
         char full[MAX_PATH];
         _snprintf_s(full, sizeof full, _TRUNCATE, "%s\\%s", Framework::GameDir(), name);
+        // The engine writes the resolved full path into CPodFile::path, a char[0x100].
+        if (strlen(full) >= 0x100)
+        {
+            Log::Writef("POD", "mount %s: full path is %d bytes, over the engine's 256-byte path field", name, (int)strlen(full));
+            *err = "the archive's full path is too long for the engine";
+            return false;
+        }
 
         WIN32_FILE_ATTRIBUTE_DATA fad;
         if (!GetFileAttributesExA(full, GetFileExInfoStandard, &fad))

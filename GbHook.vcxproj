@@ -79,6 +79,7 @@
     <ClCompile Include="src\modset\Content.cpp" />
     <ClCompile Include="src\services\Pods.cpp" />
     <ClCompile Include="src\mod\ContentBuild.cpp" />
+    <ClCompile Include="src\services\Pump.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -103,7 +104,9 @@
     <ClInclude Include="src\modset\Content.h" />
     <ClInclude Include="src\services\Pods.h" />
     <ClInclude Include="src\mod\ContentBuild.h" />
+    <ClInclude Include="src\services\Pump.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
+    <ClInclude Include="sdk\include\gb\HookTargets.h" />
     <None Include="src\core\GbHook.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
