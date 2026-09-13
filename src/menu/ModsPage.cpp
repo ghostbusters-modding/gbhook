@@ -20,7 +20,7 @@ namespace ModsPage
     std::vector<Rows::Row> List(const Header& h, const std::vector<Mod>& mods)
     {
         std::vector<Rows::Row> rows;
-        rows.push_back({ Rows::Fit("gbhook " + h.version + " for ghost " + h.targetMd5.substr(0, 8)), Rows::kInert });
+        rows.push_back({ Rows::Fit("gbhook installed mods:"), Rows::kInert });
 
         if (mods.empty())
         {
@@ -44,8 +44,7 @@ namespace ModsPage
 
     std::vector<Rows::Row> Detail(const Mod& m)
     {
-        std::vector<Rows::Row> rows;
-        rows.push_back({ Rows::Fit(m.id + (m.version.empty() ? "" : " " + m.version)), Rows::kInert });
+        std::vector<Rows::Row> rows; 
         rows.push_back({ Rows::Fit("Folder " + m.folder), Rows::kInert });
 
         std::string state = StateWord(m.state);
