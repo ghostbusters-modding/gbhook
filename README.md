@@ -56,6 +56,8 @@ filesize <path>               read an asset through the engine and report its si
 pod list | mount <NAME.POD>   the mounted archives
 hud <seconds> <text>          the HUD message line
 key tap|down|up|hold|spam <NAME> [ms] | clear
+actors [filter] | actor <name> the engine's own actor list, the spawn pool included
+attr [<key> [<value>]]        objective engine state: god, gravity, time, fov and the rest
 services                      every table a mod has published for other mods
 hooks                         verify every hook, patch and vtable copy
 ping                          liveness and thread state
@@ -125,8 +127,8 @@ sdk/include/gb/         engine facts: offsets, detour sites, globals, the genera
 sdk/GbHookPlugin.props  the build settings every mod DLL imports
 src/core/               proxy, bootstrap, log, settings, hook broker, fault logger
 src/mod/                discovery, the DLL host, the API table, the content build
-src/services/           commands, events, level flow, native menu, files, input, hud, pods, services, window
-src/format/ registry/ modset/ pod/ bus/ cmd/ input/ menu/ svc/     pure packages, tested offline
+src/services/           commands, events, level flow, native menu, files, input, hud, pods, levels, actors, attributes, services, window
+src/format/ registry/ modset/ pod/ bus/ cmd/ input/ menu/ svc/ actors/ attr/     pure packages, tested offline
 tests/                  one suite per package, check.h, the Makefile
 tools/harness/          launch, watch the log, send commands, take screenshots
 examples/               MyMod, a small code mod; SelfTest, the ABI's in-game self-test; MenuDemo, a menu page

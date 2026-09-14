@@ -1,3 +1,6 @@
+// gbhook: a mod loader for Ghostbusters: The Video Game Remastered
+// Copyright (C) 2026 Colin Sullivan and contributors
+// SPDX-License-Identifier: GPL-2.0-only
 #pragma once
 #include <cstdint>
 
@@ -32,6 +35,16 @@ namespace CGhostbuster
         float posZ;
     };
 #pragma pack(pop)
+
+    // this + 0x2482A: the u8 enableGiantBossMode stores.
+    static constexpr uintptr_t giantBoss = 0x2482A;
+
+    // this + 0x24DE8: the u8 enableProtonTorpedo stores.
+    static constexpr uintptr_t protonTorpedo = 0x24DE8;
+
+    // this + 0x24FD8: the proton pack object, null between levels. toggleHuntMode stores its u8 at pack + 0x144C.
+    static constexpr uintptr_t pack     = 0x24FD8;
+    static constexpr uintptr_t packHunt = 0x144C;
 
     CGhostbuster* getLocalPlayer();
     CGhostbuster* flinch(CGhostbuster* actor);

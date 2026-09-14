@@ -5,6 +5,16 @@ section 1 says when it would not.
 
 ## 0.2.0 (2026-09-13)
 
+- `actor_snapshot`, `actor_find`, `actor_is_a`: the engine's own actor list, the spawn pool
+  included, with the class read out of the RTTI. `actors [filter]` and `actor <name>` in
+  `gbhook.cmd`.
+- `attr_count`, `attr_at`, `attr_get`, `attr_get_float`, `attr_set`: objective engine state by
+  key (`god`, `giant`, `torpedo`, `hunt`, `gravity`, `time`, `fov`, `camdist`, `cammode`), read
+  out of memory and set through the engine's natives. `attr` in `gbhook.cmd`.
+- `level_list`, `level_checkpoints`: the lists behind the Mods page, now a service the menu and
+  the ABI share.
+- Field offsets in `sdk/include/gb/Structs` and the physics and time globals in `Globals.h`.
+- Pure packages `actors` and `attr` with suites.
 - `service_publish`, `service_find`, `service_count`, `service_name_at`, `service_owner`: a
   C table one mod publishes and others find by name, the way `gb.menu.ui` reaches every mod.
   `services` in `gbhook.cmd`.

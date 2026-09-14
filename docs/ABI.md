@@ -7,7 +7,7 @@ is meant to explain that contract.
 ```
 GbhPluginManifest   exported data, read out of the file before the DLL runs
 GbhPluginInit       exported code, called once at the mod's stage with the table
-GbhApi              60 entries in 19 groups, appended to and never reordered
+GbhApi              70 entries in 22 groups, appended to and never reordered
 ```
 
 ---
@@ -74,7 +74,7 @@ executing on another thread while its module is torn out is not recoverable.
 | `GBH_ERR` | unspecified |
 | `GBH_ERR_ARG` | a null or out-of-range argument |
 | `GBH_ERR_STATE` | not valid now: no level, too early, a page not open |
-| `GBH_ERR_UNSUPPORTED` | the framework is older than this call |
+| `GBH_ERR_UNSUPPORTED` | the framework is older than this call, or the key is read-only |
 | `GBH_ERR_CONFLICT` | another mod owns it |
 | `GBH_ERR_NOT_FOUND` | |
 | `GBH_ERR_WRONG_THREAD` | must be called on the game thread |
@@ -243,6 +243,57 @@ another's table loads after it: a later stage, or a higher `priority` in the sam
 `mem_read(src, dst, n)` copies out of game memory under a guard: `1` when copied, `0` when
 the range is unmapped or the read faulted. The one primitive behind every "guarded read" a
 mod used to carry itself.
+
+### Levels, engine main thread only
+
+| entry | notes |
+|---|---|
+| `level_list(kind, cb, user)` | `GBH_LEVELS_CAREER`: the engine's own table in its order; `GBH_LEVELS_CUSTOM`: every other `world\*.lvl` a mounted archive holds, sorted. Stems, no `.lvl` |
+| `level_checkpoints(stem, cb, user)` | what `world\<stem>.dante` registers, in script order; none when the script is unreadable |
+
+The same lists the Mods page shows, and the same thread rule as the file calls, for the
+same reason. `level_chain` loads one.
+
+### Actors, guarded reads, any thread
+
+| entry | notes |
+|---|---|
+| `actor_snapshot(buf, cap)` | the engine's own list of every `CActor` in the level; a null `buf` with `cap` zero answers the total |
+| `actor_find(name, out)` | exact, then substring, case-insensitive, on the engine-list name |
+| `actor_is_a(actor, cls)` | `1` or `0` by the RTTI chain; `GBH_ERR_STATE` when the object is unreadable |
+
+`GbhActorInfo` starts with a `struct_size` the caller sets in `buf[0]` (and in `out`): it is
+the stride and how much of each entry is filled, so the struct can grow. `flags` says whether
+the engine has the actor enabled (clear is the spawn pool, fully built and switched off) and
+which of the common bases its class derives from; `cls` is the exact RTTI name. This is the
+VM registry's superset: the registry sees what the script exported, the list sees everything.
+A `ptr` is live game memory: game thread only, stale after the next level prepare.
+
+### Attributes, reads any thread, writes on the game thread
+
+| entry | notes |
+|---|---|
+| `attr_count()`, `attr_at(i, out)` | the catalogue: key, type, whether writable, range, unit, help |
+| `attr_get(key, out, cap)` | the display form, `ON`, `-32.00`, `1.00x`; `GBH_ERR_STATE` when it cannot be read now |
+| `attr_get_float(key, out)` | the number; a bool as `0` or `1` |
+| `attr_set(key, value)` | `on`, `off`, `toggle`, a number in range, or `reset` where the engine has one |
+
+| key | type | set through | notes |
+|---|---|---|---|
+| `god` | bool | `CCharacter::setInvulnerableFlag` | |
+| `giant` | bool | `CGhostbuster::enableGiantBossMode` | the Stay Puft camera framing |
+| `torpedo` | bool | `CGhostbuster::enableProtonTorpedo` | |
+| `hunt` | bool | `CGhostbuster::toggleHuntMode` | |
+| `gravity` | float | `Global::setGravity`, `reset` | the y component; `-32` is the engine's normal |
+| `time` | float, `x` | `Global::setTimeFactor`, `reset` | `0.05` to `4`; `1.00` on the engine's own curve |
+| `fov` | float, `deg` | read-only | `23` normal, `18` aiming |
+| `camdist` | float | read-only | the third-person follow distance |
+| `cammode` | int | read-only | `0` normal, `0xA` path, `0xB` fixed, `0xD` orbit |
+
+Every key is read out of the engine's own memory, never remembered, so it survives a level
+load or a script changing it behind a mod's back. A setter goes through the engine's native.
+A toggle the engine exposes no getter for (fly mode, letterbox, the HUD) is a mod's own state
+and does not belong here.
 
 ### Keys, message thread
 

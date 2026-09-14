@@ -16,6 +16,9 @@
 #include "../services/NativeMenu.h"
 #include "../services/Registry.h"
 #include "../services/Services.h"
+#include "../services/Levels.h"
+#include "../services/Actors.h"
+#include "../services/Attr.h"
 #include "../core/ProcessMemory.h"
 #include "input/Dik.h"
 
@@ -233,6 +236,73 @@ namespace
         return mem.Read(reinterpret_cast<uintptr_t>(src), dst, n) ? 1 : 0;
     }
 
+    // ---- levels: the same thread rule as files, and for the same reason ---------------
+    int LevelList(int kind, void (*cb)(const char*, void*), void* user)
+    {
+        if (!cb || (kind != GBH_LEVELS_CAREER && kind != GBH_LEVELS_CUSTOM)) return GBH_ERR_ARG;
+        if (!FrameHook::IsEngineThread()) return GBH_ERR_WRONG_THREAD;
+        std::vector<std::string> stems;
+        const int n = kind == GBH_LEVELS_CAREER ? Levels::Career(stems) : Levels::Custom(stems);
+        if (n < 0) return n;
+        for (const std::string& s : stems) cb(s.c_str(), user);
+        return (int)stems.size();
+    }
+
+    int LevelCheckpoints(const char* stem, void (*cb)(const char*, void*), void* user)
+    {
+        if (!stem || !*stem || !cb) return GBH_ERR_ARG;
+        if (!FrameHook::IsEngineThread()) return GBH_ERR_WRONG_THREAD;
+        std::vector<std::string> names;
+        const int n = Levels::Checkpoints(stem, names);
+        if (n < 0) return n;
+        for (const std::string& s : names) cb(s.c_str(), user);
+        return (int)names.size();
+    }
+
+    // ---- actors: the caller's struct_size in the first entry is the stride ------------------
+    // The pointer sits after the size's alignment padding, so the smallest useful entry reaches past it.
+    constexpr uint32_t kActorMinStride = offsetof(GbhActorInfo, ptr) + sizeof(void*);
+
+    int ActorSnapshot(GbhActorInfo* buf, int cap)
+    {
+        if (!buf && cap == 0) return Actors::Count();
+        if (!buf || cap <= 0) return GBH_ERR_ARG;
+        const uint32_t stride = buf->struct_size;
+        if (stride < kActorMinStride) return GBH_ERR_ARG;
+        return Actors::Snapshot(buf, cap, stride);
+    }
+    int ActorFind(const char* name, GbhActorInfo* out)
+    {
+        if (!name || !out) return GBH_ERR_ARG;
+        if (out->struct_size < kActorMinStride) return GBH_ERR_ARG;
+        return Actors::Find(name, out, out->struct_size);
+    }
+    int ActorIsA(void* actor, const char* cls)
+    {
+        if (!actor || !cls || !*cls) return GBH_ERR_ARG;
+        return Actors::IsA(actor, cls);
+    }
+
+    // ---- attributes ----------------------------------------------------------------
+    int AttrCount()                                   { return Attr::Count(); }
+    int AttrAt(int i, GbhAttrInfo* out)
+    {
+        if (!out || out->struct_size < sizeof(uint32_t)) return GBH_ERR_ARG;
+        return Attr::At(i, out, out->struct_size);
+    }
+    int AttrGet(const char* key, char* out, int cap)
+    {
+        if (!key || !out || cap <= 0) return GBH_ERR_ARG;
+        return Attr::Get(key, out, cap);
+    }
+    int AttrGetFloat(const char* key, float* out)     { return (key && out) ? Attr::GetFloat(key, out) : GBH_ERR_ARG; }
+    int AttrSet(const char* key, const char* value)
+    {
+        if (!key || !value) return GBH_ERR_ARG;
+        if (!FrameHook::IsGameThread()) return GBH_ERR_WRONG_THREAD;
+        return Attr::Set(key, value);
+    }
+
     // ---- keys ----------------------------------------------------------------------
     GbhSub OnKey(GbhKeyFn f, void* u)   { return Events::Subscribe(Events::Key,  Who(GBH_CALLER()), (void*)f, u); }
     GbhSub OnChar(GbhCharFn f, void* u) { return Events::Subscribe(Events::Char, Who(GBH_CALLER()), (void*)f, u); }
@@ -321,6 +391,19 @@ namespace Api
         g_api.service_owner   = ServiceOwner;
 
         g_api.mem_read = MemRead;
+
+        g_api.level_list        = LevelList;
+        g_api.level_checkpoints = LevelCheckpoints;
+
+        g_api.actor_snapshot = ActorSnapshot;
+        g_api.actor_find     = ActorFind;
+        g_api.actor_is_a     = ActorIsA;
+
+        g_api.attr_count     = AttrCount;
+        g_api.attr_at        = AttrAt;
+        g_api.attr_get       = AttrGet;
+        g_api.attr_get_float = AttrGetFloat;
+        g_api.attr_set       = AttrSet;
 
         g_api.on_key  = OnKey;
         g_api.on_char = OnChar;

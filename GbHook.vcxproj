@@ -107,6 +107,12 @@
     <ClCompile Include="src\services\LevelsMenu.cpp" />
     <ClCompile Include="src\svc\ServiceTable.cpp" />
     <ClCompile Include="src\services\Services.cpp" />
+    <ClCompile Include="src\services\Levels.cpp" />
+    <ClCompile Include="src\actors\ActorList.cpp" />
+    <ClCompile Include="src\actors\Rtti.cpp" />
+    <ClCompile Include="src\services\Actors.cpp" />
+    <ClCompile Include="src\attr\Catalogue.cpp" />
+    <ClCompile Include="src\services\Attr.cpp" />
     <ClCompile Include="src\services\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +166,12 @@
     <ClInclude Include="src\services\LevelsMenu.h" />
     <ClInclude Include="src\svc\ServiceTable.h" />
     <ClInclude Include="src\services\Services.h" />
+    <ClInclude Include="src\services\Levels.h" />
+    <ClInclude Include="src\actors\ActorList.h" />
+    <ClInclude Include="src\actors\Rtti.h" />
+    <ClInclude Include="src\services\Actors.h" />
+    <ClInclude Include="src\attr\Catalogue.h" />
+    <ClInclude Include="src\services\Attr.h" />
     <ClInclude Include="src\services\Window.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />

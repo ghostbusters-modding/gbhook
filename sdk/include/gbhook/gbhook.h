@@ -155,6 +155,59 @@ typedef struct GbhRegistryEntry {
     uint32_t generation;   /* bumped at every level prepare */
 } GbhRegistryEntry;
 
+/* ---------------------------------------------------------------------------
+ *  The engine's own actor list: every CActor in the level, the VM registry's superset, the spawn pool included.
+ *  Read out of game memory under a guard. A disabled actor is fully built and switched off, not free.
+ * ------------------------------------------------------------------------- */
+typedef enum GbhActorFlags {
+    GBH_ACTOR_ENABLED     = 1 << 0,   /* the engine's cookie says live; clear is the spawn pool */
+    GBH_ACTOR_CHARACTER   = 1 << 1,   /* the RTTI chain carries CCharacter */
+    GBH_ACTOR_GHOSTBUSTER = 1 << 2,   /* CGhostbuster */
+    GBH_ACTOR_NPC         = 1 << 3,   /* CNPC or CHuman */
+    GBH_ACTOR_GHOST       = 1 << 4,   /* CGhost */
+    GBH_ACTOR_BREAKER     = 1 << 5,   /* CBreaker: destructible, native hit points */
+    GBH_ACTOR_ANIMODEL    = 1 << 6,   /* CAniModel: an animated set piece */
+    GBH_ACTOR_PHYSOBJ     = 1 << 7    /* CPhysicsObjectBase: a movable prop */
+} GbhActorFlags;
+
+/* struct_size is the caller's: set it in buf[0] (or out) to sizeof(GbhActorInfo); it is the stride and the fill. */
+typedef struct GbhActorInfo {
+    uint32_t struct_size;
+    void*    ptr;            /* live game memory: game thread only, stale after the next level prepare */
+    char     name[64];       /* "?" when the node held no printable name */
+    char     cls[48];        /* the RTTI class name, "?" when the vtable was unreadable */
+    float    pos[3];
+    float    orient[3];
+    int32_t  team;
+    uint32_t flags;          /* GbhActorFlags */
+    int32_t  last_frame;     /* the engine frame that last updated it */
+    uint32_t generation;     /* the level prepare it was read in */
+} GbhActorInfo;
+
+/* Level lists, as the Mods page shows them. */
+#define GBH_LEVELS_CAREER       0     /* the engine's own table, in its order */
+#define GBH_LEVELS_CUSTOM       1     /* every other world\*.lvl a mounted archive holds */
+
+/* ---------------------------------------------------------------------------
+ *  Attributes: objective engine state by key, read out of memory and written through the engine's own natives.
+ *  Nothing here is a mod's remembered toggle. attr_at enumerates the catalogue with its types and ranges.
+ * ------------------------------------------------------------------------- */
+typedef enum GbhAttrType {
+    GBH_ATTR_BOOL  = 0,
+    GBH_ATTR_FLOAT = 1,
+    GBH_ATTR_INT   = 2
+} GbhAttrType;
+
+typedef struct GbhAttrInfo {
+    uint32_t struct_size;    /* the caller's, sizeof(GbhAttrInfo) */
+    char     key[32];
+    uint32_t type;           /* GbhAttrType */
+    uint32_t writable;       /* 0: no engine native sets it; attr_set answers GBH_ERR_UNSUPPORTED */
+    float    min, max;       /* what a setter accepts; both zero when unbounded */
+    char     unit[16];       /* "", "x", "deg" */
+    char     help[96];
+} GbhAttrInfo;
+
 /* The game window's keys, on the message thread. Answer 1 to keep the key from the engine; the fan-out stops there. */
 typedef int (*GbhKeyFn)(int vk, int down, void* user);
 typedef int (*GbhCharFn)(unsigned int ch, void* user);
@@ -265,6 +318,23 @@ typedef struct GbhApi {
 
     /* -- memory: a guarded copy out of game memory. 1 when copied, 0 when unmapped or faulted. Any thread -- */
     int (*mem_read)(const void* src, void* dst, size_t n);
+
+    /* -- levels: what the Mods page lists. Engine main thread only, like file_list. Returns the count -- */
+    int (*level_list)(int kind, void (*cb)(const char* stem, void* user), void* user);   /* GBH_LEVELS_* */
+    int (*level_checkpoints)(const char* stem, void (*cb)(const char* name, void* user), void* user);
+
+    /* -- actors: the engine's own list. Guarded reads, any thread; a null buf and cap 0 answers the total -- */
+    int (*actor_snapshot)(GbhActorInfo* buf, int cap);
+    int (*actor_find)(const char* name, GbhActorInfo* out);   /* exact, then substring, case-insensitive */
+    int (*actor_is_a)(void* actor, const char* cls);          /* 1 or 0 by the RTTI chain; GBH_ERR_STATE when unreadable */
+
+    /* -- attributes: reads any thread; attr_set on the game thread, "on|off|toggle" or a number, "reset" where the
+     *    engine has one -- */
+    int (*attr_count)(void);
+    int (*attr_at)(int i, GbhAttrInfo* out);
+    int (*attr_get)(const char* key, char* out, int cap);       /* display form: "ON", "-32.00", "1.00x"; GBH_ERR_STATE when unreadable */
+    int (*attr_get_float)(const char* key, float* out);         /* bools and ints as their number */
+    int (*attr_set)(const char* key, const char* value);
 
     /* -- keys: the game window subclassed once. Message thread; the first subscriber answering 1 keeps the key -- */
     GbhSub (*on_key)(GbhKeyFn fn, void* user);

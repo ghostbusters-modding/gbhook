@@ -265,7 +265,41 @@ if (gbh::registry_find("Egon", egon)) { /* exact match, then substring */ }
 Pointers are live game memory, game thread only, and stale after the next level prepare;
 `generation` says which level they belong to.
 
-`gbh::read<T>(src, out)` is the guarded read for the field a mod reads on its own: `0` on an unmapped or torn pointer, never a crash.
+The engine's own list is wider: every `CActor` in the level, the spawn pool included, with
+the exact class read out of the RTTI:
+
+```cpp
+for (const GbhActorInfo& a : gbh::actors())
+{
+    const bool live = a.flags & GBH_ACTOR_ENABLED;      // clear: pooled, built and switched off
+    const bool ghost = a.flags & GBH_ACTOR_GHOST;
+    /* a.name, a.cls, a.pos, a.orient, a.team, a.ptr */
+}
+GbhActorInfo slimer;
+if (gbh::actor_find("Slimer", slimer) && gbh::actor_is_a(slimer.ptr, "CCharacter")) { /* ... */ }
+```
+
+The snapshot walks the list under a guard and is not per-frame cheap: rebuild a cache on
+the game thread when something asks, and read the cache from anywhere else.
+
+Objective engine state has a key, read out of memory and set through the engine's native,
+so every mod sees the same value whoever changed it last:
+
+```cpp
+bool god = false;
+if (gbh::attr_bool("god", god)) { /* the live flag, whatever set it */ }
+gbh::attr_set("god", "toggle");           // game thread: a command handler or on_frame
+gbh::attr_set("gravity", "-1.6");         // in range, or GBH_ERR_ARG
+gbh::attr_set("time", "reset");
+gbh::attr("fov");                         // "23.00 deg"; read-only, attr_set answers GBH_ERR_UNSUPPORTED
+for (const GbhAttrInfo& a : gbh::attrs()) { /* a.key, a.type, a.writable, a.min, a.max, a.unit, a.help */ }
+```
+
+`attr` in `gbhook.cmd` reads and sets the same keys. A toggle the engine has no getter for
+stays the mod's own state; it never becomes a key.
+
+`gbh::read<T>(src, out)` is the guarded read behind the rest, for the field a mod reads on
+its own: `0` on an unmapped or torn pointer, never a crash.
 
 The engine's script-visible methods are in `sdk/include/gb/Generated/GBApi.generated.h`,
 typed C++ wrappers that call each method through the engine's own thunk:
@@ -290,7 +324,13 @@ std::vector<unsigned char> bytes = gbh::file_read("world\\duel_arena.dante");
 
 The file calls go through the engine's own resolution, so a mod's archive and the game's
 answer alike. They run on the engine's main thread only: a command handler, `on_frame` or
-`on_pump`.
+`on_pump`. So do the level lists, the ones the Mods page shows:
+
+```cpp
+std::vector<std::string> career = gbh::levels(GBH_LEVELS_CAREER);      // the engine's table, in order
+std::vector<std::string> custom = gbh::levels(GBH_LEVELS_CUSTOM);      // every other .lvl an archive holds
+std::vector<std::string> cps    = gbh::checkpoints("library1b");        // what its script registers
+```
 
 ### Keys
 

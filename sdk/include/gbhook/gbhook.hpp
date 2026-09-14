@@ -238,6 +238,72 @@ namespace gbh
     template <typename T>
     inline bool read(const void* src, T& out) { return mem_read(src, &out, sizeof(T)); }
 
+    // ---- levels, engine main thread only ----
+    inline std::vector<std::string> levels(int kind)
+    {
+        std::vector<std::string> out;
+        if (!has_services()) return out;
+        api()->level_list(kind, [](const char* s, void* u) { static_cast<std::vector<std::string>*>(u)->push_back(s); }, &out);
+        return out;
+    }
+    inline std::vector<std::string> checkpoints(const char* stem)
+    {
+        std::vector<std::string> out;
+        if (!has_services()) return out;
+        api()->level_checkpoints(stem, [](const char* s, void* u) { static_cast<std::vector<std::string>*>(u)->push_back(s); }, &out);
+        return out;
+    }
+
+    // ---- actors: the engine's own list. The vector owns its storage in your module ----
+    inline std::vector<GbhActorInfo> actors()
+    {
+        std::vector<GbhActorInfo> out;
+        if (!has_services()) return out;
+        int n = api()->actor_snapshot(nullptr, 0);
+        if (n <= 0) return out;
+        out.resize(static_cast<size_t>(n) + 64);   // headroom for spawns landing between the two calls
+        out[0].struct_size = sizeof(GbhActorInfo);
+        n = api()->actor_snapshot(out.data(), static_cast<int>(out.size()));
+        out.resize(n > 0 ? static_cast<size_t>(n) : 0);
+        return out;
+    }
+    inline bool actor_find(const char* name, GbhActorInfo& out)
+    {
+        out.struct_size = sizeof(GbhActorInfo);
+        return has_services() && api()->actor_find(name, &out) == GBH_OK;
+    }
+    inline bool actor_is_a(void* actor, const char* cls) { return has_services() && api()->actor_is_a(actor, cls) == 1; }
+
+    // ---- attributes ----
+    inline std::vector<GbhAttrInfo> attrs()
+    {
+        std::vector<GbhAttrInfo> out;
+        if (!has_services()) return out;
+        const int n = api()->attr_count();
+        for (int i = 0; i < n; ++i)
+        {
+            GbhAttrInfo a;
+            a.struct_size = sizeof a;
+            if (api()->attr_at(i, &a) == GBH_OK) out.push_back(a);
+        }
+        return out;
+    }
+    inline std::string attr(const char* key)
+    {
+        char buf[64] = { 0 };
+        if (!has_services() || api()->attr_get(key, buf, sizeof buf) != GBH_OK) return std::string();
+        return std::string(buf);
+    }
+    inline bool attr_float(const char* key, float& out) { return has_services() && api()->attr_get_float(key, &out) == GBH_OK; }
+    inline bool attr_bool(const char* key, bool& out)
+    {
+        float f = 0;
+        if (!attr_float(key, f)) return false;
+        out = f != 0.0f;
+        return true;
+    }
+    inline int attr_set(const char* key, const char* value) { return has_services() ? api()->attr_set(key, value) : GBH_ERR_UNSUPPORTED; }
+
     // ---- keys, message thread ----
     inline Sub on_key(GbhKeyFn fn, void* user = nullptr)   { return has_services() ? Sub(api()->on_key(fn, user)) : Sub(); }
     inline Sub on_char(GbhCharFn fn, void* user = nullptr) { return has_services() ? Sub(api()->on_char(fn, user)) : Sub(); }

@@ -20,7 +20,7 @@ CXXFLAGS   := -std=c++20 -Wall -Wextra -I. -I$(ROOT)/src -I$(ROOT)/sdk/include
 CROSSFLAGS := $(CXXFLAGS) -Wno-cast-function-type -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_WARNINGS -I$(ROOT)/third_party/minhook/include -static
 
 # Pure packages: no windows.h, built and tested here. A package may include only the ones listed as its deps.
-PURE_PKGS     := format registry modset pod bus cmd input menu svc
+PURE_PKGS     := format registry modset pod bus cmd input menu svc actors attr
 DEPS_format   :=
 DEPS_registry :=
 DEPS_modset   := format pod
@@ -30,6 +30,8 @@ DEPS_cmd      :=
 DEPS_input    :=
 DEPS_menu     :=
 DEPS_svc      :=
+DEPS_actors   := registry
+DEPS_attr     :=
 
 pkg_src   = $(wildcard $(ROOT)/src/$(1)/*.cpp)
 pkg_hdr   = $(wildcard $(ROOT)/src/$(1)/*.h)

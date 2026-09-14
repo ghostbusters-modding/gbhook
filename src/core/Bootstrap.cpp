@@ -22,6 +22,8 @@
 #include "services/Pump.h"
 #include "services/VmHook.h"
 #include "services/Services.h"
+#include "services/Actors.h"
+#include "services/Attr.h"
 #include "services/Window.h"
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
@@ -77,6 +79,8 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     Pods::RegisterCommands();
     Files::RegisterCommands();
     Services::RegisterCommands();
+    Actors::RegisterCommands();
+    Attr::RegisterCommands();
 
     Framework::NoteStage(GBH_STAGE_EARLY);
     Host::Init(GBH_STAGE_EARLY);

@@ -148,6 +148,33 @@ namespace
             Check(!lvls.empty(), "file_list finds world\\*.lvl");
             const std::string me = "world\\" + gbh::level_name() + ".lvl";
             Check(!gbh::file_read(me.c_str()).empty(), "file_read reads the live level's .lvl");
+
+            const std::vector<std::string> career = gbh::levels(GBH_LEVELS_CAREER);
+            Check(career.size() == 20, "level_list career answers the engine's twenty");
+            gbh::logf("EVT", "%d custom level(s), %d checkpoint(s) in the live level",
+                      (int)gbh::levels(GBH_LEVELS_CUSTOM).size(), (int)gbh::checkpoints(gbh::level_name().c_str()).size());
+
+            const std::vector<GbhActorInfo> actors = gbh::actors();
+            Check(!actors.empty(), "actor_snapshot walks the engine list");
+            int enabled = 0, chars = 0;
+            for (const GbhActorInfo& a : actors)
+            {
+                if (a.flags & GBH_ACTOR_ENABLED) ++enabled;
+                if (a.flags & GBH_ACTOR_CHARACTER) ++chars;
+            }
+            gbh::logf("EVT", "%d actor(s), %d enabled, %d character(s); first '%s' %s", (int)actors.size(), enabled,
+                      chars, actors.empty() ? "" : actors[0].name, actors.empty() ? "" : actors[0].cls);
+            GbhActorInfo found;
+            Check(!actors.empty() && gbh::actor_find(actors[0].name, found) && found.ptr == actors[0].ptr,
+                  "actor_find finds the first entry");
+            Check(!actors.empty() && gbh::actor_is_a(actors[0].ptr, actors[0].cls), "actor_is_a agrees with the snapshot's class");
+
+            float god = -1;
+            Check(gbh::attr_float("god", god) && (god == 0.0f || god == 1.0f), "attr_get_float reads god off the player");
+            gbh::logf("EVT", "attrs: god %s gravity %s time %s fov %s cammode %s", gbh::attr("god").c_str(),
+                      gbh::attr("gravity").c_str(), gbh::attr("time").c_str(), gbh::attr("fov").c_str(), gbh::attr("cammode").c_str());
+            Check(gbh::attr_set("fov", "30") == GBH_ERR_UNSUPPORTED, "attr_set refuses a read-only key");
+            Check(gbh::attr_set("nope", "1") == GBH_ERR_NOT_FOUND, "attr_set names an unknown key");
         }
         if (g_frames % 600 == 0) gbh::logf("EVT", "%d frames", g_frames);
     }
@@ -223,7 +250,7 @@ namespace
         *p = 1;
     }
 
-    // ---- the block appended after file_read: services, mem_read, keys ----
+    // ---- the block appended after file_read: services, mem_read, the attribute catalogue, keys ----
     struct SelfTestTable { uint32_t struct_size; int (*answer)(void); };
     int Answer() { return 42; }
     const SelfTestTable g_service = { sizeof(SelfTestTable), Answer };
@@ -251,6 +278,18 @@ namespace
         Check(!gbh::mem_read(nullptr, &word, 4), "mem_read of null is refused");
         Check(!gbh::mem_read(reinterpret_cast<const void*>(0x10), &word, 4), "mem_read of an unmapped page answers 0");
 
+        const std::vector<GbhAttrInfo> attrs = gbh::attrs();
+        Check(attrs.size() >= 9, "attr_at enumerates the catalogue");
+        bool god = false, fovRo = false;
+        for (const GbhAttrInfo& a : attrs)
+        {
+            if (strcmp(a.key, "god") == 0) god = a.type == GBH_ATTR_BOOL && a.writable;
+            if (strcmp(a.key, "fov") == 0) fovRo = a.type == GBH_ATTR_FLOAT && !a.writable;
+        }
+        Check(god && fovRo, "the catalogue types god as a writable bool and fov as read-only");
+        Check(gbh::attr("god").empty(), "attr_get answers nothing at the front end");
+
+        Check(gbh::api()->actor_snapshot(nullptr, 0) >= 0, "actor_snapshot at the front end counts without faulting");
         Check(gbh::on_key(OnKey).release() != nullptr, "on_key subscribes");
     }
 

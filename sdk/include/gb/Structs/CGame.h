@@ -1,6 +1,10 @@
+// gbhook: a mod loader for Ghostbusters: The Video Game Remastered
+// Copyright (C) 2026 Colin Sullivan and contributors
+// SPDX-License-Identifier: GPL-2.0-only
 #pragma once
+#include <cstdint>
 #include <iostream>
-#include "./Structs/Types.h"
+#include "Types.h"
 
 namespace CGame
 { 
@@ -61,6 +65,9 @@ namespace CGame
 		float soundFMVVolume;
 		*/
 	};
+
+	// this + 0x3ADC0: the head of the engine's intrusive actor chain, every actor in the level, the spawn pool included.
+	static constexpr uintptr_t actorListHead = 0x3ADC0;
 
 	void enableDebug(bool enabled);
 	int slew();
