@@ -223,6 +223,37 @@ namespace
         *p = 1;
     }
 
+    // ---- the block appended after file_read: services, mem_read, keys ----
+    struct SelfTestTable { uint32_t struct_size; int (*answer)(void); };
+    int Answer() { return 42; }
+    const SelfTestTable g_service = { sizeof(SelfTestTable), Answer };
+    int g_keys = 0;
+
+    int OnKey(int vk, int down, void*)
+    {
+        if (++g_keys <= 3) gbh::logf("EVT", "key %d %s", vk, down ? "down" : "up");
+        return 0;   // never kept: this mod owns no key
+    }
+
+    void TestServices()
+    {
+        Check(gbh::has_services(), "the table carries the block appended after file_read");
+        Check(gbh::service_publish("gb.selftest.table", &g_service, sizeof g_service) == GBH_OK, "service_publish");
+        Check(gbh::service_publish("gb.selftest.table", &g_service, sizeof g_service) == GBH_ERR_CONFLICT, "republish refused");
+        const SelfTestTable* t = gbh::service_find<SelfTestTable>("gb.selftest.table");
+        Check(t == &g_service && t->answer() == 42, "service_find hands back the published pointer");
+        Check(gbh::service_find<SelfTestTable>("gb.selftest.none") == nullptr, "service_find of an unknown name is null");
+        const char* owner = gbh::api()->service_owner("gb.selftest.table");
+        Check(owner && strcmp(owner, "gb.selftest") == 0, "service_owner names this mod");
+
+        uint32_t word = 0;
+        Check(gbh::read(&g_service.struct_size, word) && word == sizeof(SelfTestTable), "mem_read copies our own memory");
+        Check(!gbh::mem_read(nullptr, &word, 4), "mem_read of null is refused");
+        Check(!gbh::mem_read(reinterpret_cast<const void*>(0x10), &word, 4), "mem_read of an unmapped page answers 0");
+
+        Check(gbh::on_key(OnKey).release() != nullptr, "on_key subscribes");
+    }
+
     void SubscribeEvents()
     {
         Check(gbh::api()->game_thread_id() == 0, "game_thread_id is 0 before the first frame");
@@ -252,6 +283,7 @@ extern "C" GBHOOK_EXPORT int GbhPluginInit(const GbhApi* api)
     TestVtables();
     TestCommands();
     TestNativeMenu();
+    TestServices();
     SubscribeEvents();
     gbh::logf("TEST", "%d passed, %d failed at init", g_pass, g_fail);
 

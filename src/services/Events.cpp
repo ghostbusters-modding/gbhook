@@ -16,7 +16,7 @@ namespace
     constexpr long long kFrameBudgetUs = 250;   // per subscriber, averaged: the frame bus is on the engine's critical path
     constexpr int       kBudgetWindow  = 600;   // frames between reports
 
-    const char* const kNames[Events::KindCount] = { "frame", "pump", "level", "actor" };
+    const char* const kNames[Events::KindCount] = { "frame", "pump", "level", "actor", "key", "char" };
 
     Bus::Table*      g_bus     = nullptr;
     CRITICAL_SECTION g_lock;
@@ -93,6 +93,17 @@ namespace
         GBH_SEH_TRY { ((GbhActorFn)fn)(cls, name, ptr, user); return true; }
         GBH_SEH_EXCEPT { return false; }
     }
+    // The key frames answer the subscriber's verdict: 1 kept the message, 0 passed it on, -1 faulted.
+    int CallKey(void* fn, int vk, int down, void* user)
+    {
+        GBH_SEH_TRY { return ((GbhKeyFn)fn)(vk, down, user) ? 1 : 0; }
+        GBH_SEH_EXCEPT { return -1; }
+    }
+    int CallChar(void* fn, unsigned int ch, void* user)
+    {
+        GBH_SEH_TRY { return ((GbhCharFn)fn)(ch, user) ? 1 : 0; }
+        GBH_SEH_EXCEPT { return -1; }
+    }
 
     // The two per-frame buses are timed; the others fire a few times per level and skip the accounting.
     void FireTimed(int kind)
@@ -166,6 +177,32 @@ namespace Events
         const int n = Snapshot(Actor, snap);
         for (int i = 0; i < n; ++i)
             if (!CallActor(snap[i].fn, cls, name, ptr, snap[i].user)) Kill(Actor, snap[i].h);
+    }
+
+    bool FireKey(int vk, bool down)
+    {
+        Bus::Snap snap[Bus::kMaxSubs];
+        const int n = Snapshot(Key, snap);
+        for (int i = 0; i < n; ++i)
+        {
+            const int r = CallKey(snap[i].fn, vk, down ? 1 : 0, snap[i].user);
+            if (r < 0) Kill(Key, snap[i].h);
+            else if (r) return true;
+        }
+        return false;
+    }
+
+    bool FireChar(unsigned int ch)
+    {
+        Bus::Snap snap[Bus::kMaxSubs];
+        const int n = Snapshot(Char, snap);
+        for (int i = 0; i < n; ++i)
+        {
+            const int r = CallChar(snap[i].fn, ch, snap[i].user);
+            if (r < 0) Kill(Char, snap[i].h);
+            else if (r) return true;
+        }
+        return false;
     }
 
     int LiveCount()

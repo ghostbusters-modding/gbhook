@@ -105,6 +105,9 @@
     <ClCompile Include="src\services\NativeMenu.cpp" />
     <ClCompile Include="src\services\ModsMenu.cpp" />
     <ClCompile Include="src\services\LevelsMenu.cpp" />
+    <ClCompile Include="src\svc\ServiceTable.cpp" />
+    <ClCompile Include="src\services\Services.cpp" />
+    <ClCompile Include="src\services\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -155,8 +158,12 @@
     <ClInclude Include="src\services\NativeMenu.h" />
     <ClInclude Include="src\services\ModsMenu.h" />
     <ClInclude Include="src\services\LevelsMenu.h" />
+    <ClInclude Include="src\svc\ServiceTable.h" />
+    <ClInclude Include="src\services\Services.h" />
+    <ClInclude Include="src\services\Window.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />
+    <ClInclude Include="sdk\include\gbhook\seh.h" />
     <ClInclude Include="sdk\include\gb\HookTargets.h" />
     <ClInclude Include="sdk\include\gb\Globals.h" />
     <ClInclude Include="sdk\include\gb\Offsets.h" />

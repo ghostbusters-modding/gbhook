@@ -155,6 +155,10 @@ typedef struct GbhRegistryEntry {
     uint32_t generation;   /* bumped at every level prepare */
 } GbhRegistryEntry;
 
+/* The game window's keys, on the message thread. Answer 1 to keep the key from the engine; the fan-out stops there. */
+typedef int (*GbhKeyFn)(int vk, int down, void* user);
+typedef int (*GbhCharFn)(unsigned int ch, void* user);
+
 /* ---------------------------------------------------------------------------
  *  The API table. Handed to GbhPluginInit, valid for the life of the process; entries are only appended.
  *  No entry takes a mod handle: the caller is derived from the return address. Returned strings are ours,
@@ -248,6 +252,23 @@ typedef struct GbhApi {
     /* -- files: the engine's own asset enumerator and stream. Engine main thread only, else GBH_ERR_WRONG_THREAD -- */
     int (*file_list)(const char* dir, const char* pattern, void (*cb)(const char* name, void* user), void* user);
     int (*file_read)(const char* path, void* buf, int cap);         /* bytes copied; a null buf and cap 0 answers the size */
+
+    /* -- appended after file_read: gbh_api_has(api, service_publish) gates the block ---------------------- */
+
+    /* -- services: a C table one mod publishes, others find by name. The table lives for the process and starts
+     *    with a uint32_t struct_size, like this one, so a consumer gates on what it carries -- */
+    int         (*service_publish)(const char* name, const void* table, uint32_t size);   /* GBH_ERR_CONFLICT when taken */
+    const void* (*service_find)(const char* name, uint32_t* size);                        /* NULL until published */
+    int         (*service_count)(void);
+    const char* (*service_name_at)(int i);
+    const char* (*service_owner)(const char* name);                                        /* the publisher's id */
+
+    /* -- memory: a guarded copy out of game memory. 1 when copied, 0 when unmapped or faulted. Any thread -- */
+    int (*mem_read)(const void* src, void* dst, size_t n);
+
+    /* -- keys: the game window subclassed once. Message thread; the first subscriber answering 1 keeps the key -- */
+    GbhSub (*on_key)(GbhKeyFn fn, void* user);
+    GbhSub (*on_char)(GbhCharFn fn, void* user);
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

@@ -15,8 +15,8 @@ extern char* gameBase;
 namespace Framework
 {
     // (major << 16) | (minor << 8) | patch
-    constexpr uint32_t    kVersion       = (0u << 16) | (1u << 8) | 0u;
-    constexpr const char* kVersionString = "0.1.0";
+    constexpr uint32_t    kVersion       = (0u << 16) | (2u << 8) | 0u;
+    constexpr const char* kVersionString = "0.2.0";
 
     // Directory holding ghost.exe, no trailing separator.
     const char* GameDir();

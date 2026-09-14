@@ -9,7 +9,7 @@
 
 namespace Events
 {
-    enum Kind { Frame = 0, Pump, Level, Actor, KindCount };
+    enum Kind { Frame = 0, Pump, Level, Actor, Key, Char, KindCount };
 
     // Creates the tables and their lock. Bootstrap calls it before any detour that fires a bus can install.
     void Init();
@@ -24,6 +24,9 @@ namespace Events
     void FirePump();                                               // main thread, front end and level
     void FireLevel(GbhLevelPhase phase, const char* level, bool ok);
     void FireActor(const char* cls, const char* name, void* ptr);
+    // Message thread. True when a subscriber kept the message; the fan-out stops at the first one.
+    bool FireKey(int vk, bool down);
+    bool FireChar(unsigned int ch);
 
     int  LiveCount();
     void LogSummary();

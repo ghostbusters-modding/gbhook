@@ -21,6 +21,8 @@
 #include "services/Pods.h"
 #include "services/Pump.h"
 #include "services/VmHook.h"
+#include "services/Services.h"
+#include "services/Window.h"
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
 {
@@ -63,6 +65,10 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     FrameHook::Install();
     VmHook::Install();
     LevelFlow::InstallFlowHooks();
+    Window::Install();
+
+    // The service directory, before EARLY too: a mod publishes from its init and a later stage finds it.
+    Services::Init();
 
     // The command channel: the framework's own, then each service's. Before EARLY, so a mod may register from init.
     Commands::Init();
@@ -70,6 +76,7 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     LevelFlow::RegisterCommands();
     Pods::RegisterCommands();
     Files::RegisterCommands();
+    Services::RegisterCommands();
 
     Framework::NoteStage(GBH_STAGE_EARLY);
     Host::Init(GBH_STAGE_EARLY);
@@ -86,6 +93,7 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     HookBroker::VerifyAll("boot");
     Host::LogStatus();
     Events::LogSummary();
+    Services::LogSummary();
     Log::Write("BOOT", "boot complete");
 
     Loop::Run();   // this thread is the loop thread from here on; it never returns

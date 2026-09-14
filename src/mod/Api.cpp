@@ -15,6 +15,8 @@
 #include "../services/InputInject.h"
 #include "../services/NativeMenu.h"
 #include "../services/Registry.h"
+#include "../services/Services.h"
+#include "../core/ProcessMemory.h"
 #include "input/Dik.h"
 
 #include <windows.h>
@@ -212,6 +214,29 @@ namespace
         return n;
     }
 
+    // ---- services --------------------------------------------------------------
+    int ServicePublish(const char* name, const void* table, uint32_t size)
+    {
+        if (!name || !*name || !table || size < sizeof(uint32_t)) return GBH_ERR_ARG;
+        return Services::Publish(Who(GBH_CALLER()), name, table, size);
+    }
+    const void* ServiceFind(const char* name, uint32_t* size) { return name ? Services::Find(name, size) : nullptr; }
+    int         ServiceCount()                                { return Services::Count(); }
+    const char* ServiceNameAt(int i)                          { return Services::NameAt(i); }
+    const char* ServiceOwner(const char* name)                { return name ? Services::OwnerOf(name) : nullptr; }
+
+    // ---- memory ----------------------------------------------------------------
+    int MemRead(const void* src, void* dst, size_t n)
+    {
+        if (!src || !dst || n == 0) return 0;
+        ProcessMemory mem;
+        return mem.Read(reinterpret_cast<uintptr_t>(src), dst, n) ? 1 : 0;
+    }
+
+    // ---- keys ----------------------------------------------------------------------
+    GbhSub OnKey(GbhKeyFn f, void* u)   { return Events::Subscribe(Events::Key,  Who(GBH_CALLER()), (void*)f, u); }
+    GbhSub OnChar(GbhCharFn f, void* u) { return Events::Subscribe(Events::Char, Who(GBH_CALLER()), (void*)f, u); }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -288,6 +313,17 @@ namespace Api
         g_api.native_submenu_refresh = NativeRefresh;
         g_api.file_list              = FileList;
         g_api.file_read              = FileRead;
+
+        g_api.service_publish = ServicePublish;
+        g_api.service_find    = ServiceFind;
+        g_api.service_count   = ServiceCount;
+        g_api.service_name_at = ServiceNameAt;
+        g_api.service_owner   = ServiceOwner;
+
+        g_api.mem_read = MemRead;
+
+        g_api.on_key  = OnKey;
+        g_api.on_char = OnChar;
 
         g_built = true;
         return &g_api;

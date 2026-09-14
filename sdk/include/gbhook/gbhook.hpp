@@ -215,4 +215,30 @@ namespace gbh
         out.resize(got > 0 ? static_cast<size_t>(got) : 0);
         return out;
     }
+
+    // ---- the block appended after file_read; every wrapper answers as if unsupported on an older framework ----
+    inline bool has_services() { return gbh_api_has(api(), on_char); }
+
+    // ---- services: publish a table of your own, or find another mod's. A found table is gated on its size ----
+    inline int service_publish(const char* name, const void* table, uint32_t size)
+    {
+        return has_services() ? api()->service_publish(name, table, size) : GBH_ERR_UNSUPPORTED;
+    }
+    template <typename T>
+    inline const T* service_find(const char* name)
+    {
+        if (!has_services()) return nullptr;
+        uint32_t size = 0;
+        const void* t = api()->service_find(name, &size);
+        return (t && size >= sizeof(uint32_t)) ? static_cast<const T*>(t) : nullptr;
+    }
+
+    // ---- memory ----
+    inline bool mem_read(const void* src, void* dst, size_t n) { return has_services() && api()->mem_read(src, dst, n) == 1; }
+    template <typename T>
+    inline bool read(const void* src, T& out) { return mem_read(src, &out, sizeof(T)); }
+
+    // ---- keys, message thread ----
+    inline Sub on_key(GbhKeyFn fn, void* user = nullptr)   { return has_services() ? Sub(api()->on_key(fn, user)) : Sub(); }
+    inline Sub on_char(GbhCharFn fn, void* user = nullptr) { return has_services() ? Sub(api()->on_char(fn, user)) : Sub(); }
 }

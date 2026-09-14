@@ -135,7 +135,7 @@ A mod that detours an engine function nobody else may touch declares it in the m
 and the claim is checked against every other mod at discovery:
 
 ```cpp
-GBHOOK_PLUGIN_EXCLUSIVE("gb.qol") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
+GBHOOK_PLUGIN_EXCLUSIVE("gb.fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
 ```
 
 Two mods claiming one address: whichever loads first wins, and the other's claim is refused
@@ -265,6 +265,8 @@ if (gbh::registry_find("Egon", egon)) { /* exact match, then substring */ }
 Pointers are live game memory, game thread only, and stale after the next level prepare;
 `generation` says which level they belong to.
 
+`gbh::read<T>(src, out)` is the guarded read for the field a mod reads on its own: `0` on an unmapped or torn pointer, never a crash.
+
 The engine's script-visible methods are in `sdk/include/gb/Generated/GBApi.generated.h`,
 typed C++ wrappers that call each method through the engine's own thunk:
 
@@ -289,6 +291,39 @@ std::vector<unsigned char> bytes = gbh::file_read("world\\duel_arena.dante");
 The file calls go through the engine's own resolution, so a mod's archive and the game's
 answer alike. They run on the engine's main thread only: a command handler, `on_frame` or
 `on_pump`.
+
+### Keys
+
+The game window is subclassed once, by gbhook. A mod that owns a key while some mode is on
+subscribes and answers `1`, which keeps the key from the engine's own handler:
+
+```cpp
+int OnKey(int vk, int down, void*)
+{
+    return g_flying && (vk == 'W' || vk == 'A' || vk == 'S' || vk == 'D') ? 1 : 0;
+}
+gbh::on_key(OnKey).release();     // message thread; the first subscriber answering 1 ends the fan-out
+```
+
+Order is registration order, so a menu that loads first sees a key before a mod that flies.
+`on_char` carries typed characters the same way. Never subclass the window yourself.
+
+### Services
+
+A mod that offers a table to other mods publishes it by name, and a consumer finds it:
+
+```cpp
+struct MyTable { uint32_t struct_size; int (*answer)(void); };
+static const MyTable g_table = { sizeof g_table, Answer };
+gbh::service_publish("gb.mymod.table", &g_table, sizeof g_table);      // once; a second name is refused
+
+const MyTable* t = gbh::service_find<MyTable>("gb.mymod.table");      // null until the publisher has loaded
+```
+
+The table lives for the process and starts with `struct_size`, so a consumer gates on what
+it carries the way `gbh_api_has` does. A consumer loads after its publisher: a later stage,
+or a higher `priority` in the same stage. `mods/gbmenu` is the first: the ImGui overlay, one
+per process, publishing `gb.menu.ui` so every mod's pages share one keyboard and one frame.
 
 ## 4. The native menu
 

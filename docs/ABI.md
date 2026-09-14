@@ -7,7 +7,7 @@ is meant to explain that contract.
 ```
 GbhPluginManifest   exported data, read out of the file before the DLL runs
 GbhPluginInit       exported code, called once at the mod's stage with the table
-GbhApi              52 entries in 16 groups, appended to and never reordered
+GbhApi              60 entries in 19 groups, appended to and never reordered
 ```
 
 ---
@@ -34,7 +34,7 @@ mod's manifest carries it, and a mod naming another build is refused.
 
 ```c
 GBHOOK_PLUGIN("gb.mymod");
-GBHOOK_PLUGIN_EXCLUSIVE("gb.qol") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
+GBHOOK_PLUGIN_EXCLUSIVE("gb.fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
 ```
 
 Exactly one translation unit per DLL. The manifest is exported as `GbhPluginManifest`, a
@@ -224,6 +224,38 @@ activates.
 A negative return is a status. Any thread but the engine's main thread gets
 `GBH_ERR_WRONG_THREAD`: the engine's file tables take no lock.
 
+### Services, any thread
+
+| entry | notes |
+|---|---|
+| `service_publish(name, table, size)` | one publisher per name; a second answers `GBH_ERR_CONFLICT`. The table lives for the process |
+| `service_find(name, &size)` | null until published; `size` is what the publisher stated |
+| `service_count()`, `service_name_at(i)`, `service_owner(name)` | the directory; the owner is the publishing mod's id |
+
+A service is a C struct of function pointers one mod owns and others call, the way this
+table is: its first field is a `uint32_t struct_size`, so a consumer gates on what it carries
+the way `gbh_api_has` does. Name it under the publisher's id, `gb.menu.ui`. A mod that needs
+another's table loads after it: a later stage, or a higher `priority` in the same stage.
+`gbh::service_find<T>(name)` is the typed wrapper.
+
+### Memory, any thread
+
+`mem_read(src, dst, n)` copies out of game memory under a guard: `1` when copied, `0` when
+the range is unmapped or the read faulted. The one primitive behind every "guarded read" a
+mod used to carry itself.
+
+### Keys, message thread
+
+| entry | fires |
+|---|---|
+| `on_key(fn, user)` | every `WM_KEYDOWN` and `WM_KEYUP` on the game window, virtual-key code and direction |
+| `on_char(fn, user)` | every `WM_CHAR`, the typed character |
+
+The game window is subclassed once, by the framework. A subscriber answering `1` keeps the
+message from the engine's own handler, which is what fills its scan-code table, and the
+fan-out stops there; order is registration order, so a menu that loads first sees a key
+before a mod that flies. The mouse is never routed. `input_set_key` is the other direction.
+
 ## 5. The C++ wrapper
 
 `gbhook.hpp` is header-only and compiles into the mod, so it adds nothing to the contract.
@@ -231,5 +263,6 @@ A negative return is a status. Any thread but the engine's main thread gets
 plus three guards that release on scope exit unless told to keep: `gbh::Sub` for a
 subscription, `gbh::Patch` for a byte patch, `gbh::VtableOverride` for a cloned table.
 `gbh::at<T>(rva)` turns a `ghost.exe`-relative offset into a pointer, and `gbh::hook_at`
-hooks one.
+hooks one. `gbh::has_services()` says whether the framework carries the block appended after
+`file_read`; every wrapper for that block answers as unsupported without it.
  
