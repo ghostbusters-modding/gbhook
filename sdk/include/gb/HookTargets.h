@@ -34,7 +34,7 @@ namespace HookTargets
     // The per-frame network pump, CTRINetwork vtable+0x18: the main thread's only per-frame visit at the front end.
     static constexpr uintptr_t pump = 0x3CA3A0;
 
-    // Cold-boot screens. Each returns "screen is done", so a detour returning 0 skips it. mods/QoL claims both.
+    // Cold-boot screens. Each returns "screen is done", so a detour returning 0 skips it. mods/FastBoot claims both.
     static constexpr uintptr_t epilepsyScreen = 0x248190;
     static constexpr uintptr_t legalScreen    = 0x2487E0;
 
