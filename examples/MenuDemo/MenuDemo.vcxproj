@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   A gbhook mod DLL. Everything that matters is in sdk\GbHookPlugin.props; this file names the sources.
-  The built DLL is copied into gbhook\ beside mod.ini, so the folder installs into <gamedir>\mods as it is.
+  The built DLL is copied into gbhook\, so the folder installs into <gamedir>\mods as it is.
 -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
