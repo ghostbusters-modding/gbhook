@@ -49,8 +49,7 @@ namespace
     }
 
     const char* const kKnown[] = {
-        "mod.format", "mod.id", "mod.version", "mod.description", "mod.author",
-        "gbhook.abi", "gbhook.plugin", "gbhook.scripts", "gbhook.content",
+        "gbhook.id", "gbhook.abi", "gbhook.plugin", "gbhook.scripts", "gbhook.content",
         "gbhook.stage", "gbhook.priority", "gbhook.requires", "gbhook.disabled",
     };
 }
@@ -81,12 +80,16 @@ namespace ModIni
     {
         Result r;
         Ini::Document d = Ini::Parse(text);
+        for (const Ini::Entry& e : d.entries)
+            if (e.key.compare(0, 7, "gbhook.") == 0) { r.gbhook = true; break; }
+        if (!r.gbhook) { r.refusal = "previews/modinfo.ini has no [gbhook] section"; return r; }
         if (!d.malformed.empty())
         {
-            r.refusal = Fmt("mod.ini line %d is not key = value", d.malformed[0]);
+            r.refusal = Fmt("modinfo.ini line %d is not key = value", d.malformed[0]);
             return r;
         }
 
+        // Top-level keys, and [General] where QSettings puts them, are the Mod Manager's namespace: only ours are checked.
         for (const Ini::Entry& e : d.entries)
         {
             if (e.key.compare(0, 9, "settings.") == 0)
@@ -96,11 +99,8 @@ namespace ModIni
             }
             bool known = false;
             for (const char* k : kKnown) if (e.key == k) { known = true; break; }
-            if (known) continue;
-            if (e.key.find('.') == std::string::npos)
-                r.warnings.push_back(Fmt("line %d: '%s' is outside a section", e.line, e.key.c_str()));
-            else
-                r.warnings.push_back(Fmt("line %d: unknown key '%s'", e.line, e.key.c_str()));
+            if (known || e.key.find('.') == std::string::npos || e.key.compare(0, 8, "general.") == 0) continue;
+            r.warnings.push_back(Fmt("line %d: unknown key '%s'", e.line, e.key.c_str()));
         }
 
         // An empty value reads as absent, so "id =" is the same mistake as no id line.
@@ -110,23 +110,17 @@ namespace ModIni
             return (v && !v->empty()) ? v : nullptr;
         };
 
-        const std::string* v = get("mod.format");
-        if (!v) { r.refusal = "mod.ini has no format under [mod]"; return r; }
-        if (!StrictInt(*v, &r.mod.format)) { r.refusal = Fmt("mod.ini format '%s' is not a number", v->c_str()); return r; }
-        if (r.mod.format != 1) { r.refusal = Fmt("mod.ini format %d is not one this gbhook reads (1)", r.mod.format); return r; }
-
-        v = get("mod.id");
-        if (!v) { r.refusal = "mod.ini has no id under [mod]"; return r; }
+        const std::string* v = get("gbhook.id");
+        if (!v) { r.refusal = "modinfo.ini has no id under [gbhook]"; return r; }
         if (v->find_first_of(" \t") != std::string::npos) { r.refusal = Fmt("id '%s' contains whitespace", v->c_str()); return r; }
         if (v->size() > 63) { r.refusal = "id is longer than 63 characters"; return r; }
         r.mod.id = *v;
 
-        if ((v = get("mod.version")))     r.mod.version     = *v;
-        if ((v = get("mod.description"))) r.mod.description = *v;
-        if ((v = get("mod.author")))      r.mod.author      = *v;
+        if ((v = get("version"))     || (v = get("general.version")))     r.mod.version     = *v;
+        if ((v = get("description")) || (v = get("general.description"))) r.mod.description = *v;
 
         v = get("gbhook.abi");
-        if (!v) { r.refusal = "mod.ini has no abi under [gbhook]"; return r; }
+        if (!v) { r.refusal = "modinfo.ini has no abi under [gbhook]"; return r; }
         if (!StrictInt(*v, &r.mod.abi)) { r.refusal = Fmt("abi '%s' is not a number (the integer GBHOOK_ABI_VERSION)", v->c_str()); return r; }
         if (r.mod.abi != GBHOOK_ABI_VERSION)
         {

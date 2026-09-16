@@ -1,7 +1,7 @@
 // gbhook: a mod loader for Ghostbusters: The Video Game Remastered
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
-// Suite for format/Ini: the one grammar behind gbhook.ini and mod.ini.
+// Suite for format/Ini: the one grammar behind gbhook.ini and modinfo.ini.
 
 #include "check.h"
 #include "format/Ini.h"
@@ -54,6 +54,22 @@ int main()
         CHECK_EQ(Value(d, "b"), "2");
         CHECK_EQ(d.malformed.size(), (size_t)0);
     }
+
+    // A double-quoted value: quotes dropped, '#' and ';' inside kept, a comment after the closing quote cut.
+    {
+        Ini::Document d = Parse("version=\"1.0.1\"\nd=\"a; b # c\"\ne = \"x\"  ; note\nf=\"\"\ng = \" padded \"\n");
+        CHECK_EQ(d.malformed.size(), (size_t)0);
+        CHECK_EQ(Value(d, "version"), "1.0.1");
+        CHECK_EQ(Value(d, "d"), "a; b # c");
+        CHECK_EQ(Value(d, "e"), "x");
+        CHECK_EQ(Value(d, "f"), "");
+        CHECK_EQ(Value(d, "g"), " padded ");
+    }
+
+    // An unclosed quote is an ordinary value, comment rule and all; a quote later in a value is not special.
+    CHECK_EQ(Value(Parse("a = \"x ; y"), "a"), "\"x");
+    CHECK_EQ(Value(Parse("a = x \"y\" z"), "a"), "x \"y\" z");
+    CHECK_EQ(Parse("# \"quoted\" = comment\n").entries.size(), (size_t)0);
 
     // A section folds into the key as a prefix, trimmed and lowercased.
     {

@@ -48,7 +48,7 @@ int main()
         { "gb.qol", "0.1.0", "QoL", "preboot", State::On, "", "" },
         { "gb.duelarena", "", "DuelArena", "boot", State::On, "", "20 files built and mounted" },
         { "gb.old", "2.0", "Old", "", State::Refused, "plugin 'Old.dll': built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod", "" },
-        { "gb.off", "", "Off", "", State::Off, "disabled in mod.ini", "" },
+        { "gb.off", "", "Off", "", State::Off, "disabled in modinfo.ini", "" },
         { "gb.averyveryveryverylongidentifiername", "1.2.3", "Long", "boot", State::Failed, "GbhPluginInit returned -1", "" },
     };
     h.missingRoots = { "D:\\nope" };

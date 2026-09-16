@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <utility>
 
 namespace
 {
@@ -72,20 +73,17 @@ namespace
         return out;
     }
 
-    ModSet::Candidate Gather(const std::string& root, const std::string& folder)
+    // Reads the DLL named by an already-parsed modinfo.ini. Nothing here runs mod code.
+    ModSet::Candidate Gather(const std::string& root, const std::string& folder, bool hasModInfo, ModIni::Result ini)
     {
         ModSet::Candidate c;
-        c.root   = root;
-        c.folder = folder;
+        c.root       = root;
+        c.folder     = folder;
+        c.hasModInfo = hasModInfo;
+        c.ini        = std::move(ini);
         const std::string gbhook = root + "\\" + folder + "\\gbhook";
-
-        std::string text;
-        c.hasModIni  = ReadWhole(gbhook + "\\mod.ini", text);
-        c.hasModInfo = IsFile(root + "\\" + folder + "\\previews\\modinfo.ini");
-        if (!c.hasModIni) return c;
-
-        c.ini = ModIni::Parse(text);
-        if (!c.ini.refusal.empty() || c.ini.mod.plugin.empty()) return c;
+        c.hasModIni  = IsFile(gbhook + "\\mod.ini");
+        if (!c.hasModInfo || !c.ini.refusal.empty() || c.ini.mod.plugin.empty()) return c;
 
         const std::string dll = gbhook + "\\" + Backslashed(c.ini.mod.plugin);
         if (!IsFile(dll)) { c.binary = ModSet::Binary::Missing; return c; }
@@ -124,8 +122,12 @@ namespace Mods
             Log::Writef("MODS", "root %s", root.c_str());
             for (const std::string& folder : SubDirs(root))
             {
-                if (!IsDir(root + "\\" + folder + "\\gbhook")) { ++assetOnly; continue; }
-                found.push_back(Gather(root, folder));
+                // A [gbhook] section makes the folder ours. A gbhook/ folder without one is judged too, so it can be refused aloud.
+                std::string    text;
+                const bool     hasModInfo = ReadWhole(root + "\\" + folder + "\\previews\\modinfo.ini", text);
+                ModIni::Result ini        = hasModInfo ? ModIni::Parse(text) : ModIni::Result{};
+                if (!ini.gbhook && !IsDir(root + "\\" + folder + "\\gbhook")) { ++assetOnly; continue; }
+                found.push_back(Gather(root, folder, hasModInfo, std::move(ini)));
             }
         }
 
@@ -145,7 +147,7 @@ namespace Mods
             else if (r.disabled)
             {
                 ++off;
-                Log::Writef("MODS", "OFF %s (%s): disabled in mod.ini", r.mod.id.c_str(), r.folder.c_str());
+                Log::Writef("MODS", "OFF %s (%s): disabled in modinfo.ini", r.mod.id.c_str(), r.folder.c_str());
             }
             else
             {
@@ -158,7 +160,7 @@ namespace Mods
         for (const std::string& c : g_result.conflicts)
             Log::Writef("MODS", "CONFLICT %s", c.c_str());
 
-        Log::Writef("MODS", "%d folder(s) with gbhook/, %d accepted, %d off, %d refused, %d asset-only left to the Mod Manager",
+        Log::Writef("MODS", "%d folder(s) with a [gbhook] section, %d accepted, %d off, %d refused, %d asset-only left to the Mod Manager",
                     (int)found.size(), accepted, off, refused, assetOnly);
     }
 

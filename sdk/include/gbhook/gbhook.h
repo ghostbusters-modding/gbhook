@@ -19,7 +19,7 @@ extern "C" {
 #define GBHOOK_TARGET_MD5       "0b89556c07e5b737efe444351227e747"
 #define GBHOOK_TARGET_NAME      "Ghostbusters: TVG Remastered (Steam, x64)"
 
-/* Load stages. A mod names its stage in mod.ini, so these numbers never reach a shipped binary. */
+/* Load stages. A mod names its stage in modinfo.ini, so these numbers never reach a shipped binary. */
 typedef enum GbhStage {
     GBH_STAGE_PREBOOT = 0,   /* before any framework service: the cold-boot screen race */
     GBH_STAGE_EARLY   = 1,   /* core services up, before any level can load */
@@ -56,7 +56,7 @@ typedef enum GbhHookFlags {
 #define GBH_MAX_PATCH_BYTES     64
 
 /* ---------------------------------------------------------------------------
- *  The manifest: what only the binary can assert. Everything else lives in mod.ini.
+ *  The manifest: what only the binary can assert. Everything else lives in previews/modinfo.ini.
  *  Read out of the DLL file without running it, so every field is an inline array.
  * ------------------------------------------------------------------------- */
 #define GBH_MANIFEST_MAGIC      "GBHOOKMF"
@@ -65,8 +65,8 @@ typedef enum GbhHookFlags {
 typedef struct GbhManifest {
     char     magic[9];                            /* GBH_MANIFEST_MAGIC, NUL included */
     uint32_t struct_size;                         /* sizeof(GbhManifest) at build time */
-    uint32_t abi_version;                         /* GBHOOK_ABI_VERSION; cross-checked against mod.ini */
-    char     id[64];                              /* cross-checked against mod.ini */
+    uint32_t abi_version;                         /* GBHOOK_ABI_VERSION; cross-checked against modinfo.ini */
+    char     id[64];                              /* cross-checked against modinfo.ini */
     char     target_md5[40];                      /* GBHOOK_TARGET_MD5 */
     char     exclusive_hooks[GBH_MAX_EXCLUSIVE][64];  /* "ghost+0xHEX", terminated by an empty entry */
 } GbhManifest;

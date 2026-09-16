@@ -29,17 +29,17 @@ namespace
 
     std::string Ini(const char* id, const char* extra = "")
     {
-        return std::string("[mod]\nformat = 1\nid = ") + id + "\n[gbhook]\nabi = 1\n" + extra;
+        return std::string("version=\"1.0\"\n[gbhook]\nid = ") + id + "\nabi = 1\n" + extra;
     }
 
     Candidate Cand(const char* folder, const std::string& ini, Binary binary = Binary::None)
     {
         Candidate c;
-        c.root      = "mods";
-        c.folder    = folder;
-        c.hasModIni = true;
-        c.ini       = ModIni::Parse(ini);
-        c.binary    = binary;
+        c.root       = "mods";
+        c.folder     = folder;
+        c.hasModInfo = true;
+        c.ini        = ModIni::Parse(ini);
+        c.binary     = binary;
         return c;
     }
 
@@ -59,27 +59,43 @@ int main()
         CHECK(r.records[0].accepted);
         CHECK_EQ(r.records[0].order, 0);
         CHECK_EQ(r.records[0].mod.id, "gb.a");
+        CHECK_EQ(r.records[0].mod.version, "1.0");
         CHECK_EQ(r.records[0].refusal, "");
         CHECK_EQ(r.conflicts.size(), (size_t)0);
     }
 
-    // The silent half: gbhook/ without a mod.ini.
+    // The silent half: gbhook/ without a modinfo.ini.
     {
         Candidate c; c.root = "mods"; c.folder = "Half";
         ModSet::Result r = Resolve({ c });
         CHECK(!r.records[0].accepted);
         CHECK_EQ(r.records[0].order, -1);
-        CHECK_EQ(r.records[0].refusal, "gbhook/ has no mod.ini");
+        CHECK_EQ(r.records[0].refusal, "gbhook/ exists but there is no previews/modinfo.ini");
     }
 
-    // A mod.ini refusal and its warnings carry through.
+    // A leftover gbhook/mod.ini is named once, whatever else the folder does.
     {
-        ModSet::Result r = Resolve({ Cand("B", "[mod]\nformat = 1\ncolour = red\n[gbhook]\nabi = 1\n") });
-        CHECK_EQ(r.records[0].refusal, "mod.ini has no id under [mod]");
+        Candidate c = Cand("Old", Ini("gb.old")); c.hasModIni = true;
+        ModSet::Result r = Resolve({ c });
+        CHECK(r.records[0].accepted);
+        CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
+        CHECK_EQ(r.records[0].warnings[0], "gbhook/mod.ini is no longer read: its keys go under [gbhook] in previews/modinfo.ini");
+        Candidate h; h.root = "mods"; h.folder = "Half"; h.hasModIni = true;
+        r = Resolve({ h });
+        CHECK_EQ(r.records[0].refusal, "gbhook/ exists but there is no previews/modinfo.ini");
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
     }
 
-    // The plugin named by mod.ini must exist, be readable, and pass the manifest checks.
+    // A modinfo.ini refusal and its warnings carry through, and so does the manager-only case.
+    {
+        ModSet::Result r = Resolve({ Cand("B", "[gbhook]\ncolour = red\nabi = 1\n") });
+        CHECK_EQ(r.records[0].refusal, "modinfo.ini has no id under [gbhook]");
+        CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
+        r = Resolve({ Cand("M", "version=\"1.0\"\n") });
+        CHECK_EQ(r.records[0].refusal, "previews/modinfo.ini has no [gbhook] section");
+    }
+
+    // The plugin named by modinfo.ini must exist, be readable, and pass the manifest checks.
     {
         ModSet::Result r = Resolve({ Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Missing) });
         CHECK_EQ(r.records[0].refusal, "plugin 'C.dll' is not in gbhook/");
@@ -100,7 +116,7 @@ int main()
         Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Ok);
         c.manifest = Mf("gb.other");
         CHECK_EQ(Resolve({ c }).records[0].refusal,
-                 "mod.ini says id 'gb.c' but C.dll says 'gb.other' -- one was edited after the build");
+                 "modinfo.ini says id 'gb.c' but C.dll says 'gb.other' -- one was edited after the build");
     }
     {
         Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Ok);
@@ -134,7 +150,7 @@ int main()
     }
     {
         ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "requires = gb.b\n")),
-                                     Cand("B", "[mod]\nformat = 1\nid = gb.b\n") });
+                                     Cand("B", "[gbhook]\nid = gb.b\n") });
         CHECK_EQ(Find(r, "A")->refusal, "requires 'gb.b', which was refused");
     }
     {
@@ -184,7 +200,7 @@ int main()
         ModSet::Result r = Resolve({ Cand("Z", Ini("gb.z", "stage = boot\npriority = 50\n")),
                                      Cand("Y", Ini("gb.y", "stage = preboot\npriority = 500\n")),
                                      Cand("X", Ini("gb.x", "stage = boot\npriority = 50\n")),
-                                     Cand("Bad", "[mod]\nformat = 9\n"),
+                                     Cand("Bad", "[gbhook]\nabi = 9\n"),
                                      Cand("W", Ini("gb.w", "stage = ready\n")),
                                      half });
         CHECK_EQ(r.records.size(), (size_t)6);
@@ -195,18 +211,7 @@ int main()
         CHECK_EQ(r.records[3].order, 3);
         CHECK_EQ(r.records[4].folder, "Bad");
         CHECK_EQ(r.records[5].folder, "Half");
-        CHECK_EQ(r.records[5].refusal, "gbhook/ has no mod.ini");
-    }
-
-    // A version stated in mod.ini beside a modinfo.ini is ignored, and says so.
-    {
-        Candidate c = Cand("A", Ini("gb.a", "") );
-        c.ini = ModIni::Parse("[mod]\nformat = 1\nid = gb.a\nversion = 1.0\n[gbhook]\nabi = 1\n");
-        c.hasModInfo = true;
-        ModSet::Result r = Resolve({ c });
-        CHECK(r.records[0].accepted);
-        CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
-        CHECK_EQ(r.records[0].warnings[0], "version in mod.ini is ignored: previews/modinfo.ini states it");
+        CHECK_EQ(r.records[5].refusal, "gbhook/ exists but there is no previews/modinfo.ini");
     }
 
     // disabled = 1: listed as off, never accepted, no refusal text, and judged no further (a missing DLL is fine).
@@ -219,7 +224,7 @@ int main()
         CHECK_EQ(a->order, -1);
         const Record* b = Find(r, "B");
         CHECK(b && !b->accepted && !b->disabled);
-        CHECK_EQ(b->refusal, "requires 'gb.a', which is disabled in its mod.ini");
+        CHECK_EQ(b->refusal, "requires 'gb.a', which is disabled in its modinfo.ini");
     }
 
     return check::Done("modset");

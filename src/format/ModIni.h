@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
-// mod.ini as a record: docs/MOD_FORMAT.md is the format, tests/format/test_modini.cpp is the spec.
+// previews/modinfo.ini as a record: docs/MOD_FORMAT.md is the format, tests/format/test_modini.cpp is the spec.
 
 #include "gbhook/gbhook.h"
 
@@ -14,8 +14,8 @@ namespace ModIni
 {
     struct Mod
     {
-        int         format = 0;
-        std::string id, version, description, author;
+        std::string id;                          // [gbhook] id: the command, settings and log namespace
+        std::string version, description;        // the Mod Manager's own keys, top level and quoted
         int         abi = 0;
         std::string plugin;                      // a DLL under gbhook/, or empty
         std::string scripts;                     // a folder under gbhook/, or empty
@@ -30,7 +30,8 @@ namespace ModIni
     struct Result
     {
         Mod                      mod;
-        std::string              refusal;    // the first thing wrong, or empty
+        bool                     gbhook = false;   // a [gbhook] section exists; without one the folder is the Mod Manager's alone
+        std::string              refusal;          // the first thing wrong, or empty
         std::vector<std::string> warnings;
     };
 

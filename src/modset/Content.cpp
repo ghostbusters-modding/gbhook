@@ -25,7 +25,7 @@ namespace Content
 
         if (in.loose.empty()) { v.action = Action::Skip; v.reason = "no loose content"; return v; }
 
-        if (in.manualDisabled) { v.action = Action::Disabled; v.reason = "disabled in mod.ini"; return v; }
+        if (in.manualDisabled) { v.action = Action::Disabled; v.reason = "disabled in modinfo.ini"; return v; }
 
         if (in.chainPaths && !in.chainPaths->empty())
         {

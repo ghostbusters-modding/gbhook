@@ -43,7 +43,7 @@ namespace
             m.folder  = r.folder;
             m.stage   = ModIni::StageName(r.mod.stage);
             m.state   = StateOf(r, s);
-            m.note    = r.disabled ? "disabled in mod.ini" : (!r.accepted ? r.refusal : (s ? s->note : ""));
+            m.note    = r.disabled ? "disabled in modinfo.ini" : (!r.accepted ? r.refusal : (s ? s->note : ""));
             m.content = r.mod.id.empty() ? "" : ContentBuild::Summary(r.mod.id.c_str());
             g_mods.push_back(m);
         }

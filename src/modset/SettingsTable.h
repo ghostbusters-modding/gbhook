@@ -24,7 +24,7 @@ namespace SettingsTable
     struct Table
     {
         std::unordered_map<std::string, std::string> ini;        // gbhook.ini, keys lowered, last write wins
-        std::unordered_map<std::string, std::string> defaults;   // "<id>.<key>" lowered, from mod.ini
+        std::unordered_map<std::string, std::string> defaults;   // "<id>.<key>" lowered, from modinfo.ini
         std::vector<std::string>                     warnings;
     };
 

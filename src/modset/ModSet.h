@@ -15,14 +15,14 @@ namespace ModSet
 {
     enum class Binary { None, Missing, Unreadable, Ok };
 
-    // What discovery gathered for one folder carrying gbhook/, before any judgement.
+    // What discovery gathered for one folder that is gbhook's to judge: a [gbhook] section, or a gbhook/ folder.
     struct Candidate
     {
         std::string    root;
         std::string    folder;        // the mod folder name, the Mod Manager's key
-        bool           hasModIni  = false;
+        bool           hasModInfo = false;   // previews/modinfo.ini was read
         ModIni::Result ini;
-        bool           hasModInfo = false;   // previews/modinfo.ini exists
+        bool           hasModIni  = false;   // a gbhook/mod.ini left over from before the keys moved
         Binary         binary     = Binary::None;
         std::string    binaryWhy;            // Unreadable: the reason the export walk gave
         GbhManifest    manifest{};           // Ok: the bytes read out of the DLL
@@ -34,7 +34,7 @@ namespace ModSet
         ModIni::Mod              mod;
         std::vector<std::string> exclusiveHooks;   // from the manifest
         bool                     accepted = false;
-        bool                     disabled = false;   // mod.ini disabled = 1: listed, never loaded, no content
+        bool                     disabled = false;   // disabled = 1: listed, never loaded, no content
         int                      order    = -1;      // position in the code order, accepted only
         std::string              refusal;
         std::vector<std::string> warnings;

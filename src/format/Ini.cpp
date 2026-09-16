@@ -39,7 +39,20 @@ namespace Ini
             pos = nl == npos ? text.size() + 1 : nl + 1;
             ++line;
 
-            size_t cut = s.find_first_of("#;");
+            // A double-quoted value keeps its '#' and ';' and loses the quotes: the Mod Manager writes modinfo.ini that way.
+            size_t      cut = s.find_first_of("#;");
+            size_t      eq  = s.find('=');
+            std::string quoted;
+            bool        isQuoted = false;
+            if (eq != npos && (cut == npos || cut > eq))
+            {
+                size_t open = s.find_first_not_of(" \t", eq + 1);
+                if (open != npos && s[open] == '"')
+                {
+                    size_t close = s.find('"', open + 1);
+                    if (close != npos) { quoted = s.substr(open + 1, close - open - 1); isQuoted = true; cut = close + 1; }
+                }
+            }
             if (cut != npos) s.erase(cut);
             s = Trim(s);
             if (s.empty()) continue;
@@ -51,14 +64,14 @@ namespace Ini
                 continue;
             }
 
-            size_t eq = s.find('=');
+            eq = s.find('=');
             if (eq == npos) { doc.malformed.push_back(line); continue; }
 
             std::string key = Lower(Trim(s.substr(0, eq)));
             if (key.empty()) { doc.malformed.push_back(line); continue; }
             if (!section.empty()) key = section + "." + key;
 
-            doc.entries.push_back({ key, Trim(s.substr(eq + 1)), line });
+            doc.entries.push_back({ key, isQuoted ? quoted : Trim(s.substr(eq + 1)), line });
         }
         return doc;
     }

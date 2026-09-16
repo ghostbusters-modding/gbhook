@@ -43,7 +43,7 @@ namespace
         a->free(p);
 
         gbh::logf("TEST", "setting greeting = \"%s\"", gbh::setting("greeting", "?").c_str());
-        Check(gbh::setting("greeting", "?") != "?", "setting reads the mod.ini default");
+        Check(gbh::setting("greeting", "?") != "?", "setting reads the modinfo.ini default");
         Check(gbh::setting("nonexistent", "dflt") == "dflt", "setting falls back to the caller's default");
         Check(gbh::setting_int("nonexistent", 42) == 42 && gbh::setting_bool("nonexistent", true), "typed defaults");
 

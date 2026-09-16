@@ -11,7 +11,7 @@
 
 namespace Host
 {
-    enum class State { Pending, Loaded, NoCode, Off, Failed };   // Off: disabled in mod.ini, listed and never loaded
+    enum class State { Pending, Loaded, NoCode, Off, Failed };   // Off: disabled in modinfo.ini, listed and never loaded
 
     struct Status
     {

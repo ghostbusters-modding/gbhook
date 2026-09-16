@@ -74,7 +74,7 @@ namespace Settings
 
         *g_table = SettingsTable::Build(*g_doc, defaults);
         for (const std::string& w : g_table->warnings) Log::Writef("INI", "warning %s", w.c_str());
-        Log::Writef("INI", "%d mod default(s) from %d mod.ini [settings] block(s)",
+        Log::Writef("INI", "%d mod default(s) from %d modinfo.ini [settings] block(s)",
                     (int)g_table->defaults.size(), (int)defaults.size());
     }
 

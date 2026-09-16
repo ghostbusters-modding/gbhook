@@ -28,13 +28,15 @@ namespace
         r.root   = c.root;
         r.folder = c.folder;
 
-        if (!c.hasModIni) { r.refusal = "gbhook/ has no mod.ini"; return r; }
+        if (c.hasModIni)
+            r.warnings.push_back("gbhook/mod.ini is no longer read: its keys go under [gbhook] in previews/modinfo.ini");
+        if (!c.hasModInfo) { r.refusal = "gbhook/ exists but there is no previews/modinfo.ini"; return r; }
 
-        r.mod      = c.ini.mod;
-        r.warnings = c.ini.warnings;
+        r.mod = c.ini.mod;
+        r.warnings.insert(r.warnings.end(), c.ini.warnings.begin(), c.ini.warnings.end());
         if (!c.ini.refusal.empty()) { r.refusal = c.ini.refusal; return r; }
 
-        // Off in mod.ini: listed, never loaded, no content. Judged no further, so a missing DLL does not matter.
+        // Off in modinfo.ini: listed, never loaded, no content. Judged no further, so a missing DLL does not matter.
         if (r.mod.disabled) { r.disabled = true; return r; }
 
         if (!r.mod.plugin.empty())
@@ -55,20 +57,17 @@ namespace
             const std::string mid = Manifest::Field(c.manifest.id, sizeof c.manifest.id);
             if (mid != r.mod.id)
             {
-                r.refusal = "mod.ini says id '" + r.mod.id + "' but " + p + " says '" + mid + "' -- one was edited after the build";
+                r.refusal = "modinfo.ini says id '" + r.mod.id + "' but " + p + " says '" + mid + "' -- one was edited after the build";
                 return r;
             }
             if ((int)c.manifest.abi_version != r.mod.abi)
             {
-                r.refusal = "mod.ini says abi " + std::to_string(r.mod.abi) + " but " + p + " says " +
+                r.refusal = "modinfo.ini says abi " + std::to_string(r.mod.abi) + " but " + p + " says " +
                             std::to_string(c.manifest.abi_version) + " -- one was edited after the build";
                 return r;
             }
             r.exclusiveHooks = Manifest::ExclusiveHooks(c.manifest);
         }
-
-        if (c.hasModInfo && !r.mod.version.empty())
-            r.warnings.push_back("version in mod.ini is ignored: previews/modinfo.ini states it");
 
         r.accepted = true;
         return r;
@@ -110,7 +109,7 @@ namespace ModSet
                     if (present) continue;
                     r.accepted = false;
                     r.refusal  = "requires '" + need + "', which " +
-                                 (off ? "is disabled in its mod.ini" : refused ? "was refused" : "is not present");
+                                 (off ? "is disabled in its modinfo.ini" : refused ? "was refused" : "is not present");
                     changed    = true;
                     break;
                 }
