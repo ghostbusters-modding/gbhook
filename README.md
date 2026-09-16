@@ -77,7 +77,7 @@ gb.mymod.mycommand = 0         ; a mod's setting, under its id; the mod's own de
 
 ## Writing a mod
 
-A content mod is a folder of loose assets and a three-line `mod.ini`. A code mod adds a DLL
+A content mod is a folder of loose assets and a `[gbhook]` section in its `modinfo.ini`. A code mod adds a DLL
 built against `sdk/include/gbhook/gbhook.h`.
 
 ```cpp
@@ -107,7 +107,7 @@ Visual Studio 2022 or later with the C++ workload, or the Build Tools alone.
 MSBuild.exe GbHook.vcxproj -p:Configuration=Release -p:Platform=x64
                                         # -> build/x64/Release/dinput8.dll
 MSBuild.exe examples/MyMod/MyMod.vcxproj -p:Configuration=Release -p:Platform=x64
-                                        # a mod; the DLL lands beside its mod.ini
+                                        # a mod; the DLL lands in its gbhook/ folder
 ```
 
 The pure packages build and test anywhere with g++, and the Windows half links under mingw
@@ -139,7 +139,7 @@ third_party/minhook/    the one MinHook in the process
 
 | | |
 |---|---|
-| [docs/MOD_FORMAT.md](docs/MOD_FORMAT.md) | the folder, `mod.ini`, ids, load order, settings |
+| [docs/MOD_FORMAT.md](docs/MOD_FORMAT.md) | the folder, `modinfo.ini`, ids, load order, settings |
 | [docs/MODDING_GUIDE.md](docs/MODDING_GUIDE.md) | a content mod, then a code mod, then the menu |
 | [docs/ABI.md](docs/ABI.md) | the C ABI: versioning, threads, memory, every entry |
 

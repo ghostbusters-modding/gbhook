@@ -40,7 +40,7 @@ GBHOOK_PLUGIN_EXCLUSIVE("gb.fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" 
 Exactly one translation unit per DLL. The manifest is exported as `GbhPluginManifest`, a
 `GbhManifest` with inline arrays so it can be read from the file by walking the export
 directory, with no code executed. It states what only the binary can assert: `id` and
-`abi_version`, both cross-checked against `mod.ini`; the target md5; and up to sixteen
+`abi_version`, both cross-checked against `modinfo.ini`; the target md5; and up to sixteen
 exclusive hook claims as `"ghost+0xHEX"` strings, terminated by an empty one.
 
 ## 3. Rules

@@ -1,7 +1,7 @@
 # Modding guide
 
-Two kinds of mod, one folder format. A content mod is loose assets and a `mod.ini`. A code
-mod adds a DLL on gbhook's C ABI. Both live at `<gamedir>/mods/<name>/`, and
+Two kinds of mod, one folder format. A content mod is loose assets and a `modinfo.ini`. A
+code mod adds a DLL on gbhook's C ABI. Both live at `<gamedir>/mods/<name>/`, and
 [MOD_FORMAT.md](MOD_FORMAT.md) is the reference for the folder and the ini.
 
 ```
@@ -18,8 +18,7 @@ mod adds a DLL on gbhook's C ABI. Both live at `<gamedir>/mods/<name>/`, and
 
 ```
 mods/DuelArena/
-├── previews/modinfo.ini          the Mod Manager's metadata
-├── gbhook/mod.ini
+├── previews/modinfo.ini          the Mod Manager's metadata, and gbhook's section
 ├── world/duel_arena.lvl          the level
 ├── world/duel_arena.dante        its script
 ├── world/en/duel_arena.txt       its text
@@ -29,14 +28,16 @@ mods/DuelArena/
 ```
 
 ```ini
-# gbhook/mod.ini
-[mod]
-format = 1
-id     = gb.duelarena
+# previews/modinfo.ini
+version="1.0.1"
+compatibility="PC"
+description="Duel Arena -- a bare 200x200ft test range for 1-on-1 play."
+link=""
 
 [gbhook]
-abi    = 1
-stage  = boot
+id    = gb.duelarena
+abi   = 1
+stage = boot
 ```
 
 That is the whole mod. At boot gbhook hashes the tree, builds it into
@@ -74,20 +75,21 @@ extern "C" GBHOOK_EXPORT int GbhPluginInit(const GbhApi* api)
 ```
 
 ```ini
-# gbhook/mod.ini
-[mod]
-format  = 1
-id      = gb.mymod
-version = 0.1.0
+# previews/modinfo.ini
+version="0.1.0"
+compatibility="PC"
+description="A small example mod."
+link=""
 
 [gbhook]
-abi     = 1
-plugin  = MyMod.dll
-stage   = boot
+id     = gb.mymod
+abi    = 1
+plugin = MyMod.dll
+stage  = boot
 ```
 
 `GBHOOK_PLUGIN` places the manifest in the DLL as exported data. gbhook reads it out of the
-file without running the DLL and checks the id against `mod.ini`, the ABI version, and the
+file without running the DLL and checks the id against `modinfo.ini`, the ABI version, and the
 target `ghost.exe` md5 before anything is loaded. Do no work in `DllMain`: it runs under the
 loader lock, before the framework can talk to you. `GbhPluginInit` is the entry point, and
 anything but `GBH_OK` leaves the mod inert.
@@ -111,12 +113,12 @@ MSBuild.exe MyMod.vcxproj -p:Configuration=Release -p:Platform=x64
 The props file sets C++20, the include paths, and the static CRT. The static CRT is not a
 style choice: every module owns its own heap, so nothing may be allocated on one side of
 the ABI and freed on the other. The table's `alloc`, `realloc` and `free` exist for the
-few buffers that do cross. A post-build step copies the DLL beside `mod.ini`, so the mod
+few buffers that do cross. A post-build step copies the DLL into `gbhook/`, so the mod
 folder installs as it is.
 
 ### Stages
 
-`stage` in `mod.ini` says when `GbhPluginInit` runs. Within a stage, `priority` orders,
+`stage` in `modinfo.ini` says when `GbhPluginInit` runs. Within a stage, `priority` orders,
 low first.
 
 | stage | when | for |
@@ -163,8 +165,8 @@ const auto  font = gbh::setting("overlay.font", "");
 ```
 
 Keys are read as `gb.mymod.<key>` from `gbhook.ini`, then from the mod's own `[settings]`
-block, then the default given. A mod ships its defaults in `mod.ini` and the user overrides
-them in `gbhook.ini`.
+block, then the default given. A mod ships its defaults in `modinfo.ini` and the user
+overrides them in `gbhook.ini`.
 
 ### Commands
 

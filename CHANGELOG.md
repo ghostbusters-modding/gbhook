@@ -5,6 +5,12 @@ section 1 says when it would not.
 
 ## 0.2.0 (2026-09-13)
 
+- The mod format: `gbhook/mod.ini` is gone. Its keys live in a `[gbhook]` section of the
+  Mod Manager's `previews/modinfo.ini`, `format` and `author` dropped, `version` and
+  `description` read from the manager's own keys. `gbhook/` holds the DLL and nothing else.
+  A folder is gbhook's when its `modinfo.ini` has the section; a leftover `mod.ini` is
+  named in the log and not read.
+- The ini grammar takes double-quoted values, `#` and `;` inside them included.
 - `actor_snapshot`, `actor_find`, `actor_is_a`: the engine's own actor list, the spawn pool
   included, with the class read out of the RTTI. `actors [filter]` and `actor <name>` in
   `gbhook.cmd`.

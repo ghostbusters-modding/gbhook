@@ -4,33 +4,31 @@ A mod is one folder carrying assets, code and metadata together. It installs by 
 copied into `<gamedir>/mods/` and uninstalls by being deleted.
 
 The format is a superset of the **Ghostbusters Mod Manager's**. An asset-only mod is the
-same folder under both tools, and a mod with a `gbhook/` half still deploys its assets
-through the manager, which never looks inside `gbhook/`.
+same folder under both tools. A gbhook mod adds a `[gbhook]` section to the manager's own
+`previews/modinfo.ini`, and the manager deploys its assets as before.
 
 ## 1. The folder
 
 ```
 My_Mod_v0.1.0/                    release wrapper, "<mod name>_v<version>", for the upload
 ├── my_mod/                       the mod folder: this is what gets installed
-│   ├── previews/                 the Mod Manager's, untouched
-│   │   ├── modinfo.ini
+│   ├── previews/
+│   │   ├── modinfo.ini           the Mod Manager's keys, then gbhook's sections
 │   │   └── preview_01.png
 │   ├── art/  data/  world/       loose assets, mirroring the game's archive tree
 │   │   sets/  models/ ...
-│   └── gbhook/                   gbhook's half
-│       ├── mod.ini               required if this folder exists
-│       └── MyMod.dll             optional code
+│   └── gbhook/                   the DLL, if there is one, and nothing else
+│       └── MyMod.dll
 └── README.txt
 ```
 
-Installed, the mod lives at `<gamedir>/mods/my_mod/`. A code-only mod is the same format
-with everything optional removed:
+Installed, the mod lives at `<gamedir>/mods/my_mod/`. A content-only mod has no `gbhook/`
+folder at all. A code-only mod is the same format with everything optional removed:
 
 ```
 my_tool/
-└── gbhook/
-    ├── mod.ini
-    └── MyTool.dll
+├── previews/modinfo.ini
+└── gbhook/MyTool.dll
 ```
 
 ## 2. Two identifiers
@@ -38,22 +36,25 @@ my_tool/
 | tool | key | form |
 |---|---|---|
 | the Mod Manager | the folder name | `my_mod`, lowercase, fixed once published |
-| gbhook | `id` in `mod.ini` | `gb.mymod`; also the command, settings and log namespace |
+| gbhook | `id` under `[gbhook]` in `modinfo.ini` | `gb.mymod`; also the command, settings and log namespace |
 
-## 3. `gbhook/mod.ini`
+## 3. `previews/modinfo.ini`
 
-Required whenever `gbhook/` exists. Flat `key = value` inside sections. A `#` or `;`
-starts a comment, mid-line too, so a value can never contain either. Lists are
+One file, two owners. The top-level keys are the Mod Manager's, written the way it writes
+them, in double quotes. Below them, a `[gbhook]` section makes the folder a gbhook mod. A
+`#` or `;` starts a comment, mid-line too, except inside a double-quoted value. Lists are
 comma-separated. The same parser reads `gbhook.ini`.
 
 ```ini
-[mod]
-format      = 1
-id          = gb.mymod
+version="0.1.0"
+compatibility="PC"
+description="What the mod is, for the manager's listing."
+link=""
 
 [gbhook]
+id          = gb.mymod
 abi         = 1
-plugin      = MyMod.dll     ; a DLL beside this file, or leave the key out
+plugin      = MyMod.dll           ; a DLL under gbhook/, or leave the key out
 stage       = boot                ; preboot | early | boot | ready
 priority    = 100                 ; within a stage, low runs first
 ;requires   = gb.othermod         ; mod ids that must be present and loaded
@@ -65,9 +66,8 @@ spawn_rate  = 4                   ; this mod's defaults, in its own namespace
 
 | key | meaning |
 |---|---|
-| `format` | the version of this document the mod was written against. An unknown format refuses the mod whole. |
+| `version`, `compatibility`, `description`, `link` | the manager's, top level. gbhook reads `version` and `description` and never judges the rest. |
 | `id` | unique across every root. The namespace for commands, settings and log lines. |
-| `version`, `description`, `author` | code-only mods only: a mod with `previews/modinfo.ini` states them there, and a `version` here is then ignored with a log line saying so. |
 | `abi` | `GBHOOK_ABI_VERSION` from `gbhook.h`. Cross-checked against the DLL's manifest. |
 | `plugin` | a DLL under `gbhook/`, or absent. |
 | `stage` | when the DLL's init runs. Names, never numbers: a number baked into a shipped mod is what forced an ABI break the last time a stage was inserted. |
@@ -78,26 +78,35 @@ spawn_rate  = 4                   ; this mod's defaults, in its own namespace
 
 Two keys are parsed and reserved: `content`, a list of prebuilt archives under `gbhook/`,
 is reported when two mods name the same archive but is not mounted; `scripts` is not read.
-Neither belongs in a shipped `mod.ini` yet.
+Neither belongs in a shipped `modinfo.ini` yet.
 
 ## 4. Which file owns what
 
 | file | owns | required |
 |---|---|---|
-| `previews/modinfo.ini` | human metadata: `version`, `compatibility`, `description`, `link` | any mod shipping assets |
-| `gbhook/mod.ini` | loading facts: what exists, what to load, in what order, with what defaults | when `gbhook/` exists |
+| `previews/modinfo.ini`, top level | human metadata: `version`, `compatibility`, `description`, `link` | every mod |
+| `previews/modinfo.ini`, `[gbhook]` and `[settings]` | loading facts: what exists, what to load, in what order, with what defaults | to be a gbhook mod at all |
 | the DLL's manifest | what only the binary can assert: `id`, `abi`, the target `ghost.exe` md5, exclusive hook claims | when a DLL exists |
 
-A mod shipping assets needs `modinfo.ini` because the Mod Manager requires it, since its
-v7.0.0. A code-only mod has no `previews/` folder at all and states its version in `[mod]`.
+Every mod needs `modinfo.ini` because the Mod Manager requires it, since its v7.0.0. A
+code-only mod carries one too. The manager lists it, and its deploy refuses it as "not
+valid" because no asset folder exists, then deploys the rest. That line in its log is the
+expected outcome, not a fault.
 
-gbhook reads `modinfo.ini` and never writes it, and no gbhook key goes in it. The manager
-rewrites that file on a user action, through Qt's `QSettings`: comments stripped, keys
-reordered, values re-quoted. Thus we cannot use that to store information.
+gbhook reads `modinfo.ini` and never writes it. The manager reads its own keys and leaves
+the file as authored, so a `[gbhook]` section survives a deploy byte for byte. Its one
+write is the modder-only Force Compatibility action, through `QSettings`: keys reordered,
+comments dropped, the top-level keys moved under `[General]`, and gbhook reads that too.
 
-`id` and `abi` are stated twice on purpose, in `mod.ini` and in the manifest. The ini is
+The manager packs everything but `previews/` into `MODS.POD`, `gbhook/` included. That
+costs the DLL's size in the archive and nothing else: the engine never asks for that path.
+
+`id` and `abi` are stated twice on purpose, in `modinfo.ini` and in the manifest. The ini is
 hand-editable and the DLL is not, so a mismatch means one was edited after the build, and
 the mod is refused with both values in the log.
+
+A `gbhook/mod.ini` from before the keys moved is not read. gbhook names it in the log and
+otherwise ignores it.
 
 ## 5. Content
 
@@ -155,7 +164,7 @@ A mod's `[settings]` block supplies defaults, keyed as the mod reads them. `gbho
 overrides them under the mod's id, so a mod works out of the box and the user's edit wins:
 
 ```ini
-# mods/harbor_docks/gbhook/mod.ini
+# mods/harbor_docks/previews/modinfo.ini
 [settings]
 spawn_rate = 4
 
@@ -171,9 +180,10 @@ mod's page under View Mods. The reasons:
 
 | reason | fix |
 |---|---|
-| `gbhook/ has no mod.ini` | add one |
-| `mod.ini says abi N` | rebuild against this gbhook, or set `abi` to match |
-| `mod.ini says id 'x'` | the DLL's manifest says another; make them agree |
+| `gbhook/ exists but there is no previews/modinfo.ini` | add one, with a `[gbhook]` section |
+| `previews/modinfo.ini has no [gbhook] section` | add the section; without it the folder is the manager's alone |
+| `modinfo.ini says abi N` | rebuild against this gbhook, or set `abi` to match |
+| `modinfo.ini says id 'x'` | the DLL's manifest says another; make them agree |
 | `duplicate id` | two folders claim one id |
 | `requires 'x'` | the named mod is absent or refused |
 | `plugin 'x'` | the DLL is missing, or its manifest is bad or for another game build |
