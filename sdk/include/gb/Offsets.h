@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
 // Script-native and object addresses in ghost.exe 0b89556c07e5b737efe444351227e747, ghost-relative. Most are
-// Malte0641's hand-reversed table. Detour sites are in HookTargets.h, data globals in Globals.h.
 
 #include <cstdint>
 

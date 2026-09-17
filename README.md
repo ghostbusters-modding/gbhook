@@ -146,6 +146,6 @@ third_party/minhook/    the one MinHook in the process
 ## Special Thanks
 
 - **sakis720**: creator of ImmortalPatch and IE17; tester and contributor of knowledge.
-- **Malte0641**: creator of termpod; cool modder.
+- **Malte0621**: creator of termpod; cool modder.
 - **KeyofBlueS**: creator of Ghostbusters Mod Manager; cool modder.
 - [MinHook](https://github.com/TsudaKageyu/minhook), Tsuda Kageyu, BSD-2
