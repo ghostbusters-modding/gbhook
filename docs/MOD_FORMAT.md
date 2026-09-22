@@ -142,9 +142,12 @@ The archive is written under a `.tmp` name and renamed once complete. A cached a
 header is checked against its size before it is trusted. A build cut short therefore leaves
 nothing behind but the log line saying it is being rebuilt.
 
-The archive is mounted with the engine's own mount call at revision 1: above the game's bulk
-archives, below a Mod Manager `PATCH.POD` chain, so a mod already deployed through the
-manager is left to it.
+The build runs on its own thread, and each archive is mounted from the front end the moment
+it is ready. A mod that needs rebuilding is late for that mod alone. The framework, the Mods
+row and the INSERT menu never wait on it, and until its archive lands a level of that mod is
+absent from Load Level ▸ Custom. The archive is mounted with the engine's own mount call at
+revision 1: above the game's bulk archives, below a Mod Manager `PATCH.POD` chain, so a mod
+already deployed through the manager is left to it.
 
 What a mod ships this way: levels (`world\<stem>.lvl`, its `.dante` script, its text), sets,
 models, textures, character definitions. A `world\*.lvl` appears under Load Level ▸ Custom

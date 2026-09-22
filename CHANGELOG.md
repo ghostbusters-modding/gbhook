@@ -12,6 +12,9 @@ section 1 says when it would not.
 - A cache POD is written under `.tmp` and renamed when complete, and its header is checked
   against the file before it is mounted. A build cut short used to leave an archive the
   engine refused as corrupt on every later boot.
+- The content build runs on its own thread and each archive is mounted as soon as it is
+  ready. The stages, the Mods row and the INSERT menu used to wait behind the whole build, so
+  a boot that rebuilt several mods looked like gbhook not loading at all.
 - A level loaded from the front end (the Mods page, `level` at the title, `level_chain`) is
   now handed to the menu loop as its own "load pending" action instead of being run from
   the pump. The engine tears the level down and re-arms the title itself when the level

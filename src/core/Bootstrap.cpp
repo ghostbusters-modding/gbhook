@@ -49,20 +49,15 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     Mods::Scan();
     Settings::Attach(Mods::Result());
 
-    // PREBOOT straight after the scan: its one job is beating the engine's boot screens, and the build below takes time.
+    // PREBOOT straight after the scan: its one job is beating the engine's boot screens.
     Framework::NoteStage(GBH_STAGE_PREBOOT);
     Host::Init(GBH_STAGE_PREBOOT);
 
-    // Build each mod's loose tree into a cached POD and decide what to mount.
-    ContentBuild::Build();
-
-    // The mount needs the engine's pod object, so it is parked on the pump and runs from the first front-end ticks.
+    // The pump first, then the content build on its own thread
     Pump::Install();
-    if (!ContentBuild::Plans().empty())
-        Pump::Park([](void*) { return ContentBuild::Mount(); }, nullptr, "content mount");
+    ContentBuild::Start();
 
-    // The other contended detours, hooked once and fanned out. Before EARLY, so a mod may subscribe from its init.
-    // The buses exist before any detour can fire one: a bus that waits for its first subscriber has no lock yet.
+    // The other contended detours
     Events::Init();
     FrameHook::Install();
     VmHook::Install();

@@ -7,7 +7,9 @@
 #include "modset/Content.h"
 #include "pod/Pod.h"
 #include "pod/TreeHash.h"
+#include "services/FrameHook.h"
 #include "services/Pods.h"
+#include "services/Pump.h"
 
 #include <windows.h>
 #include <cctype>
@@ -19,10 +21,108 @@
 
 namespace
 {
-    std::vector<ContentBuild::Planned> g_planned;
+    struct Planned
+    {
+        std::string id;
+        std::string cachePod;   // <gamedir>-relative path to the cache POD, ready for Pods::Mount
+    };
+
+    // Shared between the build thread and the pump: the queue of archives ready to mount, and the summaries.
+    CRITICAL_SECTION g_lock;
+    bool             g_lockReady = false;
+    std::vector<Planned> g_queue;
     std::unordered_map<std::string, std::string> g_summary;
-    bool g_done    = false;
-    bool g_mounted = false;
+    bool          g_parked      = false;   // a mount job is on the pump and will drain the queue
+    volatile LONG g_started     = 0;
+    volatile LONG g_buildDone   = 0;
+    volatile LONG g_allMounted  = 0;
+    int           g_mountOk     = 0;
+    int           g_mountTotal  = 0;
+
+    void EnsureLock()
+    {
+        if (g_lockReady) return;
+        InitializeCriticalSection(&g_lock);
+        g_lockReady = true;
+    }
+
+    void SetSummary(const std::string& id, const std::string& text)
+    {
+        EnterCriticalSection(&g_lock);
+        g_summary[id] = text;
+        LeaveCriticalSection(&g_lock);
+    }
+
+    void AppendSummary(const std::string& id, const std::string& text)
+    {
+        EnterCriticalSection(&g_lock);
+        g_summary[id] += text;
+        LeaveCriticalSection(&g_lock);
+    }
+
+    bool MountJob(void*);
+
+    // Park the mount job unless one is already waiting. Outside g_lock: the pump has a lock of its own.
+    void ParkMount()
+    {
+        bool park = false;
+        EnterCriticalSection(&g_lock);
+        if (!g_parked) { g_parked = true; park = true; }
+        LeaveCriticalSection(&g_lock);
+        if (park && !Pump::Park(&MountJob, nullptr, "content mount"))
+        {
+            EnterCriticalSection(&g_lock);
+            g_parked = false;
+            LeaveCriticalSection(&g_lock);
+        }
+    }
+
+    void Enqueue(const std::string& id, const std::string& cachePod)
+    {
+        EnterCriticalSection(&g_lock);
+        g_queue.push_back({ id, cachePod });
+        LeaveCriticalSection(&g_lock);
+        ParkMount();
+    }
+
+    // Main thread, from the pump. Mounts whatever is queued and return
+    bool MountJob(void*)
+    {
+        if (!Pods::Ready()) return false;
+        if (FrameHook::TickRecently())
+        {
+            EnterCriticalSection(&g_lock);
+            g_parked = false;
+            LeaveCriticalSection(&g_lock);
+            ParkMount();
+            return true;
+        }
+
+        std::vector<Planned> batch;
+        EnterCriticalSection(&g_lock);
+        batch.swap(g_queue);
+        g_parked = false;
+        LeaveCriticalSection(&g_lock);
+
+        for (const Planned& p : batch)
+        {
+            const char* err = nullptr;
+            ++g_mountTotal;
+            if (Pods::Mount(p.cachePod.c_str(), &err)) { ++g_mountOk; AppendSummary(p.id, ", mounted"); }
+            else
+            {
+                Log::Writef("MODS", "content %s: mount FAILED -- %s", p.id.c_str(), err ? err : "no reason given");
+                AppendSummary(p.id, std::string(", mount failed: ") + (err ? err : "no reason given"));
+            }
+        }
+
+        bool finished = false;
+        EnterCriticalSection(&g_lock);
+        if (g_buildDone && g_queue.empty() && !g_allMounted) { g_allMounted = 1; finished = true; }
+        LeaveCriticalSection(&g_lock);
+        if (finished) Log::Writef("MODS", "content: %d of %d archive(s) mounted", g_mountOk, g_mountTotal);
+        return true;
+    }
 
     bool IsDir(const std::string& p)
     {
@@ -222,13 +322,10 @@ namespace
     }
 }
 
-namespace ContentBuild
+namespace
 {
-    const std::vector<Planned>& Build()
+    void Build()
     {
-        if (g_done) return g_planned;
-        g_done = true;
-
         std::vector<std::string> chain;
         ScanChain(chain);
         if (!chain.empty())
@@ -286,7 +383,7 @@ namespace ContentBuild
             case Content::Action::Disabled:
                 ++disabled;
                 Log::Writef("MODS", "content %s: off -- %s", r.mod.id.c_str(), v.reason.c_str());
-                g_summary[r.mod.id] = "off, " + v.reason;
+                SetSummary(r.mod.id, "off, " + v.reason);
                 break;
 
             case Content::Action::MountCached:
@@ -294,8 +391,8 @@ namespace ContentBuild
                 ++cached;
                 const std::string rel = "gbhook\\cache\\" + r.mod.id + "\\" + v.hash + ".POD";
                 Log::Writef("MODS", "content %s: cached, %s", r.mod.id.c_str(), rel.c_str());
-                g_planned.push_back({ r.mod.id, rel });
-                g_summary[r.mod.id] = std::to_string(loose.size()) + " file(s), cached";
+                SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s), cached");
+                Enqueue(r.mod.id, rel);
                 break;
             }
 
@@ -330,14 +427,14 @@ namespace ContentBuild
                 {
                     ++built;
                     Log::Writef("MODS", "content %s: built %d file(s) -> %s", r.mod.id.c_str(), (int)loose.size(), relPod.c_str());
-                    g_planned.push_back({ r.mod.id, relPod });
-                    g_summary[r.mod.id] = std::to_string(loose.size()) + " file(s) built";
+                    SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s) built");
+                    Enqueue(r.mod.id, relPod);
                 }
                 else
                 {
                     DeleteFileA(absTmp.c_str());
                     Log::Writef("MODS", "content %s: build FAILED -- %s", r.mod.id.c_str(), why.c_str());
-                    g_summary[r.mod.id] = "build failed, " + why;
+                    SetSummary(r.mod.id, "build failed, " + why);
                 }
                 break;
             }
@@ -346,36 +443,44 @@ namespace ContentBuild
 
         Log::Writef("MODS", "content: %d built, %d cached, %d disabled, %d without content",
                     built, cached, disabled, skipped);
-        return g_planned;
+
+        // One more visit from the pump, so the tally is printed even when the last mods had nothing to mount.
+        InterlockedExchange(&g_buildDone, 1);
+        ParkMount();
     }
 
-    const std::vector<Planned>& Plans()  { return g_planned; }
+    DWORD WINAPI BuildThread(LPVOID)
+    {
+        Build();
+        return 0;
+    }
+}
 
-    const char* Summary(const char* id)
+namespace ContentBuild
+{
+    void Start()
+    {
+        EnsureLock();
+        if (InterlockedCompareExchange(&g_started, 1, 0) != 0) return;
+
+        HANDLE h = CreateThread(nullptr, 0, BuildThread, nullptr, 0, nullptr);
+        if (h) { CloseHandle(h); return; }
+        Log::Writef("MODS", "content build thread could not start (error %lu); building on the boot thread", GetLastError());
+        Build();
+    }
+
+    bool Done() { return g_allMounted != 0; }
+
+    std::string Summary(const char* id)
     {
         if (!id) return "";
+        EnsureLock();
+        std::string out;
+        EnterCriticalSection(&g_lock);
         auto it = g_summary.find(id);
-        return it == g_summary.end() ? "" : it->second.c_str();
-    }
-
-    bool Mount()
-    {
-        if (g_mounted) return true;
-        if (!Pods::Ready()) return false;
-        g_mounted = true;
-
-        int ok = 0;
-        for (const Planned& p : g_planned)
-        {
-            const char* err = nullptr;
-            if (Pods::Mount(p.cachePod.c_str(), &err)) { ++ok; g_summary[p.id] += ", mounted"; }
-            else
-            {
-                Log::Writef("MODS", "content %s: mount FAILED -- %s", p.id.c_str(), err ? err : "no reason given");
-                g_summary[p.id] += std::string(", mount failed: ") + (err ? err : "no reason given");
-            }
-        }
-        Log::Writef("MODS", "content: %d of %d archive(s) mounted", ok, (int)g_planned.size());
-        return true;
+        if (it != g_summary.end()) out = it->second;
+        else if (!g_buildDone)     out = "building";
+        LeaveCriticalSection(&g_lock);
+        return out;
     }
 }
