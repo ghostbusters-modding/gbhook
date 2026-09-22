@@ -3,6 +3,21 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.2.1 (2026-09-21)
+
+- The content build packs engine content only: a file under one of the twelve asset roots,
+  with one of the twenty-five extensions the retail archives carry. Docs, generators, build
+  output and zips stay out, the log names what was left out, and the hash covers the packed
+  files alone.
+- A cache POD is written under `.tmp` and renamed when complete, and its header is checked
+  against the file before it is mounted. A build cut short used to leave an archive the
+  engine refused as corrupt on every later boot.
+- A level loaded from the front end (the Mods page, `level` at the title, `level_chain`) is
+  now handed to the menu loop as its own "load pending" action instead of being run from
+  the pump. The engine tears the level down and re-arms the title itself when the level
+  ends or the pause menu exits to the main menu. Before, that left a black title screen
+  that Escape had to wake.
+
 ## 0.2.0 (2026-09-13)
 
 - The mod format: `gbhook/mod.ini` is gone. Its keys live in a `[gbhook]` section of the
