@@ -82,7 +82,18 @@ namespace ModIni
         Ini::Document d = Ini::Parse(text);
         for (const Ini::Entry& e : d.entries)
             if (e.key.compare(0, 7, "gbhook.") == 0) { r.gbhook = true; break; }
-        if (!r.gbhook) { r.refusal = "previews/modinfo.ini has no [gbhook] section"; return r; }
+
+        // The manager's own keys are read whatever else the file holds
+        auto manager = [&](const char* key, const char* generalKey) -> std::string
+        {
+            const std::string* v = Ini::Find(d, key);
+            if (!v || v->empty()) v = Ini::Find(d, generalKey);
+            return (v && !v->empty()) ? *v : std::string();
+        };
+        r.mod.version     = manager("version",     "general.version");
+        r.mod.description = manager("description", "general.description");
+        if (!r.gbhook) return r;
+
         if (!d.malformed.empty())
         {
             r.refusal = Fmt("modinfo.ini line %d is not key = value", d.malformed[0]);
@@ -115,9 +126,6 @@ namespace ModIni
         if (v->find_first_of(" \t") != std::string::npos) { r.refusal = Fmt("id '%s' contains whitespace", v->c_str()); return r; }
         if (v->size() > 63) { r.refusal = "id is longer than 63 characters"; return r; }
         r.mod.id = *v;
-
-        if ((v = get("version"))     || (v = get("general.version")))     r.mod.version     = *v;
-        if ((v = get("description")) || (v = get("general.description"))) r.mod.description = *v;
 
         v = get("gbhook.abi");
         if (!v) { r.refusal = "modinfo.ini has no abi under [gbhook]"; return r; }

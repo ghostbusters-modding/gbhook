@@ -2,6 +2,7 @@
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
 #include "Discovery.h"
+#include "modset/Content.h"
 #include "PeFile.h"
 #include "../core/Framework.h"
 #include "format/Ini.h"
@@ -108,7 +109,7 @@ namespace Mods
         g_scanned = true;
 
         std::vector<ModSet::Candidate> found;
-        int assetOnly = 0;
+        int notMods = 0;
 
         for (const std::string& raw : Ini::List(Settings::Get("mods.root", "mods")))
         {
@@ -122,27 +123,38 @@ namespace Mods
             Log::Writef("MODS", "root %s", root.c_str());
             for (const std::string& folder : SubDirs(root))
             {
-                // A [gbhook] section makes the folder ours. A gbhook/ folder without one is judged too, so it can be refused aloud.
+                // Every folder is a mod unless it has none of the three: the manager's file, a gbhook/ half, an asset root.
+                const std::string dir = root + "\\" + folder;
                 std::string    text;
-                const bool     hasModInfo = ReadWhole(root + "\\" + folder + "\\previews\\modinfo.ini", text);
-                ModIni::Result ini        = hasModInfo ? ModIni::Parse(text) : ModIni::Result{};
-                if (!ini.gbhook && !IsDir(root + "\\" + folder + "\\gbhook")) { ++assetOnly; continue; }
-                found.push_back(Gather(root, folder, hasModInfo, std::move(ini)));
+                const bool     hasModInfo   = ReadWhole(dir + "\\previews\\modinfo.ini", text);
+                const bool     hasGbhookDir = IsDir(dir + "\\gbhook");
+                bool           hasAssets    = false;
+                for (const std::string& sub : SubDirs(dir))
+                    if (Content::IsAssetRoot(sub)) { hasAssets = true; break; }
+                if (!hasModInfo && !hasGbhookDir && !hasAssets) { ++notMods; continue; }
+
+                ModIni::Result ini = hasModInfo ? ModIni::Parse(text) : ModIni::Result{};
+                ModSet::Candidate c = Gather(root, folder, hasModInfo, std::move(ini));
+                c.hasGbhookDir = hasGbhookDir;
+                c.hasAssets    = hasAssets;
+                found.push_back(std::move(c));
             }
         }
 
         g_result = ModSet::Resolve(found);
 
-        int accepted = 0, off = 0, refused = 0;
+        int accepted = 0, implicit = 0, off = 0, refused = 0;
         for (const ModSet::Record& r : g_result.records)
         {
             if (r.accepted)
             {
                 ++accepted;
-                Log::Writef("MODS", "%2d. %s %s (%s, priority %d) from %s%s%s",
+                if (r.implicit) ++implicit;
+                Log::Writef("MODS", "%2d. %s %s (%s, priority %d) from %s%s%s%s",
                             r.order + 1, r.mod.id.c_str(), r.mod.version.c_str(),
                             ModIni::StageName(r.mod.stage), r.mod.priority, r.folder.c_str(),
-                            r.mod.plugin.empty() ? "" : ", plugin ", r.mod.plugin.c_str());
+                            r.mod.plugin.empty() ? "" : ", plugin ", r.mod.plugin.c_str(),
+                            r.implicit ? ", no [gbhook] section" : "");
             }
             else if (r.disabled)
             {
@@ -160,8 +172,8 @@ namespace Mods
         for (const std::string& c : g_result.conflicts)
             Log::Writef("MODS", "CONFLICT %s", c.c_str());
 
-        Log::Writef("MODS", "%d folder(s) with a [gbhook] section, %d accepted, %d off, %d refused, %d asset-only left to the Mod Manager",
-                    (int)found.size(), accepted, off, refused, assetOnly);
+        Log::Writef("MODS", "%d mod folder(s), %d accepted (%d without a [gbhook] section), %d off, %d refused, %d folder(s) that are not mods",
+                    (int)found.size(), accepted, implicit, off, refused, notMods);
     }
 
     const ModSet::Result&           Result()       { return g_result; }

@@ -12,6 +12,10 @@ section 1 says when it would not.
 - A cache POD is written under `.tmp` and renamed when complete, and its header is checked
   against the file before it is mounted. A build cut short used to leave an archive the
   engine refused as corrupt on every later boot.
+- A Mod Manager folder with no `[gbhook]` section loads as a content mod under its own
+  folder name, so an existing mod needs no edit. The section is required only for a DLL,
+  or to choose the id, stage and settings. A folder with none of `modinfo.ini`, `gbhook/`
+  or an asset root is not a mod and is counted in the log.
 - The content build runs on its own thread and each archive is mounted as soon as it is
   ready. The stages, the Mods row and the INSERT menu used to wait behind the whole build, so
   a boot that rebuilt several mods looked like gbhook not loading at all.

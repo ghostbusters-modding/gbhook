@@ -68,13 +68,20 @@ int main()
         CHECK_EQ(r.mod.requires_.size(), (size_t)0);
     }
 
-    // No [gbhook] section: the Mod Manager's file alone, and gbhook says so before anything else.
+    // No [gbhook] section: the Mod Manager's file alone. Not a refusal; its version and description still read.
     {
         ModIni::Result r = Parse("version=\"1.0\"\ncompatibility=\"PC\"\ndescription=\"x\"\nlink=\"\"\n");
         CHECK(!r.gbhook);
-        CHECK_EQ(r.refusal, "previews/modinfo.ini has no [gbhook] section");
+        CHECK_EQ(r.refusal, "");
+        CHECK_EQ(r.mod.version, "1.0");
+        CHECK_EQ(r.mod.description, "x");
+        CHECK_EQ(r.mod.id, "");
         CHECK(!Parse("").gbhook);
-        CHECK(!Parse("junk\n[settings]\na = 1\n").gbhook);
+        CHECK_EQ(Parse("").refusal, "");
+        CHECK(!Parse("junk\n[settings]\na = 1\n").gbhook);        // the manager's file is not judged, malformed or not
+        CHECK_EQ(Parse("junk\n[settings]\na = 1\n").refusal, "");
+        CHECK_EQ(Parse("[General]\nversion=\"3.1\"\n").mod.version, "3.1");
+        CHECK_EQ(Parse("version=\"\"\n[General]\nversion=\"3.2\"\n").mod.version, "3.2");   // empty reads as absent
         CHECK(Parse("[GBHook]\nid = gb.x\n").gbhook);
     }
 

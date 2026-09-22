@@ -3,9 +3,10 @@
 A mod is one folder carrying assets, code and metadata together. It installs by being
 copied into `<gamedir>/mods/` and uninstalls by being deleted.
 
-The format is a superset of the **Ghostbusters Mod Manager's**. An asset-only mod is the
-same folder under both tools. A gbhook mod adds a `[gbhook]` section to the manager's own
-`previews/modinfo.ini`, and the manager deploys its assets as before.
+The format is the **Ghostbusters Mod Manager's**. Any folder the manager would deploy loads
+under gbhook as it is, with no edit. A `[gbhook]` section in the manager's own
+`previews/modinfo.ini` is needed only for a DLL, or to choose the id, stage and settings.
+The manager deploys the assets as before either way.
 
 ## 1. The folder
 
@@ -36,13 +37,14 @@ my_tool/
 | tool | key | form |
 |---|---|---|
 | the Mod Manager | the folder name | `my_mod`, lowercase, fixed once published |
-| gbhook | `id` under `[gbhook]` in `modinfo.ini` | `gb.mymod`; also the command, settings and log namespace |
+| gbhook | `id` under `[gbhook]` in `modinfo.ini`, or the folder name lowercased when there is no section | `gb.mymod`; also the command, settings and log namespace |
 
 ## 3. `previews/modinfo.ini`
 
 One file, two owners. The top-level keys are the Mod Manager's, written the way it writes
-them, in double quotes. Below them, a `[gbhook]` section makes the folder a gbhook mod. A
-`#` or `;` starts a comment, mid-line too, except inside a double-quoted value. Lists are
+them, in double quotes. Below them, an optional `[gbhook]` section: required for a DLL, and
+otherwise the folder loads as content under its own name with the defaults below. A `#` or
+`;` starts a comment, mid-line too, except inside a double-quoted value. Lists are
 comma-separated. The same parser reads `gbhook.ini`.
 
 ```ini
@@ -85,11 +87,13 @@ Neither belongs in a shipped `modinfo.ini` yet.
 | file | owns | required |
 |---|---|---|
 | `previews/modinfo.ini`, top level | human metadata: `version`, `compatibility`, `description`, `link` | every mod |
-| `previews/modinfo.ini`, `[gbhook]` and `[settings]` | loading facts: what exists, what to load, in what order, with what defaults | to be a gbhook mod at all |
+| `previews/modinfo.ini`, `[gbhook]` and `[settings]` | loading facts: what exists, what to load, in what order, with what defaults | for a DLL, or to set the id, stage, priority, `requires`, `disabled` or settings |
 | the DLL's manifest | what only the binary can assert: `id`, `abi`, the target `ghost.exe` md5, exclusive hook claims | when a DLL exists |
 
-Every mod needs `modinfo.ini` because the Mod Manager requires it, since its v7.0.0. A
-code-only mod carries one too. The manager lists it, and its deploy refuses it as "not
+A folder under a root is a mod when it has any of the three: the manager's `modinfo.ini`, a
+`gbhook/` half, or one of the engine's asset roots. Anything else is counted in the log and
+left alone. Every published mod needs `modinfo.ini` because the Mod Manager requires it,
+since its v7.0.0. A code-only mod carries one too. The manager lists it, and its deploy refuses it as "not
 valid" because no asset folder exists, then deploys the rest. That line in its log is the
 expected outcome, not a fault.
 
@@ -205,7 +209,7 @@ mod's page under View Mods. The reasons:
 | reason | fix |
 |---|---|
 | `gbhook/ exists but there is no previews/modinfo.ini` | add one, with a `[gbhook]` section |
-| `previews/modinfo.ini has no [gbhook] section` | add the section; without it the folder is the manager's alone |
+| `previews/modinfo.ini has no [gbhook] section` | a `gbhook/` folder exists, so a DLL is meant: add the section. Without `gbhook/` the folder loads as content and nothing is said |
 | `modinfo.ini says abi N` | rebuild against this gbhook, or set `abi` to match |
 | `modinfo.ini says id 'x'` | the DLL's manifest says another; make them agree |
 | `duplicate id` | two folders claim one id |

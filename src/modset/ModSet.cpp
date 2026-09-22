@@ -30,7 +30,24 @@ namespace
 
         if (c.hasModIni)
             r.warnings.push_back("gbhook/mod.ini is no longer read: its keys go under [gbhook] in previews/modinfo.ini");
-        if (!c.hasModInfo) { r.refusal = "gbhook/ exists but there is no previews/modinfo.ini"; return r; }
+
+        // No section: a plain Mod Manager folder, loaded as content under its own name. 
+        if (!c.ini.gbhook)
+        {
+            if (c.hasGbhookDir)
+            {
+                r.refusal = c.hasModInfo ? "previews/modinfo.ini has no [gbhook] section"
+                                         : "gbhook/ exists but there is no previews/modinfo.ini";
+                return r;
+            }
+            if (!c.hasModInfo && !c.hasAssets) { r.refusal = "not a mod: no previews/modinfo.ini and no asset folder"; return r; }
+            r.mod    = c.ini.mod;
+            r.mod.id = Lower(c.folder);
+            for (char& ch : r.mod.id) if (ch == ' ' || ch == '\t') ch = '_';
+            r.implicit = true;
+            r.accepted = true;
+            return r;
+        }
 
         r.mod = c.ini.mod;
         r.warnings.insert(r.warnings.end(), c.ini.warnings.begin(), c.ini.warnings.end());

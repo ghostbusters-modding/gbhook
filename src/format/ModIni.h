@@ -30,7 +30,7 @@ namespace ModIni
     struct Result
     {
         Mod                      mod;
-        bool                     gbhook = false;   // a [gbhook] section exists; without one the folder is the Mod Manager's alone
+        bool                     gbhook = false;   // a [gbhook] section exists; without one only version and description are read
         std::string              refusal;          // the first thing wrong, or empty
         std::vector<std::string> warnings;
     };

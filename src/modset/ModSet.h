@@ -15,12 +15,14 @@ namespace ModSet
 {
     enum class Binary { None, Missing, Unreadable, Ok };
 
-    // What discovery gathered for one folder that is gbhook's to judge: a [gbhook] section, or a gbhook/ folder.
+    // What discovery gathered for one folder under a root. Every folder is judged; the section is optional.
     struct Candidate
     {
         std::string    root;
         std::string    folder;        // the mod folder name, the Mod Manager's key
-        bool           hasModInfo = false;   // previews/modinfo.ini was read
+        bool           hasModInfo  = false;   // previews/modinfo.ini was read
+        bool           hasGbhookDir = false;  // a gbhook/ folder exists, so a DLL is meant and needs its section
+        bool           hasAssets   = false;   // at least one of the engine's asset roots exists
         ModIni::Result ini;
         bool           hasModIni  = false;   // a gbhook/mod.ini left over from before the keys moved
         Binary         binary     = Binary::None;
@@ -34,6 +36,7 @@ namespace ModSet
         ModIni::Mod              mod;
         std::vector<std::string> exclusiveHooks;   // from the manifest
         bool                     accepted = false;
+        bool                     implicit = false;   // no [gbhook] section: a content mod under the folder's own name
         bool                     disabled = false;   // disabled = 1: listed, never loaded, no content
         int                      order    = -1;      // position in the code order, accepted only
         std::string              refusal;

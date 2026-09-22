@@ -66,7 +66,7 @@ int main()
 
     // The silent half: gbhook/ without a modinfo.ini.
     {
-        Candidate c; c.root = "mods"; c.folder = "Half";
+        Candidate c; c.root = "mods"; c.folder = "Half"; c.hasGbhookDir = true;
         ModSet::Result r = Resolve({ c });
         CHECK(!r.records[0].accepted);
         CHECK_EQ(r.records[0].order, -1);
@@ -80,19 +80,67 @@ int main()
         CHECK(r.records[0].accepted);
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
         CHECK_EQ(r.records[0].warnings[0], "gbhook/mod.ini is no longer read: its keys go under [gbhook] in previews/modinfo.ini");
-        Candidate h; h.root = "mods"; h.folder = "Half"; h.hasModIni = true;
+        Candidate h; h.root = "mods"; h.folder = "Half"; h.hasModIni = true; h.hasGbhookDir = true;
         r = Resolve({ h });
         CHECK_EQ(r.records[0].refusal, "gbhook/ exists but there is no previews/modinfo.ini");
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
     }
 
-    // A modinfo.ini refusal and its warnings carry through, and so does the manager-only case.
+    // A modinfo.ini refusal and its warnings carry through.
     {
         ModSet::Result r = Resolve({ Cand("B", "[gbhook]\ncolour = red\nabi = 1\n") });
         CHECK_EQ(r.records[0].refusal, "modinfo.ini has no id under [gbhook]");
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
-        r = Resolve({ Cand("M", "version=\"1.0\"\n") });
+    }
+
+    // A plain Mod Manager folder, no [gbhook] section and no gbhook/: a content mod under the folder's own name.
+    {
+        Candidate m = Cand("My Level", "version=\"1.0\"\ndescription=\"a level\"\n"); m.hasAssets = true;
+        ModSet::Result r = Resolve({ m });
+        const Record& x = r.records[0];
+        CHECK(x.accepted);
+        CHECK(x.implicit);
+        CHECK_EQ(x.refusal, "");
+        CHECK_EQ(x.mod.id, "my_level");
+        CHECK_EQ(x.mod.version, "1.0");
+        CHECK_EQ(x.mod.description, "a level");
+        CHECK_EQ(x.mod.plugin, "");
+        CHECK_EQ((int)x.mod.stage, (int)GBH_STAGE_BOOT);
+        CHECK_EQ(x.mod.priority, 100);
+        CHECK_EQ(x.order, 0);
+
+        // The same with no modinfo.ini at all: the manager would refuse it, gbhook takes the assets.
+        Candidate a; a.root = "mods"; a.folder = "Bare"; a.hasAssets = true;
+        r = Resolve({ a });
+        CHECK(r.records[0].accepted);
+        CHECK(r.records[0].implicit);
+        CHECK_EQ(r.records[0].mod.id, "bare");
+        CHECK_EQ(r.records[0].mod.version, "");
+
+        // A modinfo.ini without the section and without assets is still a mod: the manager lists it, so do we.
+        Candidate e = Cand("Empty", "version=\"2\"\n");
+        r = Resolve({ e });
+        CHECK(r.records[0].accepted);
+
+        // Nothing at all: not a mod.
+        Candidate n; n.root = "mods"; n.folder = "Junk";
+        r = Resolve({ n });
+        CHECK(!r.records[0].accepted);
+        CHECK_EQ(r.records[0].refusal, "not a mod: no previews/modinfo.ini and no asset folder");
+
+        // A gbhook/ folder means a DLL was intended, and that still needs the section.
+        Candidate d = Cand("Dll", "version=\"1.0\"\n"); d.hasGbhookDir = true; d.hasAssets = true;
+        r = Resolve({ d });
+        CHECK(!r.records[0].accepted);
         CHECK_EQ(r.records[0].refusal, "previews/modinfo.ini has no [gbhook] section");
+
+        // An explicit id and a folder-derived one collide like any two ids: the first folder keeps it.
+        Candidate f = Cand("Zed", Ini("harbor")); f.hasAssets = true;
+        Candidate g = Cand("Harbor", "version=\"1.0\"\n"); g.hasAssets = true;
+        r = Resolve({ g, f });
+        CHECK(Find(r, "Harbor")->accepted);
+        CHECK(!Find(r, "Zed")->accepted);
+        CHECK(Find(r, "Zed")->refusal.find("duplicate id 'harbor'") != std::string::npos);
     }
 
     // The plugin named by modinfo.ini must exist, be readable, and pass the manifest checks.
@@ -196,7 +244,7 @@ int main()
 
     // The code order: stage, then priority, then id; refused folders follow in discovery order.
     {
-        Candidate half; half.root = "mods"; half.folder = "Half";
+        Candidate half; half.root = "mods"; half.folder = "Half"; half.hasGbhookDir = true;
         ModSet::Result r = Resolve({ Cand("Z", Ini("gb.z", "stage = boot\npriority = 50\n")),
                                      Cand("Y", Ini("gb.y", "stage = preboot\npriority = 500\n")),
                                      Cand("X", Ini("gb.x", "stage = boot\npriority = 50\n")),
