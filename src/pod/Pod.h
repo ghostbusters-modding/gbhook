@@ -82,4 +82,8 @@ namespace Pod
 
     // Just the chain field and revision from a header, for the chain walk. `buf` need only cover kHeader bytes.
     bool ReadHeader(const uint8_t* buf, size_t size, uint32_t* revision, std::string* nextPod, std::string* why);
+
+    // Whether a header's index and name table fit inside a file of `fileSize` bytes. A build cut short by a
+    // dying thread leaves a zero header or a body the index overruns; this catches both without reading the body.
+    bool CheckLayout(const uint8_t* hdr, size_t hdrLen, uint64_t fileSize, std::string* why);
 }

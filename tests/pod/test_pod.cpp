@@ -170,5 +170,43 @@ int main()
         CHECK_EQ(a.nextPod, "N.POD");
     }
 
+    // CheckLayout: a finished archive passes against its own size; a build cut short does not.
+    {
+        std::vector<Pod::Item> items = { Item("world\\a.lvl", Str("hello")), Item("art\\b.tex", Str("more bytes here")) };
+        Pod::BufferSink sink;
+        CHECK(Pod::Write(sink, items, 1, "", nullptr));
+        const std::vector<uint8_t>& b = sink.bytes;
+        std::string why = "unset";
+
+        CHECK(Pod::CheckLayout(b.data(), Pod::kHeader, b.size(), &why));
+        CHECK_EQ(why, "");
+        CHECK(Pod::CheckLayout(b.data(), b.size(), b.size() + 4096, nullptr));   // trailing slack is fine
+
+        // The header is patched last, so a dead thread leaves zeros: the exact shape of a truncated cache POD.
+        std::vector<uint8_t> zeros(Pod::kHeader, 0);
+        CHECK(!Pod::CheckLayout(zeros.data(), zeros.size(), 32164809, &why));
+        CHECK(why.find("magic") != std::string::npos);
+
+        // A complete header over a body that was cut off.
+        CHECK(!Pod::CheckLayout(b.data(), Pod::kHeader, b.size() - 1, &why));
+        CHECK(why.find("past the end") != std::string::npos);
+        CHECK(!Pod::CheckLayout(b.data(), Pod::kHeader, Pod::kHeader, nullptr));
+
+        // Too few header bytes, or a file smaller than a header.
+        CHECK(!Pod::CheckLayout(b.data(), Pod::kHeader - 1, b.size(), &why));
+        CHECK(why.find("truncated") != std::string::npos);
+        CHECK(!Pod::CheckLayout(b.data(), Pod::kHeader, Pod::kHeader - 1, nullptr));
+        CHECK(!Pod::CheckLayout(nullptr, Pod::kHeader, b.size(), nullptr));
+
+        // An implausible count or an index inside the header.
+        std::vector<uint8_t> bad = b;
+        bad[4] = 0xFF; bad[5] = 0xFF; bad[6] = 0xFF; bad[7] = 0x7F;
+        CHECK(!Pod::CheckLayout(bad.data(), Pod::kHeader, (uint64_t)1 << 40, &why));
+        CHECK(why.find("count") != std::string::npos);
+        bad = b;
+        bad[0x0C] = 0x10; bad[0x0D] = 0; bad[0x0E] = 0; bad[0x0F] = 0;
+        CHECK(!Pod::CheckLayout(bad.data(), Pod::kHeader, b.size(), nullptr));
+    }
+
     return check::Done("pod");
 }

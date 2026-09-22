@@ -163,6 +163,23 @@ namespace Pod
         return true;
     }
 
+    bool CheckLayout(const uint8_t* hdr, size_t hdrLen, uint64_t fileSize, std::string* why)
+    {
+        std::string sink;
+        if (!why) why = &sink;
+        if (!hdr || hdrLen < kHeader || fileSize < kHeader) { *why = "truncated header"; return false; }
+        if (memcmp(hdr, "POD6", 4) != 0) { *why = "not a POD6 archive (bad magic)"; return false; }
+
+        const uint32_t count    = Le32(hdr + 4);
+        const uint32_t indexOff = Le32(hdr + 0x0C);
+        const uint32_t nameSize = Le32(hdr + 0x10);
+        if (count >= kMaxFiles) { *why = "implausible file count"; return false; }
+        const uint64_t end = (uint64_t)indexOff + (uint64_t)count * kEntry + nameSize;
+        if (indexOff < kHeader || end > fileSize) { *why = "index runs past the end of the file"; return false; }
+        why->clear();
+        return true;
+    }
+
     bool Read(const uint8_t* buf, size_t size, Archive& out, std::string* why)
     {
         std::string sink;
