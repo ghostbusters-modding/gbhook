@@ -16,7 +16,7 @@ namespace Framework
 {
     // (major << 16) | (minor << 8) | patch
     constexpr uint32_t    kVersion       = (0u << 16) | (2u << 8) | 2u;
-    constexpr const char* kVersionString = "0.2.2";
+    constexpr const char* kVersionString = "0.2.3";
 
     // Directory holding ghost.exe, no trailing separator.
     const char* GameDir();

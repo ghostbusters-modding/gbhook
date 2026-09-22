@@ -3,6 +3,16 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.2.3 (2026-09-22)
+
+- `mods.disabled` in `gbhook.ini` switches mods off by id or folder name, a content mod
+  with no `[gbhook]` section included. A mod's page under View Mods has Disable and Enable
+  rows that write it, and says the change waits for a restart.
+- `disabled` in `modinfo.ini` is no longer read. The mod loads and the log names the line.
+- The View Mods list says ON or OFF and nothing else. The mod's own page says why: loaded,
+  content only, disabled, content found in the Mod Manager's chained PODs, or the error. A
+  mod whose content failed to build or mount is OFF, not ON.
+
 ## 0.2.2 (2026-09-22)
 
 - A Mod Manager folder with no `[gbhook]` section loads as a content mod under its own
