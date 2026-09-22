@@ -166,5 +166,24 @@ int main()
         CHECK_EQ(Ini::ToBool("", false), false);
     }
 
+    // Set: one line changed in place, everything else byte for byte.
+    {
+        CHECK_EQ(Ini::Set("", "mods.disabled", "gb.a"), "mods.disabled = gb.a\n");
+        CHECK_EQ(Ini::Set("mods.root = mods\n", "mods.disabled", "gb.a"), "mods.root = mods\nmods.disabled = gb.a\n");
+        CHECK_EQ(Ini::Set("a = 1\r\n\r\n", "b", "2"), "a = 1\r\nb = 2\r\n\r\n");
+        CHECK_EQ(Ini::Set("# top\nmods.disabled = gb.a   # off for now\nx = 1\n", "mods.disabled", "gb.a, gb.b"),
+                 "# top\nmods.disabled = gb.a, gb.b   # off for now\nx = 1\n");
+        CHECK_EQ(Ini::Set("MODS.Disabled=gb.a", "mods.disabled", ""), "MODS.Disabled = ");
+        CHECK_EQ(Ini::Set("k = \"a;b\" ; note\n", "k", "c"), "k = c   ; note\n");
+        // Last one wins when read, so the last one is the one changed.
+        CHECK_EQ(Ini::Set("k = 1\nk = 2\n", "k", "3"), "k = 1\nk = 3\n");
+        // Inside [mods] the line keeps its short key; a new key never lands under a section.
+        CHECK_EQ(Ini::Set("[mods]\ndisabled = gb.a\n", "mods.disabled", "gb.b"), "[mods]\ndisabled = gb.b\n");
+        CHECK_EQ(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods.disabled", "gb.b"), "a = 1\nmods.disabled = gb.b\n\n[gb.x]\nk = 2\n");
+        Ini::Document d = Parse(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods.disabled", "gb.b"));
+        CHECK_EQ(Value(d, "mods.disabled"), "gb.b");
+        CHECK_EQ(Value(d, "gb.x.k"), "2");
+    }
+
     return check::Done("ini");
 }

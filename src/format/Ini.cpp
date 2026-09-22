@@ -4,6 +4,7 @@
 #include "Ini.h"
 
 #include <cctype>
+#include <cstddef>
 #include <cstdlib>
 
 namespace Ini
@@ -83,6 +84,50 @@ namespace Ini
         for (const Entry& e : doc.entries)
             if (e.key == k) found = &e.value;
         return found;
+    }
+
+    std::string Set(const std::string& text, const std::string& key, const std::string& value)
+    {
+        const size_t npos = std::string::npos;
+        const std::string eol = text.find("\r\n") != npos ? "\r\n" : "\n";
+
+        std::vector<std::string> lines;
+        for (size_t pos = 0; pos <= text.size();)
+        {
+            size_t nl = text.find('\n', pos);
+            lines.push_back(text.substr(pos, nl == npos ? npos : nl - pos));
+            pos = nl == npos ? text.size() + 1 : nl + 1;
+        }
+        for (std::string& l : lines) if (!l.empty() && l.back() == '\r') l.pop_back();
+
+        const Entry* hit = nullptr;
+        Document doc = Parse(text);
+        for (const Entry& e : doc.entries) if (e.key == Lower(key)) hit = &e;
+
+        if (hit)
+        {
+            std::string& l = lines[(size_t)hit->line - 1];
+            const size_t eq = l.find('=');
+            size_t from = l.find_first_not_of(" \t", eq + 1);
+            if (from != npos && l[from] == '"') from = l.find('"', from + 1);
+            const size_t cut = from == npos ? npos : l.find_first_of("#;", from);
+            const std::string comment = cut == npos ? "" : "   " + l.substr(cut);
+            l = Trim(l.substr(0, eq)) + " = " + value + comment;
+        }
+        else
+        {
+            // Past a [section] header the key would pick up its prefix.
+            size_t at = lines.size();
+            while (at > 0 && lines[at - 1].empty()) --at;
+            for (size_t i = 0; i < lines.size(); ++i)
+                if (Trim(lines[i]).compare(0, 1, "[") == 0) { at = i; break; }
+            lines.insert(lines.begin() + (ptrdiff_t)at, key + " = " + value);
+            if (at < lines.size() - 1 && !Trim(lines[at + 1]).empty()) lines.insert(lines.begin() + (ptrdiff_t)at + 1, "");
+        }
+
+        std::string out;
+        for (size_t i = 0; i < lines.size(); ++i) { if (i) out += eol; out += lines[i]; }
+        return out;
     }
 
     std::vector<std::string> List(const std::string& value)

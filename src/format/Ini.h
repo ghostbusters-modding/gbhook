@@ -27,6 +27,9 @@ namespace Ini
     // Last value for `key`, any case, or nullptr.
     const std::string* Find(const Document& doc, const std::string& key);
 
+    // `text` with the last `key` line set to `value`, its comment kept. A new key goes above the first [section].
+    std::string Set(const std::string& text, const std::string& key, const std::string& value);
+
     // Comma-separated list, items trimmed, empties dropped.
     std::vector<std::string> List(const std::string& value);
 
