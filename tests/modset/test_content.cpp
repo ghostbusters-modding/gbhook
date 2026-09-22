@@ -94,5 +94,48 @@ int main()
         CHECK_EQ((int)v.action, (int)Action::Disabled);
     }
 
+    // The inclusion rule: every shipped asset root is in, whatever the case, and nothing else is.
+    {
+        const char* roots[] = { "animations", "art", "cinemats", "data", "fx", "materials",
+                                "models", "physics", "sets", "skeletal", "sound", "world" };
+        for (const char* r : roots) CHECK(Content::IsAssetRoot(r));
+        CHECK(Content::IsAssetRoot("World"));
+        CHECK(Content::IsAssetRoot("ART"));
+        CHECK(!Content::IsAssetRoot("gen"));
+        CHECK(!Content::IsAssetRoot("gbhook"));
+        CHECK(!Content::IsAssetRoot("previews"));
+        CHECK(!Content::IsAssetRoot("video"));
+        CHECK(!Content::IsAssetRoot(""));
+    }
+
+    // A file is packed only under an asset root and only with an extension the engine reads.
+    {
+        using Content::Kind;
+        CHECK_EQ((int)Content::Classify("world\\harbor1a.lvl"),          (int)Kind::Asset);
+        CHECK_EQ((int)Content::Classify("world\\en\\ui.txt"),            (int)Kind::Asset);
+        CHECK_EQ((int)Content::Classify("Art\\Props\\CRATE.TEX"),        (int)Kind::Asset);
+        CHECK_EQ((int)Content::Classify("data/biped1/fiend.cib"),         (int)Kind::Asset);   // slash tolerated
+        CHECK_EQ((int)Content::Classify("physics\\p.phys2b"),             (int)Kind::Asset);
+        CHECK_EQ((int)Content::Classify("skeletal\\gb.bfm"),              (int)Kind::Asset);
+
+        // Outside the roots: the mod's own paperwork, generators, build output, a copy unzipped in place.
+        CHECK_EQ((int)Content::Classify("README.md"),                       (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify("harbor1a.lvl"),                    (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify("gen\\.build\\cits\\data\\gb.cib"), (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify("build\\x64\\Release\\Mod.pdb"),  (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify("ImmortalMod\\world\\x.lvl"),     (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify(".stage\\lvlF\\props\\models\\bigboss"), (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify("gbhook\\Mod.dll"),               (int)Kind::NotAssetRoot);
+        CHECK_EQ((int)Content::Classify("previews\\modinfo.ini"),         (int)Kind::NotAssetRoot);
+
+        // Under a root but not a type the engine has: a stray source file, a backup, no extension at all.
+        CHECK_EQ((int)Content::Classify("art\\crate.png"),                (int)Kind::NotAssetType);
+        CHECK_EQ((int)Content::Classify("world\\harbor1a.lvl.bak"),       (int)Kind::NotAssetType);
+        CHECK_EQ((int)Content::Classify("models\\bigboss"),               (int)Kind::NotAssetType);
+        CHECK_EQ((int)Content::Classify("sets\\.gitkeep"),                (int)Kind::NotAssetType);
+        CHECK_EQ((int)Content::Classify("world\\gen.py\\harbor.lvl"),     (int)Kind::Asset);   // a dot in a folder is not an extension
+        CHECK_EQ((int)Content::Classify("data\\ui.tex\\notes"),           (int)Kind::NotAssetType);
+    }
+
     return check::Done("content");
 }

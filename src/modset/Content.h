@@ -12,11 +12,19 @@
 
 namespace Content
 {
+    // What a loose path is to the engine. Only Asset is packed; the other two say why a file was left out.
+    enum class Kind { Asset, NotAssetRoot, NotAssetType };
+
+    // The rule: the top folder is one of the engine's asset roots and the extension is one it reads. Both lists
+    // are the shipped archives' inventory, so docs, generators, build output and zips never reach a cache POD.
+    bool IsAssetRoot(const std::string& topFolder);
+    Kind Classify(const std::string& relpath);
+
     // What the discovery layer gathered about one mod's content, on disk.
     struct Input
     {
         std::string                id;              // the mod id, for the cache key and log lines
-        std::vector<TreeHash::File> loose;          // its art/ data/ world/ tree, empty for a code-only mod
+        std::vector<TreeHash::File> loose;          // its asset files, Classify() == Asset only; empty for a code-only mod
         bool                       manualDisabled = false;   // the modinfo.ini `disabled` key
         std::string                cachedHash;      // the hash the last built cache POD was made from, "" if none
         // File paths (engine backslash form) reachable through the PATCH.POD chain right now.
