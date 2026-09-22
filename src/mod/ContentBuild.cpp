@@ -32,6 +32,7 @@ namespace
     bool             g_lockReady = false;
     std::vector<Planned> g_queue;
     std::unordered_map<std::string, std::string> g_summary;
+    std::unordered_map<std::string, ContentBuild::Outcome> g_outcome;
     bool          g_parked      = false;   // a mount job is on the pump and will drain the queue
     volatile LONG g_started     = 0;
     volatile LONG g_buildDone   = 0;
@@ -46,17 +47,19 @@ namespace
         g_lockReady = true;
     }
 
-    void SetSummary(const std::string& id, const std::string& text)
+    void SetSummary(const std::string& id, const std::string& text, ContentBuild::Outcome o)
     {
         EnterCriticalSection(&g_lock);
         g_summary[id] = text;
+        g_outcome[id] = o;
         LeaveCriticalSection(&g_lock);
     }
 
-    void AppendSummary(const std::string& id, const std::string& text)
+    void AppendSummary(const std::string& id, const std::string& text, ContentBuild::Outcome o)
     {
         EnterCriticalSection(&g_lock);
         g_summary[id] += text;
+        g_outcome[id] = o;
         LeaveCriticalSection(&g_lock);
     }
 
@@ -108,11 +111,11 @@ namespace
         {
             const char* err = nullptr;
             ++g_mountTotal;
-            if (Pods::Mount(p.cachePod.c_str(), &err)) { ++g_mountOk; AppendSummary(p.id, ", mounted"); }
+            if (Pods::Mount(p.cachePod.c_str(), &err)) { ++g_mountOk; AppendSummary(p.id, ", mounted", ContentBuild::Outcome::Mounted); }
             else
             {
                 Log::Writef("MODS", "content %s: mount FAILED -- %s", p.id.c_str(), err ? err : "no reason given");
-                AppendSummary(p.id, std::string(", mount failed: ") + (err ? err : "no reason given"));
+                AppendSummary(p.id, std::string(", mount failed: ") + (err ? err : "no reason given"), ContentBuild::Outcome::Failed);
             }
         }
 
@@ -382,7 +385,7 @@ namespace
             case Content::Action::InChain:
                 ++inChain;
                 Log::Writef("MODS", "content %s: off -- %s", r.mod.id.c_str(), v.reason.c_str());
-                SetSummary(r.mod.id, "off, " + v.reason);
+                SetSummary(r.mod.id, "found in the chained PODs, the Mod Manager loads it", ContentBuild::Outcome::InChain);
                 break;
 
             case Content::Action::MountCached:
@@ -390,7 +393,7 @@ namespace
                 ++cached;
                 const std::string rel = "gbhook\\cache\\" + r.mod.id + "\\" + v.hash + ".POD";
                 Log::Writef("MODS", "content %s: cached, %s", r.mod.id.c_str(), rel.c_str());
-                SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s), cached");
+                SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s), cached", ContentBuild::Outcome::Pending);
                 Enqueue(r.mod.id, rel);
                 break;
             }
@@ -426,14 +429,14 @@ namespace
                 {
                     ++built;
                     Log::Writef("MODS", "content %s: built %d file(s) -> %s", r.mod.id.c_str(), (int)loose.size(), relPod.c_str());
-                    SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s) built");
+                    SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s) built", ContentBuild::Outcome::Pending);
                     Enqueue(r.mod.id, relPod);
                 }
                 else
                 {
                     DeleteFileA(absTmp.c_str());
                     Log::Writef("MODS", "content %s: build FAILED -- %s", r.mod.id.c_str(), why.c_str());
-                    SetSummary(r.mod.id, "build failed, " + why);
+                    SetSummary(r.mod.id, "build failed, " + why, ContentBuild::Outcome::Failed);
                 }
                 break;
             }
@@ -469,6 +472,19 @@ namespace ContentBuild
     }
 
     bool Done() { return g_allMounted != 0; }
+
+    Outcome OutcomeOf(const char* id)
+    {
+        if (!id) return Outcome::None;
+        EnsureLock();
+        Outcome o = Outcome::None;
+        EnterCriticalSection(&g_lock);
+        auto it = g_outcome.find(id);
+        if (it != g_outcome.end()) o = it->second;
+        else if (!g_buildDone)     o = Outcome::Pending;
+        LeaveCriticalSection(&g_lock);
+        return o;
+    }
 
     std::string Summary(const char* id)
     {

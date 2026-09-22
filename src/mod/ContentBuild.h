@@ -15,6 +15,9 @@ namespace ContentBuild
     // True once the build has finished and every archive it produced has been mounted or refused.
     bool Done();
 
+    enum class Outcome { None, Pending, Mounted, InChain, Failed };
+
     // What happened to one mod's content, in a phrase for the Mods page. "" for a mod without content.
     std::string Summary(const char* id);
+    Outcome     OutcomeOf(const char* id);
 }

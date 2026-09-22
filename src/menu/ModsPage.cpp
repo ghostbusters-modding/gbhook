@@ -5,14 +5,20 @@
 
 namespace ModsPage
 {
-    const char* StateWord(State s)
+    bool IsOn(State s) { return s == State::Loaded || s == State::NoCode || s == State::Pending; }
+
+    const char* StateWord(State s) { return IsOn(s) ? "ON" : "OFF"; }
+
+    static std::string Headline(const Mod& m)
     {
-        switch (s)
+        switch (m.state)
         {
-        case State::On:      return "ON";
-        case State::Off:     return "OFF";
-        case State::Refused: return "REFUSED";
-        case State::Failed:  return "FAILED";
+        case State::Loaded:     return "ON: loaded at " + m.stage;
+        case State::NoCode:     return m.content.empty() ? "ON: nothing to load" : "ON: content only";
+        case State::Pending:    return "ON: loads at " + m.stage;
+        case State::OffIni:     return "OFF: disabled in gbhook.ini";
+        case State::Refused:    return "OFF: refused";
+        case State::Failed:     return "OFF: error";
         }
         return "?";
     }
@@ -31,7 +37,7 @@ namespace ModsPage
         {
             const Mod& m = mods[i];
             std::string word = StateWord(m.state);
-            while (word.size() < 8) word += ' ';
+            while (word.size() < 4) word += ' ';
             std::string label = word + m.id;
             if (!m.version.empty() && label.size() + 1 + m.version.size() <= Rows::kLabelMax) label += " " + m.version;
             rows.push_back({ Rows::Fit(label), (int)i });
@@ -45,13 +51,18 @@ namespace ModsPage
     {
         std::vector<Rows::Row> rows; 
 
-        std::string state = StateWord(m.state);
-        if (m.state == State::On && !m.stage.empty()) state += ", loads at " + m.stage;
-        rows.push_back({ Rows::Fit(state), Rows::kInert });
+        rows.push_back({ Rows::Fit(Headline(m)), Rows::kInert });
 
         for (const std::string& l : Rows::Wrap(m.note, Rows::kLabelMax)) rows.push_back({ l, Rows::kInert });
         if (!m.content.empty())
             for (const std::string& l : Rows::Wrap("Content: " + m.content, Rows::kLabelMax)) rows.push_back({ l, Rows::kInert });
+
+        if (m.toggle != Switch::None)
+        {
+            rows.push_back({ m.toggle == Switch::TurnOff ? "Disable" : "Enable", kToggle });
+            if (m.saveFailed) rows.push_back({ "gbhook.ini could not be written", Rows::kInert });
+            else if (m.changed) rows.push_back({ Rows::Fit(std::string("Saved: ") + (m.toggle == Switch::TurnOn ? "OFF" : "ON") + " after a restart"), Rows::kInert });
+        }
 
         rows.push_back({ "Back", kBack });
         return rows;

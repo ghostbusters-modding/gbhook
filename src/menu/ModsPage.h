@@ -12,14 +12,21 @@
 
 namespace ModsPage
 {
-    enum class State { On, Off, Refused, Failed };
+    // The list says ON or OFF. The detail page says which of these it is.
+    enum class State { Loaded, NoCode, Pending, OffIni, Refused, Failed };
+
+    // The detail page's switch: gbhook.ini's mods.disabled, read by the next boot.
+    enum class Switch { None, TurnOff, TurnOn };
 
     struct Mod
     {
         std::string id, version, folder, stage;
-        State       state = State::On;
+        State       state = State::Loaded;
         std::string note;      // the refusal or failure text, "" otherwise
         std::string content;   // what the content build did, "" for a code-only mod
+        Switch      toggle  = Switch::None;
+        bool        changed = false;   // gbhook.ini no longer matches this boot
+        bool        saveFailed = false;
     };
 
     struct Header
@@ -30,7 +37,8 @@ namespace ModsPage
         std::vector<std::string> missingRoots;   // configured and absent
     };
 
-    constexpr int kBack = 1000;
+    constexpr int kBack   = 1000;
+    constexpr int kToggle = 1001;
 
     // The list: a header row, one row per mod whose action is its index, and one row per missing root.
     std::vector<Rows::Row> List(const Header& h, const std::vector<Mod>& mods);
@@ -38,5 +46,6 @@ namespace ModsPage
     // One mod in full, ending with a Back row.
     std::vector<Rows::Row> Detail(const Mod& m);
 
-    const char* StateWord(State s);
+    bool        IsOn(State s);
+    const char* StateWord(State s);   // "ON" or "OFF"
 }
