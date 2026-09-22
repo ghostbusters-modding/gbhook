@@ -11,20 +11,23 @@ The manager deploys the assets as before either way.
 ## 1. The folder
 
 ```
-My_Mod_v0.1.0/                    release wrapper, "<mod name>_v<version>", for the upload
-├── my_mod/                       the mod folder: this is what gets installed
-│   ├── previews/
-│   │   ├── modinfo.ini           the Mod Manager's keys, then gbhook's sections
-│   │   └── preview_01.png
-│   ├── art/  data/  world/       loose assets, mirroring the game's archive tree
-│   │   sets/  models/ ...
-│   └── gbhook/                   the DLL, if there is one, and nothing else
-│       └── MyMod.dll
-└── README.txt
+My_Mod.zip                        the upload: one folder, named for the mod, nothing above it
+└── My_Mod/                       the mod folder: this is what gets installed
+    ├── LICENSE
+    ├── README.txt
+    ├── previews/
+    │   ├── modinfo.ini           the Mod Manager's keys, then gbhook's sections
+    │   └── preview_01.png
+    ├── art/  data/  world/       loose assets, mirroring the game's archive tree
+    │   sets/  models/ ...
+    └── gbhook/                   the DLL, if there is one, and nothing else
+        └── MyMod.dll
 ```
 
-Installed, the mod lives at `<gamedir>/mods/my_mod/`. A content-only mod has no `gbhook/`
-folder at all. A code-only mod is the same format with everything optional removed:
+The zip unpacks into `<gamedir>/mods/` and the mod is installed. There is no wrapper
+folder around it and no version in the zip name: the version is `modinfo.ini`'s.
+A content-only mod has no `gbhook/` folder at all. A code-only mod is the same
+format with everything optional removed:
 
 ```
 my_tool/
