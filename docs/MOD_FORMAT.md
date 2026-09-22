@@ -119,11 +119,32 @@ the tree into an archive:
 <gamedir>/gbhook/cache/<id>/<hash>.POD
 ```
 
-The hash is of the tree's file names, sizes and times, so an unchanged mod costs nothing at
-boot, a changed one is rebuilt, and a cache with no mod behind it is removed. The archive is
-mounted with the engine's own mount call at revision 1: above the game's bulk archives,
-below a Mod Manager `PATCH.POD` chain, so a mod already deployed through the manager is left
-to it. `gbhook/` and `previews/` are never packed.
+Only engine content is packed. A file goes in when its top folder is one of the engine's
+asset roots and its extension is one the engine reads. Both lists are the retail archives'
+inventory:
+
+```
+animations  art  cinemats  data  fx  materials  models  physics  sets  skeletal  sound  world
+
+.ani .bfm .bst .cib .cinemat .dante .fnt .fxa .fxe .hbb .jug .lvl .mtb .phys2b
+.sbs .sec .skb .smb .smp .snb .subb .tex .tfb .txt .ui
+```
+
+Everything else stays where it is: `gbhook/`, `previews/`, a README, a generator tree, build
+output, a zip. The log names each root entry left out, and each file under an asset root
+whose type the engine has no reader for.
+
+The hash is of the packed files' names, sizes and times. An unchanged mod costs nothing at
+boot and a changed one is rebuilt. An edited note or a rebuilt DLL is not packed, so it
+changes nothing. A cache with no mod behind it is removed.
+
+The archive is written under a `.tmp` name and renamed once complete. A cached archive's
+header is checked against its size before it is trusted. A build cut short therefore leaves
+nothing behind but the log line saying it is being rebuilt.
+
+The archive is mounted with the engine's own mount call at revision 1: above the game's bulk
+archives, below a Mod Manager `PATCH.POD` chain, so a mod already deployed through the
+manager is left to it.
 
 What a mod ships this way: levels (`world\<stem>.lvl`, its `.dante` script, its text), sets,
 models, textures, character definitions. A `world\*.lvl` appears under Load Level ▸ Custom

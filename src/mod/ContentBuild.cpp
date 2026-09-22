@@ -12,6 +12,7 @@
 #include <windows.h>
 #include <cctype>
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -39,8 +40,16 @@ namespace
         }
     }
 
-    // Recursively list a mod's loose tree, relpaths in the engine's backslash form, skipping gbhook/ and previews/.
-    void WalkLoose(const std::string& root, const std::string& rel, std::vector<TreeHash::File>& out)
+    // What the walk left out of one mod, for the log: root entries in one line, strays under a root one each.
+    struct LeftOut
+    {
+        std::vector<std::string> roots;    // "gen\\", "README.md": not an asset root, so never descended
+        std::vector<std::string> strays;   // "art\\crate.png": under a root, but not a type the engine reads
+    };
+
+    // Recursively list a mod's asset files, relpaths in the engine's backslash form. Only the engine's asset
+    // roots are entered, so gbhook/, previews/ and a generator tree cost nothing beyond their name.
+    void WalkLoose(const std::string& root, const std::string& rel, std::vector<TreeHash::File>& out, LeftOut& left)
     {
         const std::string dir = rel.empty() ? root : root + "\\" + rel;
         WIN32_FIND_DATAA fd;
@@ -53,12 +62,17 @@ namespace
             const std::string childRel = rel.empty() ? name : rel + "\\" + name;
             if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                if (rel.empty() && (_stricmp(name.c_str(), "gbhook") == 0 || _stricmp(name.c_str(), "previews") == 0))
-                    continue;
-                WalkLoose(root, childRel, out);
+                if (rel.empty() && !Content::IsAssetRoot(name)) { left.roots.push_back(name + "\\"); continue; }
+                WalkLoose(root, childRel, out, left);
             }
             else
             {
+                switch (Content::Classify(childRel))
+                {
+                case Content::Kind::NotAssetRoot: left.roots.push_back(name); continue;
+                case Content::Kind::NotAssetType: left.strays.push_back(childRel); continue;
+                case Content::Kind::Asset: break;
+                }
                 TreeHash::File f;
                 f.relpath = childRel;
                 f.size  = ((uint64_t)fd.nFileSizeHigh << 32) | fd.nFileSizeLow;
@@ -69,26 +83,67 @@ namespace
         FindClose(h);
     }
 
-    // The hash of whatever cache POD is already there, or "" -- the file name is the hash.
-    std::string CachedHash(const std::string& cacheDir)
+    std::string Join(const std::vector<std::string>& v)
     {
+        std::string s;
+        for (const std::string& x : v) { if (!s.empty()) s += ", "; s += x; }
+        return s;
+    }
+
+    bool EndsWith(const std::string& s, const char* suffix)
+    {
+        const size_t n = strlen(suffix);
+        return s.size() >= n && _stricmp(s.c_str() + s.size() - n, suffix) == 0;
+    }
+
+    // Every file in the cache folder ending in `suffix`. Matched here, not by FindFirstFile: its "*.POD" is 8.3-loose.
+    std::vector<std::string> ListCache(const std::string& cacheDir, const char* suffix)
+    {
+        std::vector<std::string> names;
         WIN32_FIND_DATAA fd;
-        HANDLE h = FindFirstFileA((cacheDir + "\\*.POD").c_str(), &fd);
-        if (h == INVALID_HANDLE_VALUE) return "";
-        std::string name = fd.cFileName;
+        HANDLE h = FindFirstFileA((cacheDir + "\\*").c_str(), &fd);
+        if (h == INVALID_HANDLE_VALUE) return names;
+        do if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && EndsWith(fd.cFileName, suffix)) names.push_back(fd.cFileName);
+        while (FindNextFileA(h, &fd));
         FindClose(h);
-        size_t dot = name.rfind('.');
+        return names;
+    }
+
+    // The hash the cache POD was built from, or "" when there is none worth mounting. The name is the hash, but
+    // the name alone once passed a POD a dead thread had left half written, so the layout is checked too.
+    std::string CachedHash(const std::string& id, const std::string& cacheDir)
+    {
+        for (const std::string& tmp : ListCache(cacheDir, ".POD.tmp")) DeleteFileA((cacheDir + "\\" + tmp).c_str());
+
+        const std::vector<std::string> pods = ListCache(cacheDir, ".POD");
+        if (pods.empty()) return "";
+        const std::string& name = pods.front();
+
+        std::string why;
+        FILE* f = nullptr;
+        uint8_t hdr[Pod::kHeader];
+        if (fopen_s(&f, (cacheDir + "\\" + name).c_str(), "rb") != 0 || !f) why = "cannot be opened";
+        else
+        {
+            const size_t got = fread(hdr, 1, sizeof hdr, f);
+            _fseeki64(f, 0, SEEK_END);
+            const long long size = _ftelli64(f);
+            fclose(f);
+            Pod::CheckLayout(hdr, got, size < 0 ? 0 : (uint64_t)size, &why);
+        }
+        if (!why.empty())
+        {
+            Log::Writef("MODS", "content %s: cached %s is unusable (%s), rebuilding", id.c_str(), name.c_str(), why.c_str());
+            return "";
+        }
+        const size_t dot = name.find('.');
         return dot == std::string::npos ? name : name.substr(0, dot);
     }
 
     void PruneCache(const std::string& cacheDir)
     {
-        WIN32_FIND_DATAA fd;
-        HANDLE h = FindFirstFileA((cacheDir + "\\*.POD").c_str(), &fd);
-        if (h == INVALID_HANDLE_VALUE) return;
-        do DeleteFileA((cacheDir + "\\" + fd.cFileName).c_str());
-        while (FindNextFileA(h, &fd));
-        FindClose(h);
+        for (const std::string& n : ListCache(cacheDir, ".POD"))     DeleteFileA((cacheDir + "\\" + n).c_str());
+        for (const std::string& n : ListCache(cacheDir, ".POD.tmp")) DeleteFileA((cacheDir + "\\" + n).c_str());
     }
 
     // Read a whole file into `buf`; the source handed to the POD writer.
@@ -191,7 +246,14 @@ namespace ContentBuild
 
             const std::string modRoot = r.root + "\\" + r.folder;
             std::vector<TreeHash::File> loose;
-            WalkLoose(modRoot, "", loose);
+            LeftOut left;
+            WalkLoose(modRoot, "", loose, left);
+            if (!left.roots.empty())
+                Log::Writef("MODS", "content %s: left out %s -- not engine content", r.mod.id.c_str(), Join(left.roots).c_str());
+            for (size_t i = 0; i < left.strays.size() && i < 5; ++i)
+                Log::Writef("MODS", "content %s: left out %s -- not a file type the engine reads", r.mod.id.c_str(), left.strays[i].c_str());
+            if (left.strays.size() > 5)
+                Log::Writef("MODS", "content %s: left out %d more file(s) under the asset roots", r.mod.id.c_str(), (int)left.strays.size() - 5);
 
             // Two mods shipping one loose path is resolved by the engine's mount order and said nowhere else.
             for (const TreeHash::File& lf : loose)
@@ -211,7 +273,7 @@ namespace ContentBuild
             in.id             = r.mod.id;
             in.loose          = loose;
             in.manualDisabled = r.mod.disabled;
-            in.cachedHash     = IsDir(cacheDir) ? CachedHash(cacheDir) : "";
+            in.cachedHash     = IsDir(cacheDir) ? CachedHash(r.mod.id, cacheDir) : "";
             in.chainPaths     = &chain;
 
             Content::Verdict v = Content::Decide(in);
@@ -252,12 +314,20 @@ namespace ContentBuild
 
                 const std::string relPod = "gbhook\\cache\\" + r.mod.id + "\\" + v.hash + ".POD";
                 const std::string absPod = gameDir + "\\" + relPod;
+                const std::string absTmp = absPod + ".tmp";
                 Pod::FileSink sink;
                 std::string why;
                 // Revision 1: overrides the bulk archives, loses to a rev-0 chained MODS.POD, so GBMM still wins.
-                if (sink.Open(absPod.c_str()) && Pod::Write(sink, items, 1, "", &why))
+                // Written under .tmp and renamed at the end: whatever cuts the build short leaves no <hash>.POD.
+                bool ok = sink.Open(absTmp.c_str()) && Pod::Write(sink, items, 1, "", &why);
+                sink.Close();
+                if (ok && !MoveFileExA(absTmp.c_str(), absPod.c_str(), MOVEFILE_REPLACE_EXISTING))
                 {
-                    sink.Close();
+                    why = "rename of the finished archive failed (error " + std::to_string(GetLastError()) + ")";
+                    ok = false;
+                }
+                if (ok)
+                {
                     ++built;
                     Log::Writef("MODS", "content %s: built %d file(s) -> %s", r.mod.id.c_str(), (int)loose.size(), relPod.c_str());
                     g_planned.push_back({ r.mod.id, relPod });
@@ -265,8 +335,7 @@ namespace ContentBuild
                 }
                 else
                 {
-                    sink.Close();
-                    DeleteFileA(absPod.c_str());
+                    DeleteFileA(absTmp.c_str());
                     Log::Writef("MODS", "content %s: build FAILED -- %s", r.mod.id.c_str(), why.c_str());
                     g_summary[r.mod.id] = "build failed, " + why;
                 }
