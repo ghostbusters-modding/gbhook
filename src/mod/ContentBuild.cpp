@@ -334,7 +334,7 @@ namespace
 
         const std::string gameDir = Framework::GameDir();
         PruneOrphans(gameDir + "\\gbhook\\cache");
-        int built = 0, cached = 0, disabled = 0, skipped = 0;
+        int built = 0, cached = 0, inChain = 0, skipped = 0;
         std::unordered_map<std::string, std::string> shipped;   // lowered relpath -> the first mod shipping it
 
         for (const ModSet::Record& r : Mods::Result().records)
@@ -369,7 +369,6 @@ namespace
             Content::Input in;
             in.id             = r.mod.id;
             in.loose          = loose;
-            in.manualDisabled = r.mod.disabled;
             in.cachedHash     = IsDir(cacheDir) ? CachedHash(r.mod.id, cacheDir) : "";
             in.chainPaths     = &chain;
 
@@ -380,8 +379,8 @@ namespace
                 ++skipped;
                 break;
 
-            case Content::Action::Disabled:
-                ++disabled;
+            case Content::Action::InChain:
+                ++inChain;
                 Log::Writef("MODS", "content %s: off -- %s", r.mod.id.c_str(), v.reason.c_str());
                 SetSummary(r.mod.id, "off, " + v.reason);
                 break;
@@ -441,8 +440,8 @@ namespace
             }
         }
 
-        Log::Writef("MODS", "content: %d built, %d cached, %d disabled, %d without content",
-                    built, cached, disabled, skipped);
+        Log::Writef("MODS", "content: %d built, %d cached, %d left to the Mod Manager, %d without content",
+                    built, cached, inChain, skipped);
 
         // One more visit from the pump, so the tally is printed even when the last mods had nothing to mount.
         InterlockedExchange(&g_buildDone, 1);

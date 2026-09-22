@@ -63,7 +63,6 @@ plugin      = MyMod.dll           ; a DLL under gbhook/, or leave the key out
 stage       = boot                ; preboot | early | boot | ready
 priority    = 100                 ; within a stage, low runs first
 ;requires   = gb.othermod         ; mod ids that must be present and loaded
-;disabled   = 1                   ; the manual off switch: the whole mod, assets included
 
 [settings]
 spawn_rate  = 4                   ; this mod's defaults, in its own namespace
@@ -78,7 +77,6 @@ spawn_rate  = 4                   ; this mod's defaults, in its own namespace
 | `stage` | when the DLL's init runs. Names, never numbers: a number baked into a shipped mod is what forced an ABI break the last time a stage was inserted. |
 | `priority` | within a stage, low runs first. Default 100. |
 | `requires` | mod ids that must be present and accepted, else this mod is refused. It does not order anything: see section 6. |
-| `disabled` | `1` switches the whole mod off, content included. gbhook reads it and never writes it. |
 | `[settings]` | defaults in the mod's namespace. `gbhook.ini` overrides them as `<id>.<key>`. |
 
 Two keys are parsed and reserved: `content`, a list of prebuilt archives under `gbhook/`,
@@ -90,7 +88,7 @@ Neither belongs in a shipped `modinfo.ini` yet.
 | file | owns | required |
 |---|---|---|
 | `previews/modinfo.ini`, top level | human metadata: `version`, `compatibility`, `description`, `link` | every mod |
-| `previews/modinfo.ini`, `[gbhook]` and `[settings]` | loading facts: what exists, what to load, in what order, with what defaults | for a DLL, or to set the id, stage, priority, `requires`, `disabled` or settings |
+| `previews/modinfo.ini`, `[gbhook]` and `[settings]` | loading facts: what exists, what to load, in what order, with what defaults | for a DLL, or to set the id, stage, priority, `requires` or settings |
 | the DLL's manifest | what only the binary can assert: `id`, `abi`, the target `ghost.exe` md5, exclusive hook claims | when a DLL exists |
 
 A folder under a root is a mod when it has any of the three: the manager's `modinfo.ini`, a
@@ -202,6 +200,11 @@ spawn_rate = 4
 # <gamedir>/gbhook.ini
 gb.mymod.spawn_rate = 12
 ```
+
+`mods.disabled` in `gbhook.ini` turns mods off without touching them: ids or folder names,
+comma-separated. It works on a folder with no `[gbhook]` section too. The Mods page's Disable
+and Enable rows write it, and the change takes effect at the next start. A mod cannot switch
+itself off: `disabled` in `modinfo.ini` is no longer read, and the log names the line.
 
 ## 9. What the log says
 

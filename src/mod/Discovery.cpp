@@ -141,7 +141,7 @@ namespace Mods
             }
         }
 
-        g_result = ModSet::Resolve(found);
+        g_result = ModSet::Resolve(found, Ini::List(Settings::Get("mods.disabled", "")));
 
         int accepted = 0, implicit = 0, off = 0, refused = 0;
         for (const ModSet::Record& r : g_result.records)
@@ -159,7 +159,7 @@ namespace Mods
             else if (r.disabled)
             {
                 ++off;
-                Log::Writef("MODS", "OFF %s (%s): disabled in modinfo.ini", r.mod.id.c_str(), r.folder.c_str());
+                Log::Writef("MODS", "OFF %s (%s): disabled in gbhook.ini", r.mod.id.c_str(), r.folder.c_str());
             }
             else
             {

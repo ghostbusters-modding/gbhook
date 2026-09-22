@@ -72,6 +72,7 @@ A mod's commands are `<id>.<name>`, `gb.mymod.mycommand` for example.
 
 ```ini
 mods.root = mods            ; comma-separated, <gamedir>-relative or absolute
+mods.disabled = gb.mymod    ; ids or folder names left off; the Mods page writes this line
 gb.mymod.mycommand = 0         ; a mod's setting, under its id; the mod's own default otherwise
 ```
 

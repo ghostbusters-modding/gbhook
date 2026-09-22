@@ -56,23 +56,13 @@ int main()
         CHECK(v.hash != in.cachedHash);
     }
 
-    // The manual switch wins over everything.
-    {
-        Input in = WithLoose();
-        in.cachedHash = TreeHash::Of(in.loose);
-        in.manualDisabled = true;
-        Content::Verdict v = Decide(in);
-        CHECK_EQ((int)v.action, (int)Action::Disabled);
-        CHECK(v.reason.find("disabled") != std::string::npos);
-    }
-
     // Every loose path already in the chain: GBMM deployed it, so stand down.
     {
         Input in = WithLoose();
         std::vector<std::string> chain = { "world\\harbor.lvl", "sets\\harbor.bst", "art\\unrelated.tex" };
         in.chainPaths = &chain;
         Content::Verdict v = Decide(in);
-        CHECK_EQ((int)v.action, (int)Action::Disabled);
+        CHECK_EQ((int)v.action, (int)Action::InChain);
         CHECK(v.reason.find("chain") != std::string::npos);
     }
 
@@ -91,7 +81,7 @@ int main()
         std::vector<std::string> chain = { "WORLD/HARBOR.LVL", "sets/Harbor.BST" };
         in.chainPaths = &chain;
         Content::Verdict v = Decide(in);
-        CHECK_EQ((int)v.action, (int)Action::Disabled);
+        CHECK_EQ((int)v.action, (int)Action::InChain);
     }
 
     // The inclusion rule: every shipped asset root is in, whatever the case, and nothing else is.

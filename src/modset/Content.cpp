@@ -56,8 +56,6 @@ namespace Content
 
         if (in.loose.empty()) { v.action = Action::Skip; v.reason = "no loose content"; return v; }
 
-        if (in.manualDisabled) { v.action = Action::Disabled; v.reason = "disabled in modinfo.ini"; return v; }
-
         if (in.chainPaths && !in.chainPaths->empty())
         {
             std::unordered_set<std::string> have;
@@ -70,7 +68,7 @@ namespace Content
 
             if (allInChain)
             {
-                v.action = Action::Disabled;
+                v.action = Action::InChain;
                 v.reason = "already in a chained POD -- the Mod Manager deployed it, gbhook stands down";
                 return v;
             }

@@ -53,9 +53,6 @@ namespace
         r.warnings.insert(r.warnings.end(), c.ini.warnings.begin(), c.ini.warnings.end());
         if (!c.ini.refusal.empty()) { r.refusal = c.ini.refusal; return r; }
 
-        // Off in modinfo.ini: listed, never loaded, no content. Judged no further, so a missing DLL does not matter.
-        if (r.mod.disabled) { r.disabled = true; return r; }
-
         if (!r.mod.plugin.empty())
         {
             const std::string& p = r.mod.plugin;
@@ -93,11 +90,24 @@ namespace
 
 namespace ModSet
 {
-    Result Resolve(const std::vector<Candidate>& found)
+    Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off)
     {
         std::vector<Record> recs;
         recs.reserve(found.size());
         for (const Candidate& c : found) recs.push_back(Judge(c));
+
+        for (Record& r : recs)
+        {
+            for (const std::string& o : off)
+            {
+                const std::string k = Lower(o);
+                if (k != Lower(r.folder) && (r.mod.id.empty() || k != Lower(r.mod.id))) continue;
+                r.accepted = false;
+                r.disabled = true;
+                r.refusal.clear();
+                break;
+            }
+        }
 
         // Duplicate ids: the first folder keeps the id.
         for (size_t i = 0; i < recs.size(); ++i)
@@ -126,7 +136,7 @@ namespace ModSet
                     if (present) continue;
                     r.accepted = false;
                     r.refusal  = "requires '" + need + "', which " +
-                                 (off ? "is disabled in its modinfo.ini" : refused ? "was refused" : "is not present");
+                                 (off ? "is disabled in gbhook.ini" : refused ? "was refused" : "is not present");
                     changed    = true;
                     break;
                 }

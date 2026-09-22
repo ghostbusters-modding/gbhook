@@ -262,17 +262,32 @@ int main()
         CHECK_EQ(r.records[5].refusal, "gbhook/ exists but there is no previews/modinfo.ini");
     }
 
-    // disabled = 1: listed as off, never accepted, no refusal text, and judged no further (a missing DLL is fine).
+    // disabled = 1 in modinfo.ini is not a switch any more: the mod loads and the line is named.
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "plugin = A.dll\ndisabled = 1\n"), Binary::Missing),
-                                     Cand("B", Ini("gb.b", "requires = gb.a\n")) });
+        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "disabled = 1\n")) });
+        CHECK(r.records[0].accepted && !r.records[0].disabled);
+        CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
+    }
+
+    // gbhook.ini mods.disabled: by id or folder, any case, a section-less mod and a refused one included.
+    {
+        Candidate plain; plain.root = "mods"; plain.folder = "Plain Mod"; plain.hasAssets = true;
+        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a")), Cand("B", Ini("gb.b", "requires = gb.a\n")), plain,
+                                     Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Missing), Cand("D", Ini("gb.d")) },
+                                   { "GB.A", "plain mod", "c" });
         const Record* a = Find(r, "A");
         CHECK(a && !a->accepted && a->disabled);
         CHECK_EQ(a->refusal, "");
         CHECK_EQ(a->order, -1);
-        const Record* b = Find(r, "B");
-        CHECK(b && !b->accepted && !b->disabled);
-        CHECK_EQ(b->refusal, "requires 'gb.a', which is disabled in its modinfo.ini");
+        CHECK_EQ(Find(r, "B")->refusal, "requires 'gb.a', which is disabled in gbhook.ini");
+        const Record* p = Find(r, "Plain Mod");
+        CHECK(p && p->disabled && p->implicit && !p->accepted);
+        CHECK_EQ(p->mod.id, "plain_mod");
+        const Record* c = Find(r, "C");
+        CHECK(c && c->disabled);
+        CHECK_EQ(c->refusal, "");
+        CHECK(Find(r, "D")->accepted);
+        CHECK_EQ(r.records[0].folder, "D");
     }
 
     return check::Done("modset");

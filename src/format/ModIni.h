@@ -20,7 +20,6 @@ namespace ModIni
         std::string plugin;                      // a DLL under gbhook/, or empty
         std::string scripts;                     // a folder under gbhook/, or empty
         std::vector<std::string> content;        // archives under gbhook/
-        bool        disabled = false;   // the manual off switch; gbhook reads it, never writes it
         GbhStage    stage    = GBH_STAGE_BOOT;
         int         priority = 100;
         std::vector<std::string> requires_;

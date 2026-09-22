@@ -5,6 +5,9 @@
 # Where mods are looked for. Comma-separated, <gamedir>-relative or absolute.
 mods.root = mods
 
+# Mods to leave off, by id or folder name. The Mods page's Disable and Enable write this line.
+# mods.disabled = gb.mymod, SomeContentMod
+
 # A mod's own settings live under its id, as <id>.<key>. The mod's previews/modinfo.ini
 # lists the keys it reads and their defaults. A line here overrides one of them.
 # gb.mymod.spawn_rate = 12

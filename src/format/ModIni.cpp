@@ -50,7 +50,7 @@ namespace
 
     const char* const kKnown[] = {
         "gbhook.id", "gbhook.abi", "gbhook.plugin", "gbhook.scripts", "gbhook.content",
-        "gbhook.stage", "gbhook.priority", "gbhook.requires", "gbhook.disabled",
+        "gbhook.stage", "gbhook.priority", "gbhook.requires",
     };
 }
 
@@ -106,6 +106,11 @@ namespace ModIni
             if (e.key.compare(0, 9, "settings.") == 0)
             {
                 r.mod.settings.emplace_back(e.key.substr(9), e.value);
+                continue;
+            }
+            if (e.key == "gbhook.disabled")
+            {
+                r.warnings.push_back(Fmt("line %d: 'disabled' is no longer read; list the mod under mods.disabled in gbhook.ini", e.line));
                 continue;
             }
             bool known = false;
@@ -166,7 +171,6 @@ namespace ModIni
             return r;
         }
         if ((v = get("gbhook.requires"))) r.mod.requires_ = Ini::List(*v);
-        if ((v = get("gbhook.disabled"))) r.mod.disabled = Ini::ToBool(*v, false);
 
         return r;
     }

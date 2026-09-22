@@ -36,7 +36,7 @@ namespace
             e.dir       = Mods::GbhookDir(r);
             e.module    = nullptr;
             e.status.id = r.mod.id;
-            if (r.disabled)      { e.status.state = Host::State::Off;    e.status.note = "disabled in modinfo.ini"; }
+            if (r.disabled)      { e.status.state = Host::State::Off;    e.status.note = "disabled in gbhook.ini"; }
             else if (!r.accepted) { e.status.state = Host::State::Failed; e.status.note = r.refusal; }
             g_entries->push_back(e);
         }

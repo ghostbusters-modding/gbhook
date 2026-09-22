@@ -128,11 +128,13 @@ int main()
         CHECK(!ModIni::StageFromName("later", &s));
     }
 
-    // The manual disable switch, default off, read as a bool.
-    CHECK_EQ(Parse(kMinimal).mod.disabled, false);
-    CHECK_EQ(Parse(std::string(kMinimal) + "disabled = 1\n").mod.disabled, true);
-    CHECK_EQ(Parse(std::string(kMinimal) + "disabled = yes\n").mod.disabled, true);
-    CHECK_EQ(Parse(std::string(kMinimal) + "disabled = 0\n").mod.disabled, false);
+    // disabled moved to gbhook.ini: the old key is named, and the mod still loads.
+    {
+        ModIni::Result r = Parse(std::string(kMinimal) + "disabled = 1\n");
+        CHECK_EQ(r.refusal, "");
+        CHECK_EQ(r.warnings.size(), (size_t)1);
+        CHECK(r.warnings[0].find("mods.disabled in gbhook.ini") != std::string::npos);
+    }
 
     // priority
     CHECK_EQ(Parse(std::string(kMinimal) + "priority = high\n").refusal, "priority 'high' is not a number");
