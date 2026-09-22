@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
 // Level events, script faults, and loading a level by name: from a live level through the engine's pending
-// globals, from the front end through the boot flow's own load sequence run on the pump.
+// globals, from the front end by answering the menu loop's action poll with the engine's own "load pending".
 
 namespace LevelFlow
 {
@@ -22,9 +22,6 @@ namespace LevelFlow
     // Queue a checkpoint for the next level's begin
     void DeferCheckpoint(const char* checkpoint);
     bool FrontEndLoadPending();
-
-    // Pump only: runs the whole level inside the call while the tick is parked.
-    void RunFrontEndLoadIfPending();
 
     // The stem of the last prepared level, "" before any. Any thread.
     const char* CurrentLevel();

@@ -31,19 +31,9 @@ namespace
     constexpr size_t    kCpRow        = 0x304;       // +0 display name, +0x100 level, +0x200 prototype, +0x300 valid
     constexpr int       kCpRows       = 25;
 
-    // The boot flow's own case-5 load, run from the pump: the top menu screen never returns an action, so an
-    // armed pending level sits unconsumed at the front end. docs/engine/RE_NOTES.md 13.22 and 13.23.
-    constexpr uintptr_t kFeMgrPtr      = 0xDD14D0;
-    constexpr uintptr_t kRenderPtr     = 0xDDA2A8;
-    constexpr uintptr_t kFnRenderFlush = 0x419B30;
+    // What the action poll itself does before returning 5; the menu loop then runs its own load-and-teardown case.
     constexpr uintptr_t kFnScreenClose = 0x246BA0;
     constexpr uintptr_t kFnMenuCleanup = 0x246A50;
-    constexpr uintptr_t kLoadingFlag   = 0x20D4910;
-    constexpr uintptr_t kFnLoadingUi   = 0x2425D0;
-    constexpr uintptr_t kFnLoader      = 0x1EF790;   // runs the WHOLE level inside the call
-    constexpr uintptr_t kFnPostLevelA  = 0x27CFA0;
-    constexpr uintptr_t kPostBPtr      = 0xDD4C38;
-    constexpr uintptr_t kFnPostLevelB  = 0x2EA370;
 
     char          g_lastLevel[64]    = { 0 };
     char          g_feLoadLvl[64]    = { 0 };
@@ -148,25 +138,6 @@ namespace
         GBH_SEH_EXCEPT { return false; }
     }
 
-    bool SetLoadingFlag()
-    {
-        GBH_SEH_TRY { *reinterpret_cast<unsigned char*>(gameBase + kLoadingFlag) = 1; return true; }
-        GBH_SEH_EXCEPT { return false; }
-    }
-
-    void* FeDeref(uintptr_t rva)
-    {
-        GBH_SEH_TRY { return *reinterpret_cast<void**>(gameBase + rva); }
-        GBH_SEH_EXCEPT { return nullptr; }
-    }
-
-    bool FeCall0(const char* what, uintptr_t rva)
-    {
-        typedef void (__fastcall* F)();
-        GBH_SEH_TRY { ((F)(gameBase + rva))(); return true; }
-        GBH_SEH_EXCEPT { Log::Writef("LEVEL", "EXC in %s", what); return false; }
-    }
-
     bool FeCall1(const char* what, uintptr_t rva, void* a)
     {
         typedef void (__fastcall* F)(void*);
@@ -181,11 +152,32 @@ namespace
         GBH_SEH_EXCEPT { Log::Writef("LEVEL", "EXC in %s", what); return false; }
     }
 
-    bool FeVtblCall(const char* what, void* obj, size_t byteOff)
+    // ---- the front-end load -----------------------------------------------------
+    // Answering the poll with 5 hands the load to the menu loop's own case, which tears the level down and re-arms
+    // the title when it ends. Running the loader from the pump left that loop mid-frame with no screen: a black title.
+    typedef __int64 (__fastcall* tDispatch)(void*);
+    tDispatch oDispatch = nullptr;
+
+    __int64 __fastcall DispatchDetour(void* feMgr)
     {
-        typedef void (__fastcall* F)(void*);
-        GBH_SEH_TRY { void** vt = *reinterpret_cast<void***>(obj); ((F)vt[byteOff / 8])(obj); return true; }
-        GBH_SEH_EXCEPT { Log::Writef("LEVEL", "EXC in %s", what); return false; }
+        const bool pending = g_feLoadPending != 0;   // a request raised inside this poll waits for the next frame
+        const __int64 r = oDispatch ? oDispatch(feMgr) : 0;
+        if (!pending || !InterlockedExchange(&g_feLoadPending, 0)) return r;
+
+        if (static_cast<int>(r) != 0)
+        {
+            Log::Writef("LEVEL", "front-end load of '%s' dropped: the menu chose action %d first", g_feLoadLvl, (int)r);
+            return r;
+        }
+        void* gg = Game::Singleton();
+        if (!gg)                 { Log::Write("LEVEL", "front-end load abort: no game singleton"); return r; }
+        if (Game::LocalPlayer()) { Log::Write("LEVEL", "front-end load abort: a level is live"); return r; }
+        if (!ArmFrontEnd(g_feLoadLvl)) { Log::Write("LEVEL", "EXC arming the pending level"); return r; }
+        SetChainFlag(gg);   // a fresh start, not the profile's resume row
+        FeCall2("screenClose", kFnScreenClose, feMgr, 0);
+        FeCall1("menuCleanup", kFnMenuCleanup, feMgr);
+        Log::Writef("LEVEL", "front-end load of '%s' handed to the menu loop as action 5", g_feLoadLvl);
+        return 5;
     }
 
     // ---- level prepare --------------------------------------------------------
@@ -291,6 +283,10 @@ namespace LevelFlow
         if (!HookBroker::Install(nullptr, gameBase + HookTargets::levelBeginSync, (void*)&SyncDetour, (void**)&oSync,
                                  GBH_HOOK_EXCLUSIVE))
             Log::Write("LEVEL", "begin-level sync hook FAILED to install; checkpoints cannot be armed");
+
+        if (!HookBroker::Install(nullptr, gameBase + HookTargets::frontEndAction, (void*)&DispatchDetour,
+                                 (void**)&oDispatch, GBH_HOOK_EXCLUSIVE))
+            Log::Write("LEVEL", "action poll hook FAILED to install; levels cannot load from the front end");
     }
 
     void RegisterCommands()
@@ -303,16 +299,17 @@ namespace LevelFlow
     {
         if (!gameBase || !level || !*level) return false;
 
-        // At the front end the per-level loop is parked and an armed action is never consumed: the pump route.
+        // At the front end the per-level loop is parked and an armed action is never consumed: the poll answers.
         if (!FrameHook::TickRecently() && !Game::LocalPlayer())
         {
+            if (!oDispatch) { Log::Write("LEVEL", "no action poll hook; the front end cannot load a level"); return false; }
             char file[64];
             const size_t n = strlen(level);
             if (n > 4 && _stricmp(level + n - 4, ".lvl") == 0) lstrcpynA(file, level, (int)sizeof file);
             else _snprintf_s(file, sizeof file, _TRUNCATE, "%s.lvl", level);
             lstrcpynA(g_feLoadLvl, file, (int)sizeof g_feLoadLvl);
             InterlockedExchange(&g_feLoadPending, 1);
-            Log::Writef("LEVEL", "front-end load of '%s' requested (runs on the next pump tick)", file);
+            Log::Writef("LEVEL", "front-end load of '%s' requested (the next action poll takes it)", file);
             return true;
         }
 
@@ -353,36 +350,6 @@ namespace LevelFlow
     }
 
     bool FrontEndLoadPending() { return g_feLoadPending != 0; }
-
-    void RunFrontEndLoadIfPending()
-    {
-        if (!g_feLoadPending || !InterlockedExchange(&g_feLoadPending, 0) || !gameBase) return;
-        void* gg = Game::Singleton();
-        if (!gg)               { Log::Write("LEVEL", "front-end load abort: no game singleton"); return; }
-        if (Game::LocalPlayer()) { Log::Write("LEVEL", "front-end load abort: a level is live"); return; }
-        if (!ArmFrontEnd(g_feLoadLvl)) { Log::Write("LEVEL", "EXC arming the pending level"); return; }
-        SetChainFlag(gg);   // a fresh start, not the profile's resume row
-
-        Log::Writef("LEVEL", "front-end load of '%s': the boot flow's own sequence, on the pump thread", g_feLoadLvl);
-        void* rend  = FeDeref(kRenderPtr);
-        void* feMgr = FeDeref(kFeMgrPtr);
-        if (rend)  FeCall1("renderFlush", kFnRenderFlush, rend);
-        if (feMgr) FeCall2("screenClose", kFnScreenClose, feMgr, 0);
-        if (feMgr) FeCall1("menuCleanup", kFnMenuCleanup, feMgr);
-        SetLoadingFlag();
-        FeCall0("loadingUi", kFnLoadingUi);
-        Log::Write("LEVEL", "-> loader (the whole level runs inside this call)");
-        if (!FeCall1("loader", kFnLoader, gg))
-        {
-            Log::Write("LEVEL", "loader FAULTED; level state unknown. Restart the game before the next attempt.");
-            return;
-        }
-        Log::Write("LEVEL", "loader returned (level over); post-level calls");
-        FeCall1("postLevelA", kFnPostLevelA, gg);
-        if (void* pb = FeDeref(kPostBPtr)) FeCall1("postLevelB", kFnPostLevelB, pb);
-        FeVtblCall("gGame+0x28", gg, 0x28);
-        Log::Write("LEVEL", "front end resumes");
-    }
 
     const char* CurrentLevel() { return g_lastLevel; }
 }
