@@ -136,6 +136,19 @@ int main()
         CHECK_EQ(Ini::List("").size(), (size_t)0);
         CHECK_EQ(Ini::List("a,,b,").size(), (size_t)2);
         CHECK_EQ(Ini::List(" x ")[0], "x");
+    }
+
+    // ListOf: the last value's list, by value, empty when the key is absent or blank.
+    {
+        const std::string text = "a = 1\nmods.disabled = gb.old\nMODS.Disabled = gb.a,  Harbor Docks , gb.c\n";
+        std::vector<std::string> l = Ini::ListOf(text, "mods.disabled");
+        CHECK_EQ(l.size(), (size_t)3);
+        CHECK_EQ(l[0], "gb.a");
+        CHECK_EQ(l[1], "Harbor Docks");
+        CHECK_EQ(l[2], "gb.c");
+        CHECK_EQ(Ini::ListOf(text, "missing").size(), (size_t)0);
+        CHECK_EQ(Ini::ListOf("mods.disabled =\n", "mods.disabled").size(), (size_t)0);
+        CHECK_EQ(Ini::ListOf("", "mods.disabled").size(), (size_t)0);
         Ini::Document d = Parse("content = content/A.POD, content/B.POD");
         CHECK_EQ(Ini::List(Value(d, "content")).size(), (size_t)2);
         CHECK_EQ(Ini::List(Value(d, "content"))[1], "content/B.POD");

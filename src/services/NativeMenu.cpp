@@ -400,9 +400,6 @@ namespace
         p->rowsMem = nullptr;
         if (at == g_depth - 1) g_depth = at;
         else Log::Writef("NMENU", "page %d hidden under %d open page(s); unexpected", at + 1, g_depth - at - 1);
-
-        // The child may have changed what its parent lists, the Mods toggle for one.
-        if (at == g_depth && at > 0 && !g_closingAll) RefreshPage(g_pages[at - 1]);
     }
 
     // The parent frees the page after the close. When the last of ours is gone, whatever waited for that runs.

@@ -33,6 +33,9 @@ namespace Ini
     // Comma-separated list, items trimmed, empties dropped.
     std::vector<std::string> List(const std::string& value);
 
+    // List of the last `key` in `text`, empty when absent. By value: Find into a temporary Parse dangles.
+    std::vector<std::string> ListOf(const std::string& text, const std::string& key);
+
     // Typed readers. Empty or unparsable yields the default.
     int   ToInt(const std::string& v, int dflt);
     float ToFloat(const std::string& v, float dflt);

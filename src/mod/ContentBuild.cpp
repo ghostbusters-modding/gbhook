@@ -33,6 +33,7 @@ namespace
     std::vector<Planned> g_queue;
     std::unordered_map<std::string, std::string> g_summary;
     std::unordered_map<std::string, ContentBuild::Outcome> g_outcome;
+    std::unordered_map<std::string, ContentBuild::Info>    g_info;   // outcome left None; OutcomeOf answers it
     bool          g_parked      = false;   // a mount job is on the pump and will drain the queue
     volatile LONG g_started     = 0;
     volatile LONG g_buildDone   = 0;
@@ -52,6 +53,15 @@ namespace
         EnterCriticalSection(&g_lock);
         g_summary[id] = text;
         g_outcome[id] = o;
+        LeaveCriticalSection(&g_lock);
+    }
+
+    void SetInfo(const std::string& id, size_t files, ContentBuild::Origin origin)
+    {
+        EnterCriticalSection(&g_lock);
+        ContentBuild::Info& i = g_info[id];
+        i.assetFiles = (int)files;
+        i.origin     = origin;
         LeaveCriticalSection(&g_lock);
     }
 
@@ -386,6 +396,7 @@ namespace
                 ++inChain;
                 Log::Writef("MODS", "content %s: off -- %s", r.mod.id.c_str(), v.reason.c_str());
                 SetSummary(r.mod.id, "found in the chained PODs, the Mod Manager loads it", ContentBuild::Outcome::InChain);
+                SetInfo(r.mod.id, loose.size(), ContentBuild::Origin::None);
                 break;
 
             case Content::Action::MountCached:
@@ -394,6 +405,7 @@ namespace
                 const std::string rel = "gbhook\\cache\\" + r.mod.id + "\\" + v.hash + ".POD";
                 Log::Writef("MODS", "content %s: cached, %s", r.mod.id.c_str(), rel.c_str());
                 SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s), cached", ContentBuild::Outcome::Pending);
+                SetInfo(r.mod.id, loose.size(), ContentBuild::Origin::Cached);
                 Enqueue(r.mod.id, rel);
                 break;
             }
@@ -430,6 +442,7 @@ namespace
                     ++built;
                     Log::Writef("MODS", "content %s: built %d file(s) -> %s", r.mod.id.c_str(), (int)loose.size(), relPod.c_str());
                     SetSummary(r.mod.id, std::to_string(loose.size()) + " file(s) built", ContentBuild::Outcome::Pending);
+                    SetInfo(r.mod.id, loose.size(), ContentBuild::Origin::Built);
                     Enqueue(r.mod.id, relPod);
                 }
                 else
@@ -437,6 +450,7 @@ namespace
                     DeleteFileA(absTmp.c_str());
                     Log::Writef("MODS", "content %s: build FAILED -- %s", r.mod.id.c_str(), why.c_str());
                     SetSummary(r.mod.id, "build failed, " + why, ContentBuild::Outcome::Failed);
+                    SetInfo(r.mod.id, loose.size(), ContentBuild::Origin::None);
                 }
                 break;
             }
@@ -484,6 +498,19 @@ namespace ContentBuild
         else if (!g_buildDone)     o = Outcome::Pending;
         LeaveCriticalSection(&g_lock);
         return o;
+    }
+
+    Info InfoOf(const char* id)
+    {
+        Info out;
+        if (!id) return out;
+        EnsureLock();
+        EnterCriticalSection(&g_lock);
+        auto it = g_info.find(id);
+        if (it != g_info.end()) out = it->second;
+        LeaveCriticalSection(&g_lock);
+        out.outcome = OutcomeOf(id);
+        return out;
     }
 
     std::string Summary(const char* id)

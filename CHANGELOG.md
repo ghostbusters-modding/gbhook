@@ -10,9 +10,9 @@ section 1 says when it would not.
   logged naming both mods. `binds` lists every action.
 - `pause` holds the level loop's own freeze, and `paused` says whether the world is stopped
   and why. `world_to_screen` projects a world position to pixels through the engine's camera.
-- A mod's page under View Mods says what is true now and what the next start does, on
-  separate rows. Disable and Enable return to the list, where a switched mod reads `ON>OFF`
-  or `OFF>ON`.
+- A mod's page under View Mods is ON or OFF, the reason when it is off by refusal or error,
+  its asset and code file counts with how its content was cached and mounted, and Disable or
+  Enable. Once pressed, the switch reads Restart to Apply Changes until the game restarts.
 - gbhook creates `%LOCALAPPDATA%\GHOSTBUSTERS` at boot when it is missing. The game refuses
   to write its settings and saves without it.
 

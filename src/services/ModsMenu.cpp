@@ -53,8 +53,7 @@ namespace
     {
         std::string text;
         ReadIni(text);
-        const std::string* v = Ini::Find(Ini::Parse(text), "mods.disabled");
-        return v ? Ini::List(*v) : std::vector<std::string>{};
+        return Ini::ListOf(text, "mods.disabled");
     }
 
     bool Names(const std::string& item, const ModsPage::Mod& m)
@@ -74,8 +73,7 @@ namespace
         std::string text;
         ReadIni(text);
         std::string value;
-        const std::string* v = Ini::Find(Ini::Parse(text), "mods.disabled");
-        for (const std::string& o : v ? Ini::List(*v) : std::vector<std::string>{})
+        for (const std::string& o : Ini::ListOf(text, "mods.disabled"))
             if (!Names(o, m)) value += (value.empty() ? "" : ", ") + o;
         if (off) value += (value.empty() ? "" : ", ") + m.id;
         text = Ini::Set(text, "mods.disabled", value);
@@ -87,6 +85,22 @@ namespace
         fclose(f);
         if (!ok || !MoveFileExA(tmp.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING)) { DeleteFileA(tmp.c_str()); return false; }
         return true;
+    }
+
+    void FillContent(ModsPage::Mod& m, const ContentBuild::Info& i)
+    {
+        using CB = ContentBuild::Outcome;
+        m.assetFiles = i.assetFiles;
+        m.origin = i.origin == ContentBuild::Origin::Cached ? ModsPage::Origin::Cached
+                 : i.origin == ContentBuild::Origin::Built  ? ModsPage::Origin::Built : ModsPage::Origin::None;
+        switch (i.outcome)
+        {
+        case CB::Pending: m.mount = ModsPage::Mount::NotYet; break;
+        case CB::Mounted: m.mount = ModsPage::Mount::Mounted; break;
+        case CB::InChain: m.mount = ModsPage::Mount::InChain; break;
+        case CB::Failed:  m.mount = m.origin == ModsPage::Origin::None ? ModsPage::Mount::BuildFailed : ModsPage::Mount::MountFailed; break;
+        case CB::None:    m.mount = ModsPage::Mount::None; break;
+        }
     }
 
     void Gather()
@@ -102,10 +116,10 @@ namespace
             m.id      = r.mod.id.empty() ? r.folder : r.mod.id;
             m.version = r.mod.version;
             m.folder  = r.folder;
-            m.stage   = ModIni::StageName(r.mod.stage);
             m.state   = StateOf(r, s, c);
             m.note    = m.state == ModsPage::State::Refused ? r.refusal : (m.state == ModsPage::State::Failed && s ? s->note : "");
-            m.content = r.mod.id.empty() || !r.accepted ? "" : ContentBuild::Summary(r.mod.id.c_str());
+            m.codeFiles = r.mod.plugin.empty() ? 0 : 1;
+            if (!r.mod.id.empty() && r.accepted) FillContent(m, ContentBuild::InfoOf(r.mod.id.c_str()));
             m.toggle  = Listed(diskOff, m) ? ModsPage::Switch::TurnOn : ModsPage::Switch::TurnOff;
             m.changed = Listed(diskOff, m) != Listed(bootOff, m);
             g_mods.push_back(m);
@@ -133,8 +147,8 @@ namespace
         else    Log::Writef("MODS", "gbhook.ini could not be written; %s is unchanged", m.id.c_str());
         Gather();
         g_mods[(size_t)g_detail].saveFailed = !ok;
-        // Back to the list: a live relabel of this page never showed in game, and a reopen is built fresh.
-        return GBH_NATIVE_CLOSE;
+        // Stay: the switch relabels to the inert restart row, same row count, so a second press does nothing.
+        return GBH_NATIVE_STAY;
     }
 
     void BuildList(void*)

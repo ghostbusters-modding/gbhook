@@ -17,7 +17,17 @@ namespace ContentBuild
 
     enum class Outcome { None, Pending, Mounted, InChain, Failed };
 
-    // What happened to one mod's content, in a phrase for the Mods page. "" for a mod without content.
+    // What happened to one mod's content, in a phrase for the log. "" for a mod without content.
     std::string Summary(const char* id);
     Outcome     OutcomeOf(const char* id);
+
+    // The same as data, for the Mods page. Origin is how the cache POD came to be; None when there is none.
+    enum class Origin { None, Cached, Built };
+    struct Info
+    {
+        int     assetFiles = 0;
+        Origin  origin     = Origin::None;
+        Outcome outcome    = Outcome::None;
+    };
+    Info InfoOf(const char* id);
 }

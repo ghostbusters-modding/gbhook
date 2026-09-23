@@ -12,18 +12,25 @@
 
 namespace ModsPage
 {
-    // The list says ON or OFF, or ON>OFF once switched. The detail page says which of these it is.
+    // Both pages say ON or OFF; a refusal or failure adds its reason on the detail page.
     enum class State { Loaded, NoCode, Pending, OffIni, Refused, Failed };
 
     // The detail page's switch: gbhook.ini's mods.disabled, read by the next boot.
     enum class Switch { None, TurnOff, TurnOn };
 
+    // How the cache POD came to be, and what became of it.
+    enum class Origin { None, Cached, Built };
+    enum class Mount  { None, NotYet, Mounted, MountFailed, BuildFailed, InChain };
+
     struct Mod
     {
-        std::string id, version, folder, stage;
+        std::string id, version, folder;
         State       state = State::Loaded;
         std::string note;      // the refusal or failure text, "" otherwise
-        std::string content;   // what the content build did, "" for a code-only mod
+        int         assetFiles = 0;
+        int         codeFiles  = 0;   // 1 when modinfo.ini names a plugin
+        Origin      origin     = Origin::None;
+        Mount       mount      = Mount::None;
         Switch      toggle  = Switch::None;
         bool        changed = false;   // gbhook.ini no longer matches this boot
         bool        saveFailed = false;
@@ -43,8 +50,12 @@ namespace ModsPage
     // The list: a header row, one row per mod whose action is its index, and one row per missing root.
     std::vector<Rows::Row> List(const Header& h, const std::vector<Mod>& mods);
 
-    // One mod in full, ending with a Back row.
+    // One mod in full, ending with a Back row. Once the disk differs from this boot the switch is an inert
+    // "Restart to Apply Changes", so the row count never moves and a live page only relabels.
     std::vector<Rows::Row> Detail(const Mod& m);
+
+    // "7 asset files, 1 code file", then a second row for how the cache came to be and what became of it.
+    std::vector<std::string> ContentLines(const Mod& m);
 
     bool        IsOn(State s);
     const char* StateWord(State s);   // "ON" or "OFF"

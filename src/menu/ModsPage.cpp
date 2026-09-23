@@ -3,27 +3,43 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #include "ModsPage.h"
 
+#include <string>
+
 namespace ModsPage
 {
     bool IsOn(State s) { return s == State::Loaded || s == State::NoCode || s == State::Pending; }
 
     const char* StateWord(State s) { return IsOn(s) ? "ON" : "OFF"; }
 
-    // The toggle names the button, so the next start is its opposite: Disable means it will start ON.
-    static const char* NextWord(const Mod& m) { return m.toggle == Switch::TurnOff ? "ON" : "OFF"; }
-
-    static std::string Headline(const Mod& m)
+    static std::string Count(int n, const char* what)
     {
-        switch (m.state)
+        return std::to_string(n) + " " + what + (n == 1 ? "" : "s");
+    }
+
+    std::vector<std::string> ContentLines(const Mod& m)
+    {
+        std::vector<std::string> out;
+        out.push_back(Count(m.assetFiles, "asset file") + ", " + Count(m.codeFiles, "code file"));
+        if (m.assetFiles == 0) return out;
+
+        std::string state;
+        if (m.origin == Origin::Cached)     state = "cached";
+        else if (m.origin == Origin::Built) state = "built";
+        const char* mount = nullptr;
+        switch (m.mount)
         {
-        case State::Loaded:     return "Now: ON, loaded at " + m.stage;
-        case State::NoCode:     return m.content.empty() ? "Now: ON, nothing to load" : "Now: ON, content only";
-        case State::Pending:    return "Now: ON, loads at " + m.stage;
-        case State::OffIni:     return "Now: OFF, disabled in gbhook.ini";
-        case State::Refused:    return "Now: OFF, refused";
-        case State::Failed:     return "Now: OFF, error";
+        case Mount::Mounted:     mount = "mounted"; break;
+        case Mount::MountFailed: mount = "mount failed"; break;
+        case Mount::BuildFailed: mount = "build failed"; break;
+        case Mount::InChain:     mount = "left to the Mod Manager"; break;
+        case Mount::NotYet:      mount = "not mounted yet"; break;
+        case Mount::None:        break;
         }
-        return "?";
+        if (mount) state += (state.empty() ? "" : ", ") + std::string(mount);
+
+        // The state gets its own row: counts and state together rarely fit a 39-character label.
+        if (!state.empty()) out.push_back(state);
+        return out;
     }
 
     std::vector<Rows::Row> List(const Header& h, const std::vector<Mod>& mods)
@@ -39,10 +55,8 @@ namespace ModsPage
         for (size_t i = 0; i < mods.size(); ++i)
         {
             const Mod& m = mods[i];
-            // Now>next once the switch was pressed; the list is the one page the player surely sees again.
             std::string word = StateWord(m.state);
-            if (m.changed && m.toggle != Switch::None) word += std::string(">") + NextWord(m);
-            while (word.size() < (m.changed ? 7u : 4u)) word += ' ';
+            while (word.size() < 4) word += ' ';
             std::string label = word + m.id;
             if (!m.version.empty() && label.size() + 1 + m.version.size() <= Rows::kLabelMax) label += " " + m.version;
             rows.push_back({ Rows::Fit(label), (int)i });
@@ -56,20 +70,14 @@ namespace ModsPage
     {
         std::vector<Rows::Row> rows; 
 
-        rows.push_back({ Rows::Fit(Headline(m)), Rows::kInert });
-
+        rows.push_back({ StateWord(m.state), Rows::kInert });
         for (const std::string& l : Rows::Wrap(m.note, Rows::kLabelMax)) rows.push_back({ l, Rows::kInert });
-        if (!m.content.empty())
-            for (const std::string& l : Rows::Wrap("Content: " + m.content, Rows::kLabelMax)) rows.push_back({ l, Rows::kInert });
+        for (const std::string& l : ContentLines(m)) rows.push_back({ Rows::Fit(l), Rows::kInert });
 
-        if (m.toggle != Switch::None)
-        {
-            std::string next = std::string("Next start: ") + NextWord(m);
-            if (m.changed) next += ", saved in gbhook.ini";
-            rows.push_back({ Rows::Fit(next), Rows::kInert });
-            rows.push_back({ m.toggle == Switch::TurnOff ? "Disable" : "Enable", kToggle });
-            if (m.saveFailed) rows.push_back({ "gbhook.ini could not be written", Rows::kInert });
-        }
+        if (m.changed)                         rows.push_back({ "Restart to Apply Changes", Rows::kInert });
+        else if (m.toggle == Switch::TurnOff)  rows.push_back({ "Disable", kToggle });
+        else if (m.toggle == Switch::TurnOn)   rows.push_back({ "Enable", kToggle });
+        if (m.saveFailed) rows.push_back({ "gbhook.ini could not be written", Rows::kInert });
 
         rows.push_back({ "Back", kBack });
         return rows;

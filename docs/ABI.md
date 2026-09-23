@@ -212,9 +212,7 @@ the level starts from the top.
 `GbhNativeMenuDesc` is `struct_size`, `build`, `activate`, `user` and `title`. A title
 with a leading `@` names a localisation key. `activate` answers `GBH_NATIVE_STAY`,
 `GBH_NATIVE_CLOSE` or `GBH_NATIVE_CLOSE_ALL`; a row with action `GBH_NATIVE_INERT` never
-activates. A page whose activation changed what it shows should answer `GBH_NATIVE_CLOSE`:
-the page under it is rebuilt and the next open is fresh, while relabelling a live page in
-place has not yet been seen to reach the screen.
+activates.
 
 ### Files, engine main thread only
 

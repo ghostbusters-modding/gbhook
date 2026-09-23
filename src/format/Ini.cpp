@@ -138,6 +138,13 @@ namespace Ini
         return out;
     }
 
+    std::vector<std::string> ListOf(const std::string& text, const std::string& key)
+    {
+        const Document     doc = Parse(text);
+        const std::string* v   = Find(doc, key);
+        return v ? List(*v) : std::vector<std::string>{};
+    }
+
     int ToInt(const std::string& v, int dflt)
     {
         const char* s   = v.c_str();
