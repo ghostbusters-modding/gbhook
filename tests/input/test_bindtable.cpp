@@ -11,10 +11,10 @@
 
 namespace
 {
-    Chord::Key K(const char* text)
+    KeyChord::Key K(const char* text)
     {
-        Chord::Key k;
-        Chord::FromText(text, &k);
+        KeyChord::Key k;
+        KeyChord::FromText(text, &k);
         return k;
     }
 
@@ -54,7 +54,7 @@ int main()
     CHECK(t.Add("gb.a", "same", "", K("ctrl+f"), nullptr, nullptr).clashWith == cf.index);
     CHECK_EQ(t.Find("gb.b", "fly"), -1);   // names are per owner
     CHECK_EQ(t.Find("gb.a", "fly"), f.index);
-    const BindTable::AddResult un = t.Add("gb.b", "idle", std::string(200, 'h').c_str(), Chord::Key(), nullptr, nullptr);
+    const BindTable::AddResult un = t.Add("gb.b", "idle", std::string(200, 'h').c_str(), KeyChord::Key(), nullptr, nullptr);
     CHECK(un.status == Add::Ok);
     CHECK_EQ(std::string(t.At(un.index)->help).size(), (size_t)95);
 
@@ -162,9 +162,9 @@ int main()
     for (; i < BindTable::kMaxClaims; ++i)
     {
         snprintf(name, sizeof name, "n%d", i);
-        CHECK(t.Add("gb.fill", name, "", Chord::Key(), nullptr, nullptr).status == Add::Ok);
+        CHECK(t.Add("gb.fill", name, "", KeyChord::Key(), nullptr, nullptr).status == Add::Ok);
     }
-    CHECK(t.Add("gb.fill", "onemore", "", Chord::Key(), nullptr, nullptr).status == Add::Full);
+    CHECK(t.Add("gb.fill", "onemore", "", KeyChord::Key(), nullptr, nullptr).status == Add::Full);
     CHECK_EQ(t.Count(), BindTable::kMaxClaims);
 
     return check::Done("bindtable");

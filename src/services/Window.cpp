@@ -4,6 +4,7 @@
 // The engine fills its scan-code table from its own WM_KEYDOWN handler, so answering 0 here really does hide a key.
 // Never un-subclassed: nothing in gbhook is ever unloaded, and the window outlives every mod.
 #include "Window.h"
+#include "Bindings.h"
 #include "Events.h"
 #include "Pump.h"
 #include "../core/Framework.h"
@@ -22,13 +23,21 @@ namespace
     {
         switch (msg)
         {
+        // Raw subscribers first: a text line that keeps typed keys also keeps them from firing actions.
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-            if (Events::FireKey((int)w, true)) return 0;
+            if (Events::FireKey((int)w, true) || Bindings::OnKey((int)w, true)) return 0;
             break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-            if (Events::FireKey((int)w, false)) return 0;
+            if (Events::FireKey((int)w, false) || Bindings::OnKey((int)w, false)) return 0;
+            break;
+        // No key-up ever comes for a key released while the window is in the background.
+        case WM_KILLFOCUS:
+            Bindings::OnFocusLost();
+            break;
+        case WM_ACTIVATE:
+            if (LOWORD(w) == WA_INACTIVE) Bindings::OnFocusLost();
             break;
         case WM_CHAR:
         case WM_SYSCHAR:

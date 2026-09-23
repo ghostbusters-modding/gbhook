@@ -7,9 +7,11 @@
 #include <cstring>
 
 #include "Pump.h"
+#include "Bindings.h"
 #include "Commands.h"
 #include "Events.h"
 #include "FrameHook.h"
+#include "World.h"
 #include "../core/Framework.h"
 #include "../core/HookBroker.h"
 #include "../core/Seh.h"
@@ -86,6 +88,8 @@ namespace
         }
         if (g_jobCount) RunJobs();
         Events::FirePump();
+        Bindings::Flush();
+        World::Reassert();
 
         // While the game tick is parked this is the main thread's only visit, so it drains what the tick would have.
         if (!FrameHook::TickRecently()) Commands::Drain();

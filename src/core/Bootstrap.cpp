@@ -24,7 +24,9 @@
 #include "services/Services.h"
 #include "services/Actors.h"
 #include "services/Attr.h"
+#include "services/Bindings.h"
 #include "services/Window.h"
+#include "services/World.h"
 
 namespace
 {
@@ -78,6 +80,8 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
 
     // The other contended detours
     Events::Init();
+    Bindings::Init();
+    World::Init();
     FrameHook::Install();
     VmHook::Install();
     LevelFlow::InstallFlowHooks();
@@ -89,6 +93,7 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     // The command channel: the framework's own, then each service's. Before EARLY, so a mod may register from init.
     Commands::Init();
     InputInject::RegisterCommands();
+    Bindings::RegisterCommands();
     LevelFlow::RegisterCommands();
     Pods::RegisterCommands();
     Files::RegisterCommands();

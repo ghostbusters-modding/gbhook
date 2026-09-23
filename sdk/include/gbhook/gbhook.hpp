@@ -307,4 +307,27 @@ namespace gbh
     // ---- keys, message thread ----
     inline Sub on_key(GbhKeyFn fn, void* user = nullptr)   { return has_services() ? Sub(api()->on_key(fn, user)) : Sub(); }
     inline Sub on_char(GbhCharFn fn, void* user = nullptr) { return has_services() ? Sub(api()->on_char(fn, user)) : Sub(); }
+
+    // ---- actions and world, appended after on_char in 0.2.5 ----
+    inline bool has_actions() { return gbh_api_has(api(), world_to_screen); }
+
+    // `bind.<name>` in modinfo.ini is the default chord, gbhook.ini overrides it. fn runs on the main thread per press.
+    inline int action_register(const char* name, GbhActionFn fn, void* user = nullptr, const char* help = "")
+    {
+        return has_actions() ? api()->action_register(name, fn, user, help) : GBH_ERR_UNSUPPORTED;
+    }
+    inline std::string action_binding(const char* name)
+    {
+        char buf[64] = { 0 };
+        if (!has_actions() || api()->action_binding(name, buf, sizeof buf) != GBH_OK) return std::string();
+        return std::string(buf);
+    }
+    inline bool action_held(const char* name)            { return has_actions() && api()->action_held(name) == 1; }
+    inline int  action_enable(const char* name, bool on) { return has_actions() ? api()->action_enable(name, on ? 1 : 0) : GBH_ERR_UNSUPPORTED; }
+    inline int  action_capture(bool on)                  { return has_actions() ? api()->action_capture(on ? 1 : 0) : GBH_ERR_UNSUPPORTED; }
+
+    // ---- world: GBH_PAUSED_* bits, the freeze, and the engine's own projection ----
+    inline int  paused()        { return has_actions() ? api()->paused() : 0; }
+    inline int  pause(bool on)  { return has_actions() ? api()->pause(on ? 1 : 0) : GBH_ERR_UNSUPPORTED; }
+    inline bool world_to_screen(const float* pos, float* out) { return has_actions() && api()->world_to_screen(pos, out) == 1; }
 }

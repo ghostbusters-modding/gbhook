@@ -19,6 +19,8 @@
 #include "../services/Levels.h"
 #include "../services/Actors.h"
 #include "../services/Attr.h"
+#include "../services/Bindings.h"
+#include "../services/World.h"
 #include "../core/ProcessMemory.h"
 #include "input/Dik.h"
 
@@ -307,6 +309,25 @@ namespace
     GbhSub OnKey(GbhKeyFn f, void* u)   { return Events::Subscribe(Events::Key,  Who(GBH_CALLER()), (void*)f, u); }
     GbhSub OnChar(GbhCharFn f, void* u) { return Events::Subscribe(Events::Char, Who(GBH_CALLER()), (void*)f, u); }
 
+    // ---- actions: names are per mod, so every entry resolves against the caller ------------------
+    int ActionRegister(const char* name, GbhActionFn fn, void* user, const char* help)
+    {
+        return Bindings::Register(Who(GBH_CALLER()), name, fn, user, help);
+    }
+    int ActionBinding(const char* name, char* out, int cap) { return Bindings::Binding(Who(GBH_CALLER()), name, out, cap); }
+    int ActionHeld(const char* name)                        { return Bindings::Held(Who(GBH_CALLER()), name); }
+    int ActionEnable(const char* name, int on)              { return Bindings::Enable(Who(GBH_CALLER()), name, on != 0); }
+    int ActionCapture(int on)                               { return Bindings::Capture(Who(GBH_CALLER()), on != 0); }
+
+    // ---- world ---------------------------------------------------------------------
+    int Paused()      { return World::Paused(); }
+    int Pause(int on) { return World::Pause(Who(GBH_CALLER()), on != 0); }
+    int WorldToScreen(const float pos[3], float out[2])
+    {
+        if (!pos || !out) return GBH_ERR_ARG;
+        return World::ToScreen(pos, out);
+    }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -407,6 +428,16 @@ namespace Api
 
         g_api.on_key  = OnKey;
         g_api.on_char = OnChar;
+
+        g_api.action_register = ActionRegister;
+        g_api.action_binding  = ActionBinding;
+        g_api.action_held     = ActionHeld;
+        g_api.action_enable   = ActionEnable;
+        g_api.action_capture  = ActionCapture;
+
+        g_api.paused          = Paused;
+        g_api.pause           = Pause;
+        g_api.world_to_screen = WorldToScreen;
 
         g_built = true;
         return &g_api;

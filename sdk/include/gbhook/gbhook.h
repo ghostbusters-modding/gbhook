@@ -212,6 +212,14 @@ typedef struct GbhAttrInfo {
 typedef int (*GbhKeyFn)(int vk, int down, void* user);
 typedef int (*GbhCharFn)(unsigned int ch, void* user);
 
+/* An action's press: main thread, from the pump, once per press. `name` is the action's own, so one fn can serve many. */
+typedef void (*GbhActionFn)(const char* name, void* user);
+
+/* What paused() answers. 0 while the world ticks. */
+#define GBH_PAUSED_FREEZE       1   /* the engine's controller-disconnect freeze; pause() holds it */
+#define GBH_PAUSED_SCREEN       2   /* a front-end screen is up: the pause menu, the title */
+#define GBH_PAUSED_FOCUS        4   /* the game window lost focus */
+
 /* ---------------------------------------------------------------------------
  *  The API table. Handed to GbhPluginInit, valid for the life of the process; entries are only appended.
  *  No entry takes a mod handle: the caller is derived from the return address. Returned strings are ours,
@@ -339,6 +347,19 @@ typedef struct GbhApi {
     /* -- keys: the game window subclassed once. Message thread; the first subscriber answering 1 keeps the key -- */
     GbhSub (*on_key)(GbhKeyFn fn, void* user);
     GbhSub (*on_char)(GbhCharFn fn, void* user);
+
+    /* -- actions: named by the mod, bound by the player as `bind.<name>`, one key or a chord such as "CTRL+SHIFT+F5".
+     *    A bound key never reaches the engine. The first claim on a chord wins; the loser stays unbound -- */
+    int (*action_register)(const char* name, GbhActionFn fn, void* user, const char* help);  /* GBH_OK bound or unbound; GBH_ERR_CONFLICT when this mod has the name */
+    int (*action_binding)(const char* name, char* out, int cap);    /* the chord as text, "" when unbound */
+    int (*action_held)(const char* name);                           /* 1 while the whole chord is down; GBH_ERR_NOT_FOUND */
+    int (*action_enable)(const char* name, int on);                 /* off: the key passes to the engine and nothing fires */
+    int (*action_capture)(int on);                                  /* on: only the caller's actions fire. GBH_ERR_CONFLICT when another mod holds it */
+
+    /* -- world: the level loop's freeze byte and the front-end gate, read out of memory. Any thread -- */
+    int (*paused)(void);                                            /* GBH_PAUSED_* bits */
+    int (*pause)(int on);                                           /* hold or release the freeze; frozen while any mod holds it */
+    int (*world_to_screen)(const float pos[3], float out[2]);       /* pixels; 1 on screen, 0 behind or outside; GBH_ERR_STATE when unreadable */
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

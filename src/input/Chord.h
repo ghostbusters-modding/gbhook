@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace Chord
+namespace KeyChord
 {
     enum Mod : unsigned { kCtrl = 1u, kShift = 2u, kAlt = 4u };
 
@@ -23,7 +23,8 @@ namespace Chord
 
     enum class Parse { Ok, None, Bad };
 
-    // Empty, blank or NONE is None. A modifier alone, two keys, an unknown name or a repeated modifier is Bad.
+    // Empty, blank or NONE is None. LCTRL and the other sided names are the generic modifier.
+    // A modifier alone, two keys, an unknown name or a repeated modifier (LCTRL+CTRL too) is Bad.
     Parse FromText(const char* text, Key* out);
 
     // Canonical text, modifiers first as CTRL+SHIFT+ALT. "" for an unbound key.

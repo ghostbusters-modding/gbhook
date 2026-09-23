@@ -116,6 +116,9 @@
     <ClCompile Include="src\attr\Catalogue.cpp" />
     <ClCompile Include="src\services\Attr.cpp" />
     <ClCompile Include="src\services\Window.cpp" />
+    <ClCompile Include="src\services\Bindings.cpp" />
+    <ClCompile Include="src\services\World.cpp" />
+    <ClCompile Include="src\view\Project.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Framework.h" />
@@ -177,6 +180,9 @@
     <ClInclude Include="src\attr\Catalogue.h" />
     <ClInclude Include="src\services\Attr.h" />
     <ClInclude Include="src\services\Window.h" />
+    <ClInclude Include="src\services\Bindings.h" />
+    <ClInclude Include="src\services\World.h" />
+    <ClInclude Include="src\view\Project.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.h" />
     <ClInclude Include="sdk\include\gbhook\gbhook.hpp" />
     <ClInclude Include="sdk\include\gbhook\seh.h" />

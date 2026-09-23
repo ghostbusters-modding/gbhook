@@ -17,14 +17,14 @@ namespace BindTable
 
     struct Claim
     {
-        char       owner[kOwnerCap];   // "" is the framework
-        char       name[kNameCap];
-        char       help[kHelpCap];
-        Chord::Key key;                // vk 0: unbound
-        void*      fn;
-        void*      user;
-        bool       enabled;
-        bool       faulted;            // off for the process; enable cannot bring it back
+        char          owner[kOwnerCap];   // "" is the framework
+        char          name[kNameCap];
+        char          help[kHelpCap];
+        KeyChord::Key key;                // vk 0: unbound
+        void*         fn;
+        void*         user;
+        bool          enabled;
+        bool          faulted;            // off for the process; enable cannot bring it back
     };
 
     enum class Add { Ok, BadName, Taken, Full };
@@ -51,7 +51,7 @@ namespace BindTable
         Table();
 
         // `key` with vk 0 registers unbound. The first claim on a chord wins, whoever made the second.
-        AddResult Add(const char* owner, const char* name, const char* help, Chord::Key key, void* fn, void* user);
+        AddResult Add(const char* owner, const char* name, const char* help, KeyChord::Key key, void* fn, void* user);
         int       Find(const char* owner, const char* name) const;
 
         // The window procedure's edges. A repeat down fires nothing and is consumed only if the first down was.

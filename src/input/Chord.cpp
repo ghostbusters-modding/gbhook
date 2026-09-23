@@ -35,8 +35,15 @@ namespace
         { "APOSTROPHE", 0xDE },
     };
 
+    // The first three are canonical. The sided spellings fold in, since the window procedure cannot tell sides apart.
     struct Modifier { const char* name; unsigned bit; };
-    const Modifier kMods[] = { { "CTRL", Chord::kCtrl }, { "SHIFT", Chord::kShift }, { "ALT", Chord::kAlt } };
+    const Modifier kMods[] = {
+        { "CTRL", KeyChord::kCtrl }, { "SHIFT", KeyChord::kShift }, { "ALT", KeyChord::kAlt },
+        { "LCTRL", KeyChord::kCtrl }, { "RCTRL", KeyChord::kCtrl }, { "LCONTROL", KeyChord::kCtrl }, { "RCONTROL", KeyChord::kCtrl },
+        { "LSHIFT", KeyChord::kShift }, { "RSHIFT", KeyChord::kShift },
+        { "LALT", KeyChord::kAlt }, { "RALT", KeyChord::kAlt }, { "LMENU", KeyChord::kAlt }, { "RMENU", KeyChord::kAlt },
+    };
+    constexpr int kCanonicalMods = 3;
 
     bool IEquals(const char* a, const char* b)
     {
@@ -63,7 +70,7 @@ namespace
     }
 }
 
-namespace Chord
+namespace KeyChord
 {
     int VkFromName(const char* name)
     {
@@ -126,8 +133,8 @@ namespace Chord
         const char* name = VkName(k.vk);
         if (!k.vk || !name) return std::string();
         std::string s;
-        for (const Modifier& m : kMods)
-            if (k.mods & m.bit) { s += m.name; s += '+'; }
+        for (int i = 0; i < kCanonicalMods; ++i)
+            if (k.mods & kMods[i].bit) { s += kMods[i].name; s += '+'; }
         return s + name;
     }
 }

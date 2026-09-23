@@ -33,7 +33,7 @@ namespace BindTable
 
     Table::Table() : claims_(), count_(0), down_(), eaten_(), captured_(false), captor_() {}
 
-    AddResult Table::Add(const char* owner, const char* name, const char* help, Chord::Key key, void* fn, void* user)
+    AddResult Table::Add(const char* owner, const char* name, const char* help, KeyChord::Key key, void* fn, void* user)
     {
         AddResult r;
         if (!ValidName(name)) { r.status = Add::BadName; return r; }
@@ -42,7 +42,7 @@ namespace BindTable
 
         if (key.vk)
             for (int i = 0; i < count_; ++i)
-                if (claims_[i].key == key) { r.clashWith = i; key = Chord::Key(); break; }
+                if (claims_[i].key == key) { r.clashWith = i; key = KeyChord::Key(); break; }
 
         Claim& c = claims_[count_];
         Copy(c.owner, kOwnerCap, owner);
@@ -67,8 +67,8 @@ namespace BindTable
 
     unsigned Table::HeldMods() const
     {
-        return (down_[Chord::kVkCtrl] ? Chord::kCtrl : 0u) | (down_[Chord::kVkShift] ? Chord::kShift : 0u)
-             | (down_[Chord::kVkAlt] ? Chord::kAlt : 0u);
+        return (down_[KeyChord::kVkCtrl] ? KeyChord::kCtrl : 0u) | (down_[KeyChord::kVkShift] ? KeyChord::kShift : 0u)
+             | (down_[KeyChord::kVkAlt] ? KeyChord::kAlt : 0u);
     }
 
     bool Table::Live(int i) const
@@ -125,7 +125,7 @@ namespace BindTable
     bool Table::Held(int i) const
     {
         if (!Live(i)) return false;
-        const Chord::Key& k = claims_[i].key;
+        const KeyChord::Key& k = claims_[i].key;
         return k.vk && down_[k.vk] && (k.mods & ~HeldMods()) == 0;
     }
 
