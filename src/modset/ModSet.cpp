@@ -42,8 +42,26 @@ namespace
             }
             if (!c.hasModInfo && !c.hasAssets) { r.refusal = "not a mod: no previews/modinfo.ini and no asset folder"; return r; }
             r.mod    = c.ini.mod;
-            r.mod.id = Lower(c.folder);
-            for (char& ch : r.mod.id) if (ch == ' ' || ch == '\t') ch = '_';
+            r.mod.id.clear();
+
+            bool underscore = false;
+            for (char ch : c.folder)
+            {
+                if (std::isalnum(static_cast<unsigned char>(ch)))
+                {
+                    r.mod.id += static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+                    underscore = false;
+                }
+                else if (!underscore && !r.mod.id.empty())
+                {
+                    r.mod.id += '_';
+                    underscore = true;
+                }
+            }
+
+            // Remove trailing underscore.
+            if (!r.mod.id.empty() && r.mod.id.back() == '_')
+                r.mod.id.pop_back();
             r.implicit = true;
             r.accepted = true;
             return r;
