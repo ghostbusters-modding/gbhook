@@ -12,7 +12,7 @@
 
 namespace ModsPage
 {
-    // The list says ON or OFF. The detail page says which of these it is.
+    // The list says ON or OFF, or ON>OFF once switched. The detail page says which of these it is.
     enum class State { Loaded, NoCode, Pending, OffIni, Refused, Failed };
 
     // The detail page's switch: gbhook.ini's mods.disabled, read by the next boot.

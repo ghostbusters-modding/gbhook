@@ -3,6 +3,19 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.2.5 (2026-09-23)
+
+- Actions: a mod names a key action and the player binds it as `bind.<action>` in
+  `modinfo.ini` or `gbhook.ini`, one key or a chord such as `CTRL+SHIFT+F5`. A clash is
+  logged naming both mods. `binds` lists every action.
+- `pause` holds the level loop's own freeze, and `paused` says whether the world is stopped
+  and why. `world_to_screen` projects a world position to pixels through the engine's camera.
+- A mod's page under View Mods says what is true now and what the next start does, on
+  separate rows. Disable and Enable return to the list, where a switched mod reads `ON>OFF`
+  or `OFF>ON`.
+- gbhook creates `%LOCALAPPDATA%\GHOSTBUSTERS` at boot when it is missing. The game refuses
+  to write its settings and saves without it.
+
 ## 0.2.4 (2026-09-23)
 
 - Removed section [headers] from modinfo.ini and gbhook.ini. Keys are read raw from the files.

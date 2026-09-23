@@ -74,6 +74,7 @@ spawn_rate  = 4                   ; a setting: any other key is one
 | `stage` | when the DLL's init runs. Names, never numbers: a number baked into a shipped mod is what forced an ABI break the last time a stage was inserted. |
 | `priority` | within a stage, low runs first. Default 100. |
 | `requires` | mod ids that must be present and accepted, else this mod is refused. It does not order anything: see section 6. |
+| `bind.<action>` | the default chord for an action the mod registers, `F1` or `CTRL+SHIFT+F5`. `NONE` or empty leaves it unbound. `gbhook.ini` overrides it as `<id>.bind.<action>`. |
 | any other key | a setting default in the mod's namespace. `gbhook.ini` overrides it as `<id>.<key>`. |
 
 Two keys are parsed and reserved: `content`, a list of prebuilt archives under `gbhook/`,

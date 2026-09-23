@@ -348,6 +348,41 @@ gbh::on_key(OnKey).release();     // message thread; the first subscriber answer
 Order is registration order, so a menu that loads first sees a key before a mod that flies.
 `on_char` carries typed characters the same way. Never subclass the window yourself.
 
+### Actions
+
+A key the player should be able to rebind is an action. The mod names it and the player
+binds it:
+
+```cpp
+void OnMenu(const char* name, void*) { g_open = !g_open; }
+gbh::action_register("menu", OnMenu, nullptr, "open the overlay");
+```
+
+```ini
+# previews/modinfo.ini
+bind.menu = F1
+```
+
+The player rebinds it in `gbhook.ini` as `gb.mymod.bind.menu = CTRL+SHIFT+M`, or turns it off
+with `NONE`. The handler runs on the main thread once per press, and a bound key never
+reaches the game. If another mod already has the chord, the log names both and yours stays
+unbound. `gbh::action_held("menu")` answers while the chord is down. `gbh::action_capture(true)`
+lets a menu take the keyboard: only its own actions fire until it lets go. `binds` lists every
+action and its chord.
+
+### Pausing the world
+
+An overlay that should stop the game holds the freeze while it is open:
+
+```cpp
+gbh::pause(true);     // the world and the game clock stop; drawing and audio carry on
+gbh::pause(false);    // the world ticks again once no mod holds it
+```
+
+Esc still opens the game's own pause menu during the freeze. `gbh::paused()` says why the
+world is stopped, and `gbh::world_to_screen(pos, out)` turns a world position into pixels
+for a marker.
+
 ### Services
 
 A mod that offers a table to other mods publishes it by name, and a consumer finds it:

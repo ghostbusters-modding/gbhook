@@ -133,7 +133,8 @@ namespace
         else    Log::Writef("MODS", "gbhook.ini could not be written; %s is unchanged", m.id.c_str());
         Gather();
         g_mods[(size_t)g_detail].saveFailed = !ok;
-        return GBH_NATIVE_STAY;
+        // Back to the list: a live relabel of this page never showed in game, and a reopen is built fresh.
+        return GBH_NATIVE_CLOSE;
     }
 
     void BuildList(void*)

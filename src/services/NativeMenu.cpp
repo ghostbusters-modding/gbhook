@@ -281,11 +281,22 @@ namespace
         GBH_SEH_EXCEPT { return false; }
     }
 
-    void ApplyLive(Page& p, bool keepCursor)
+    // Logged every time: no in-game run has yet shown a live relabel reach the screen.
+    void ApplyLive(Page& p, Shape s)
     {
-        if (!p.child || !p.rowsMem) return;
-        if (!RelabelLive(p, keepCursor)) { Log::Write("NMENU", "re-label skipped: the page is gone"); return; }
-        Snapshot(p);
+        const int n = (int)(&p - g_pages) + 1;
+        if (!p.child || !p.rowsMem) { Log::Writef("NMENU", "page %d re-label skipped: no live page or row block", n); return; }
+        const bool ok = RelabelLive(p, s == kRelabel);
+        Log::Writef("NMENU", "page %d %s: RelabelLive %s", n, s == kRelabel ? "relabel" : "reshape", ok ? "ok" : "FAILED");
+        if (ok) Snapshot(p);
+    }
+
+    // Rebuild a page's rows and apply them the way Refresh does.
+    void RefreshPage(Page& p)
+    {
+        RebuildRows(p);
+        const Shape s = CompareShown(p);
+        if (s != kUnchanged) ApplyLive(p, s);
     }
 
     bool CloseChild(void* self)
@@ -389,6 +400,9 @@ namespace
         p->rowsMem = nullptr;
         if (at == g_depth - 1) g_depth = at;
         else Log::Writef("NMENU", "page %d hidden under %d open page(s); unexpected", at + 1, g_depth - at - 1);
+
+        // The child may have changed what its parent lists, the Mods toggle for one.
+        if (at == g_depth && at > 0 && !g_closingAll) RefreshPage(g_pages[at - 1]);
     }
 
     // The parent frees the page after the close. When the last of ours is gone, whatever waited for that runs.
@@ -454,9 +468,7 @@ namespace
             if (!CloseChild(self)) Log::Write("NMENU", "EXC asking the page to close");
             return;
         }
-        RebuildRows(*p);
-        const Shape s = CompareShown(*p);
-        if (s != kUnchanged) ApplyLive(*p, s == kRelabel);
+        RefreshPage(*p);
     }
 
     // ---- the CMainMenu detours -------------------------------------------------------------------------
@@ -627,10 +639,7 @@ namespace NativeMenu
     void Refresh()
     {
         if (g_depth == 0 || g_closingAll) return;
-        Page& p = g_pages[g_depth - 1];
-        RebuildRows(p);
-        const Shape s = CompareShown(p);
-        if (s != kUnchanged) ApplyLive(p, s == kRelabel);
+        RefreshPage(g_pages[g_depth - 1]);
     }
 
     bool PageOpen() { return g_depth > 0; }

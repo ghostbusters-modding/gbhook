@@ -7,7 +7,7 @@ is meant to explain that contract.
 ```
 GbhPluginManifest   exported data, read out of the file before the DLL runs
 GbhPluginInit       exported code, called once at the mod's stage with the table
-GbhApi              70 entries in 22 groups, appended to and never reordered
+GbhApi              78 entries in 24 groups, appended to and never reordered
 ```
 
 ---
@@ -212,7 +212,9 @@ the level starts from the top.
 `GbhNativeMenuDesc` is `struct_size`, `build`, `activate`, `user` and `title`. A title
 with a leading `@` names a localisation key. `activate` answers `GBH_NATIVE_STAY`,
 `GBH_NATIVE_CLOSE` or `GBH_NATIVE_CLOSE_ALL`; a row with action `GBH_NATIVE_INERT` never
-activates.
+activates. A page whose activation changed what it shows should answer `GBH_NATIVE_CLOSE`:
+the page under it is rebuilt and the next open is fresh, while relabelling a live page in
+place has not yet been seen to reach the screen.
 
 ### Files, engine main thread only
 
@@ -306,6 +308,61 @@ The game window is subclassed once, by the framework. A subscriber answering `1`
 message from the engine's own handler, which is what fills its scan-code table, and the
 fan-out stops there; order is registration order, so a menu that loads first sees a key
 before a mod that flies. The mouse is never routed. `input_set_key` is the other direction.
+Raw subscribers run before actions, so a text line that keeps typed keys also keeps them
+from firing actions.
+
+### Actions, main thread
+
+| entry | notes |
+|---|---|
+| `action_register(name, fn, user, help)` | `GBH_OK` whether it bound or not; `GBH_ERR_CONFLICT` when this mod already has the name; `GBH_ERR_ARG` for an empty name, whitespace, or over 31 characters |
+| `action_binding(name, out, cap)` | the chord as text, `CTRL+SHIFT+F5`, or `""` when unbound |
+| `action_held(name)` | `1` while every key of the chord is down; `GBH_ERR_NOT_FOUND` for a name never registered. Any thread |
+| `action_enable(name, on)` | off keeps the claim and makes it inert: the key reaches the engine and nothing fires |
+| `action_capture(on)` | only the caller's actions fire; `GBH_ERR_CONFLICT` while another mod holds it |
+
+An action is a name the mod registers and the player binds. The chord comes from the
+setting `bind.<name>`, so `bind.menu = F1` in the mod's `modinfo.ini` is the default and
+`gb.mymod.bind.menu` in `gbhook.ini` overrides it. A chord is one key plus any of `CTRL`,
+`SHIFT` and `ALT`, joined by `+`, any case, in any order. `LCTRL`, `RSHIFT` and the other
+sided spellings mean the plain modifier, since the window cannot tell the sides apart. Key
+names are the ones `input_dik_from_name` knows. An empty value or `NONE` leaves the action
+unbound; anything else that does not parse is logged and left unbound.
+
+The first claim on a chord wins. A second, from any mod, is logged naming both actions and
+stays unbound. `F` and `CTRL+F` are different chords, and when both could match the one with
+more modifiers fires. A bound key never reaches the engine, its key-up included, and holding
+it down fires once. `fn` runs on the main thread from the pump, once per press, under the
+same guard as an event: a fault logs the mod and the action and turns that action off for
+the process. When the window loses focus every key is treated as released.
+
+A capture is for a menu that wants the keyboard. While one mod holds it, only its own
+actions fire, every other mod's bound key is swallowed, and a key nobody bound still reaches
+the engine. `binds` lists every action, its chord and its help.
+
+### World, any thread
+
+| entry | notes |
+|---|---|
+| `paused()` | `GBH_PAUSED_FREEZE`, `GBH_PAUSED_SCREEN` and `GBH_PAUSED_FOCUS` bits; `0` while the world ticks |
+| `pause(on)` | the caller holds or releases the freeze. Idempotent both ways; up to eight mods may hold it at once |
+| `world_to_screen(pos, out)` | backbuffer pixels. `1` on screen, `0` behind the camera or outside; `GBH_ERR_STATE` when the camera cannot be read |
+
+The freeze is the byte the level loop itself tests: the world update and the game clock stop,
+while rendering, the HUD and audio carry on and nothing is blacked out. The engine clears the
+byte on a pad hot-plug or the Steam overlay, so gbhook sets it again every frame while anyone
+holds it. On the last release it clears the byte only if gbhook set it. One gap: if the
+engine's own disconnect freeze starts while a mod holds the pause, the last release clears it
+too. Esc still opens the game's pause menu during a freeze. The front-end gate is only read,
+never forced: forcing it blacks out the frame.
+
+The `SCREEN` bit is the engine's own check on the main thread. From any other thread it is
+read from memory, which is close but not the same check.
+
+`world_to_screen` is the engine's own projection, so it follows camera shake and cinematic
+cameras. A point in front of the camera but off screen still fills `out`, so an arrow can be
+clamped to the edge. The last step, from the projected point to a pixel row, was never
+traced in the engine: if a marker comes out mirrored vertically, that one line is flipped.
 
 ## 5. The C++ wrapper
 
@@ -316,4 +373,6 @@ subscription, `gbh::Patch` for a byte patch, `gbh::VtableOverride` for a cloned 
 `gbh::at<T>(rva)` turns a `ghost.exe`-relative offset into a pointer, and `gbh::hook_at`
 hooks one. `gbh::has_services()` says whether the framework carries the block appended after
 `file_read`; every wrapper for that block answers as unsupported without it.
+`gbh::has_actions()` does the same for the actions and world entries appended after
+`on_char` in 0.2.5.
  

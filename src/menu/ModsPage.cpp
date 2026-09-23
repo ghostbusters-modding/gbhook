@@ -9,16 +9,19 @@ namespace ModsPage
 
     const char* StateWord(State s) { return IsOn(s) ? "ON" : "OFF"; }
 
+    // The toggle names the button, so the next start is its opposite: Disable means it will start ON.
+    static const char* NextWord(const Mod& m) { return m.toggle == Switch::TurnOff ? "ON" : "OFF"; }
+
     static std::string Headline(const Mod& m)
     {
         switch (m.state)
         {
-        case State::Loaded:     return "ON: loaded at " + m.stage;
-        case State::NoCode:     return m.content.empty() ? "ON: nothing to load" : "ON: content only";
-        case State::Pending:    return "ON: loads at " + m.stage;
-        case State::OffIni:     return "OFF: disabled in gbhook.ini";
-        case State::Refused:    return "OFF: refused";
-        case State::Failed:     return "OFF: error";
+        case State::Loaded:     return "Now: ON, loaded at " + m.stage;
+        case State::NoCode:     return m.content.empty() ? "Now: ON, nothing to load" : "Now: ON, content only";
+        case State::Pending:    return "Now: ON, loads at " + m.stage;
+        case State::OffIni:     return "Now: OFF, disabled in gbhook.ini";
+        case State::Refused:    return "Now: OFF, refused";
+        case State::Failed:     return "Now: OFF, error";
         }
         return "?";
     }
@@ -36,8 +39,10 @@ namespace ModsPage
         for (size_t i = 0; i < mods.size(); ++i)
         {
             const Mod& m = mods[i];
+            // Now>next once the switch was pressed; the list is the one page the player surely sees again.
             std::string word = StateWord(m.state);
-            while (word.size() < 4) word += ' ';
+            if (m.changed && m.toggle != Switch::None) word += std::string(">") + NextWord(m);
+            while (word.size() < (m.changed ? 7u : 4u)) word += ' ';
             std::string label = word + m.id;
             if (!m.version.empty() && label.size() + 1 + m.version.size() <= Rows::kLabelMax) label += " " + m.version;
             rows.push_back({ Rows::Fit(label), (int)i });
@@ -59,9 +64,11 @@ namespace ModsPage
 
         if (m.toggle != Switch::None)
         {
+            std::string next = std::string("Next start: ") + NextWord(m);
+            if (m.changed) next += ", saved in gbhook.ini";
+            rows.push_back({ Rows::Fit(next), Rows::kInert });
             rows.push_back({ m.toggle == Switch::TurnOff ? "Disable" : "Enable", kToggle });
             if (m.saveFailed) rows.push_back({ "gbhook.ini could not be written", Rows::kInert });
-            else if (m.changed) rows.push_back({ Rows::Fit(std::string("Saved: ") + (m.toggle == Switch::TurnOn ? "OFF" : "ON") + " after a restart"), Rows::kInert });
         }
 
         rows.push_back({ "Back", kBack });
