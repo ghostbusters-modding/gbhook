@@ -94,6 +94,8 @@
     <ClCompile Include="src\cmd\Line.cpp" />
     <ClCompile Include="src\cmd\Table.cpp" />
     <ClCompile Include="src\input\Dik.cpp" />
+    <ClCompile Include="src\input\Chord.cpp" />
+    <ClCompile Include="src\input\BindTable.cpp" />
     <ClCompile Include="src\services\Commands.cpp" />
     <ClCompile Include="src\services\Loop.cpp" />
     <ClCompile Include="src\services\InputInject.cpp" />
@@ -153,6 +155,8 @@
     <ClInclude Include="src\cmd\Line.h" />
     <ClInclude Include="src\cmd\Table.h" />
     <ClInclude Include="src\input\Dik.h" />
+    <ClInclude Include="src\input\Chord.h" />
+    <ClInclude Include="src\input\BindTable.h" />
     <ClInclude Include="src\services\Commands.h" />
     <ClInclude Include="src\services\Loop.h" />
     <ClInclude Include="src\services\InputInject.h" />
