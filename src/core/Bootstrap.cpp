@@ -26,11 +26,30 @@
 #include "services/Attr.h"
 #include "services/Window.h"
 
+namespace
+{
+    // The engine keeps settings.ini and the saves here and silently refuses to write when the folder is missing.
+    void EnsureSaveFolder()
+    {
+        wchar_t dir[MAX_PATH];
+        const DWORD n = GetEnvironmentVariableW(L"LOCALAPPDATA", dir, MAX_PATH);
+        if (n == 0 || n >= MAX_PATH || wcscat_s(dir, L"\\GHOSTBUSTERS") != 0)
+        {
+            Log::Write("SAVE", "LOCALAPPDATA is not set; the save folder was not checked");
+            return;
+        }
+        if (GetFileAttributesW(dir) != INVALID_FILE_ATTRIBUTES) return;
+        if (CreateDirectoryW(dir, nullptr)) Log::Writef("SAVE", "created %ls", dir);
+        else Log::Writef("SAVE", "could not create %ls (error %lu)", dir, (unsigned long)GetLastError());
+    }
+}
+
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
 {
     gameBase = reinterpret_cast<char*>(GetModuleHandleW(nullptr));
 
     Log::Init();
+    EnsureSaveFolder();
     Log::Writef("BOOT", "attached to ghost.exe at %p", gameBase);
 
     if (!HookBroker::Init())
