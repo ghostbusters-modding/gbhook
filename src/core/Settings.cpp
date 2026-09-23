@@ -1,7 +1,7 @@
 // gbhook: a mod loader for Ghostbusters: The Video Game Remastered
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
-// <gamedir>\gbhook.ini through the shared grammar, with each accepted mod's [settings] folded in as its defaults.
+// <gamedir>\gbhook.ini through the shared grammar, with each accepted mod's modinfo.ini keys folded in as its defaults.
 // Not GetPrivateProfileString: that needs sections, and modset/SettingsTable is where the two layers meet.
 
 #include "Framework.h"
@@ -74,7 +74,7 @@ namespace Settings
 
         *g_table = SettingsTable::Build(*g_doc, defaults);
         for (const std::string& w : g_table->warnings) Log::Writef("INI", "warning %s", w.c_str());
-        Log::Writef("INI", "%d mod default(s) from %d modinfo.ini [settings] block(s)",
+        Log::Writef("INI", "%d mod default(s) from %d modinfo.ini file(s)",
                     (int)g_table->defaults.size(), (int)defaults.size());
     }
 

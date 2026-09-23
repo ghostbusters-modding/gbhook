@@ -31,7 +31,6 @@ namespace Ini
         // Notepad writes a BOM, and it is not part of the first key.
         size_t pos = text.compare(0, 3, "\xEF\xBB\xBF") == 0 ? 3 : 0;
 
-        std::string section;
         int line = 0;
         while (pos <= text.size())
         {
@@ -60,8 +59,7 @@ namespace Ini
 
             if (s.front() == '[')
             {
-                if (s.back() != ']') { doc.malformed.push_back(line); continue; }
-                section = Lower(Trim(s.substr(1, s.size() - 2)));
+                if (s.back() != ']') doc.malformed.push_back(line);
                 continue;
             }
 
@@ -70,7 +68,6 @@ namespace Ini
 
             std::string key = Lower(Trim(s.substr(0, eq)));
             if (key.empty()) { doc.malformed.push_back(line); continue; }
-            if (!section.empty()) key = section + "." + key;
 
             doc.entries.push_back({ key, isQuoted ? quoted : Trim(s.substr(eq + 1)), line });
         }
@@ -116,13 +113,9 @@ namespace Ini
         }
         else
         {
-            // Past a [section] header the key would pick up its prefix.
             size_t at = lines.size();
             while (at > 0 && lines[at - 1].empty()) --at;
-            for (size_t i = 0; i < lines.size(); ++i)
-                if (Trim(lines[i]).compare(0, 1, "[") == 0) { at = i; break; }
             lines.insert(lines.begin() + (ptrdiff_t)at, key + " = " + value);
-            if (at < lines.size() - 1 && !Trim(lines[at + 1]).empty()) lines.insert(lines.begin() + (ptrdiff_t)at + 1, "");
         }
 
         std::string out;

@@ -71,19 +71,15 @@ int main()
     CHECK_EQ(Value(Parse("a = x \"y\" z"), "a"), "x \"y\" z");
     CHECK_EQ(Parse("# \"quoted\" = comment\n").entries.size(), (size_t)0);
 
-    // A section folds into the key as a prefix, trimmed and lowercased.
+    // A header is skipped, never a prefix, and a broken one is still malformed.
     {
-        Ini::Document d = Parse("[Mod]\nid = gb.x\n[ GBHOOK ]\nplugin = X.dll\n");
-        CHECK_EQ(d.entries[0].key, "mod.id");
-        CHECK_EQ(d.entries[1].key, "gbhook.plugin");
-        CHECK_EQ(Value(d, "gbhook.plugin"), "X.dll");
-    }
-
-    // An empty section header returns to the global namespace.
-    {
-        Ini::Document d = Parse("[a]\nk = 1\n[]\nk = 2\n");
-        CHECK_EQ(d.entries[0].key, "a.k");
-        CHECK_EQ(d.entries[1].key, "k");
+        Ini::Document d = Parse("[gbhook]\nid = gb.x\n[ settings ]\nnet.port = 1\n[]\nk = 2\n[bad\n");
+        CHECK_EQ(d.entries.size(), (size_t)3);
+        CHECK_EQ(d.entries[0].key, "id");
+        CHECK_EQ(d.entries[1].key, "net.port");
+        CHECK_EQ(d.entries[2].key, "k");
+        CHECK_EQ(d.malformed.size(), (size_t)1);
+        CHECK_EQ(d.malformed[0], 7);
     }
 
     // The first '=' splits; later ones belong to the value.
@@ -177,12 +173,8 @@ int main()
         CHECK_EQ(Ini::Set("k = \"a;b\" ; note\n", "k", "c"), "k = c   ; note\n");
         // Last one wins when read, so the last one is the one changed.
         CHECK_EQ(Ini::Set("k = 1\nk = 2\n", "k", "3"), "k = 1\nk = 3\n");
-        // Inside [mods] the line keeps its short key; a new key never lands under a section.
-        CHECK_EQ(Ini::Set("[mods]\ndisabled = gb.a\n", "mods.disabled", "gb.b"), "[mods]\ndisabled = gb.b\n");
-        CHECK_EQ(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods.disabled", "gb.b"), "a = 1\nmods.disabled = gb.b\n\n[gb.x]\nk = 2\n");
-        Ini::Document d = Parse(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods.disabled", "gb.b"));
-        CHECK_EQ(Value(d, "mods.disabled"), "gb.b");
-        CHECK_EQ(Value(d, "gb.x.k"), "2");
+        // A header changes nothing: a new key goes at the end, past it.
+        CHECK_EQ(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods.disabled", "gb.b"), "a = 1\n[gb.x]\nk = 2\nmods.disabled = gb.b\n");
     }
 
     return check::Done("ini");

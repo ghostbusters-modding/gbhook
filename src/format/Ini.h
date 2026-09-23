@@ -11,7 +11,7 @@ namespace Ini
 {
     struct Entry
     {
-        std::string key;     // lowercased; "section.key" inside a [section]
+        std::string key;     // lowercased
         std::string value;   // trimmed, comment stripped, case kept
         int         line;    // 1-based, for refusal text
     };
@@ -19,7 +19,7 @@ namespace Ini
     struct Document
     {
         std::vector<Entry> entries;    // file order, duplicates kept
-        std::vector<int>   malformed;  // lines that are none of blank, comment, section, key = value
+        std::vector<int>   malformed;  // lines that are none of blank, comment, key = value
     };
 
     Document Parse(const std::string& text);
@@ -27,7 +27,7 @@ namespace Ini
     // Last value for `key`, any case, or nullptr.
     const std::string* Find(const Document& doc, const std::string& key);
 
-    // `text` with the last `key` line set to `value`, its comment kept. A new key goes above the first [section].
+    // `text` with the last `key` line set to `value`, its comment kept. A new key goes at the end.
     std::string Set(const std::string& text, const std::string& key, const std::string& value);
 
     // Comma-separated list, items trimmed, empties dropped.

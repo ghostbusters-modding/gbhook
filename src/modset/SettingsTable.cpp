@@ -25,7 +25,7 @@ namespace SettingsTable
                 const std::string key = Ini::Lower(kv.first);
                 // The id is the namespace already; a key carrying it again is read doubled, which is never meant.
                 if (key.compare(0, prefix.size(), prefix) == 0)
-                    t.warnings.push_back(m.id + ": [settings] key '" + kv.first + "' repeats the mod id; it is read as '" +
+                    t.warnings.push_back(m.id + ": modinfo.ini key '" + kv.first + "' repeats the mod id; it is read as '" +
                                          prefix + key + "'");
                 t.defaults[prefix + key] = kv.second;
             }

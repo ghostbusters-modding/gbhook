@@ -14,7 +14,6 @@ static const char* kFull =
     "description=\"A local test mod; with a # in it\"\n"
     "link=\"\"\n"
     "\n"
-    "[gbhook]\n"
     "id          = gb.mymod              ; trailing note\n"
     "abi         = 1\n"
     "plugin      = MyMod.dll\n"
@@ -24,15 +23,32 @@ static const char* kFull =
     "priority    = 50\n"
     "requires    = gb.sensors, gb.core\n"
     "\n"
-    "[settings]\n"
     "greeting    = hello\n"
     "net.port    = 12345\n";
 
-static const char* kMinimal = "[gbhook]\nid = gb.x\nabi = 1\n";
+static const char* kMinimal = "id = gb.x\nabi = 1\n";
+
+// The same record in the sectioned form older mods shipped with.
+static const char* kSectioned =
+    "version=\"0.1.0\"\n"
+    "[gbhook]\n"
+    "id       = gb.mymod\n"
+    "abi      = 1\n"
+    "plugin   = MyMod.dll\n"
+    "[settings]\n"
+    "greeting = hello\n"
+    "net.port = 12345\n";
+
+static std::string Setting(const ModIni::Result& r, const std::string& key)
+{
+    std::string found = "<none>";
+    for (const auto& kv : r.mod.settings) if (kv.first == key) found = kv.second;
+    return found;
+}
 
 int main()
 {
-    // The full record: the Mod Manager's quoted keys on top, ours in [gbhook].
+    // The full record: the Mod Manager's quoted keys, ours, and settings, all bare.
     {
         ModIni::Result r = Parse(kFull);
         CHECK(r.gbhook);
@@ -50,10 +66,25 @@ int main()
         CHECK_EQ(r.mod.priority, 50);
         CHECK_EQ(r.mod.requires_.size(), (size_t)2);
         CHECK_EQ(r.mod.requires_[0], "gb.sensors");
-        CHECK_EQ(r.mod.settings.size(), (size_t)2);
-        CHECK_EQ(r.mod.settings[0].first, "greeting");
-        CHECK_EQ(r.mod.settings[0].second, "hello");
-        CHECK_EQ(r.mod.settings[1].first, "net.port");
+        CHECK_EQ(r.mod.settings.size(), (size_t)14);
+        CHECK_EQ(Setting(r, "greeting"), "hello");
+        CHECK_EQ(Setting(r, "net.port"), "12345");
+        CHECK_EQ(Setting(r, "version"), "0.1.0");      // shared with the Mod Manager
+        CHECK_EQ(Setting(r, "id"), "gb.mymod");
+    }
+
+    // Section headers are skipped, so the old form reads as the flat one.
+    {
+        ModIni::Result r = Parse(kSectioned);
+        CHECK(r.gbhook);
+        CHECK_EQ(r.refusal, "");
+        CHECK_EQ(r.warnings.size(), (size_t)0);
+        CHECK_EQ(r.mod.id, "gb.mymod");
+        CHECK_EQ(r.mod.version, "0.1.0");
+        CHECK_EQ(r.mod.plugin, "MyMod.dll");
+        CHECK_EQ(Setting(r, "greeting"), "hello");
+        CHECK_EQ(Setting(r, "net.port"), "12345");
+        CHECK_EQ(Setting(r, "settings.greeting"), "<none>");
     }
 
     // The two-line minimum, with the defaults.
@@ -68,7 +99,7 @@ int main()
         CHECK_EQ(r.mod.requires_.size(), (size_t)0);
     }
 
-    // No [gbhook] section: the Mod Manager's file alone. Not a refusal; its version and description still read.
+    // None of our keys: the Mod Manager's file alone. Not a refusal; its version and description still read.
     {
         ModIni::Result r = Parse("version=\"1.0\"\ncompatibility=\"PC\"\ndescription=\"x\"\nlink=\"\"\n");
         CHECK(!r.gbhook);
@@ -92,23 +123,23 @@ int main()
     CHECK_EQ(Parse(std::string("[General]\nversion=\"3.0\"\n") + kMinimal).warnings.size(), (size_t)0);
 
     // A malformed line refuses the whole file, by number.
-    CHECK_EQ(Parse("[gbhook]\nid = gb.x\njunk\nabi = 1\n").refusal, "modinfo.ini line 3 is not key = value");
+    CHECK_EQ(Parse("id = gb.x\njunk\nabi = 1\n").refusal, "modinfo.ini line 2 is not key = value");
 
     // id
-    CHECK_EQ(Parse("[gbhook]\nabi = 1\n").refusal, "modinfo.ini has no id under [gbhook]");
-    CHECK_EQ(Parse("[gbhook]\nid =\nabi = 1\n").refusal, "modinfo.ini has no id under [gbhook]");
-    CHECK_EQ(Parse("[gbhook]\nid = gb x\nabi = 1\n").refusal, "id 'gb x' contains whitespace");
+    CHECK_EQ(Parse("abi = 1\n").refusal, "modinfo.ini has no id");
+    CHECK_EQ(Parse("id =\nabi = 1\n").refusal, "modinfo.ini has no id");
+    CHECK_EQ(Parse("id = gb x\nabi = 1\n").refusal, "id 'gb x' contains whitespace");
     {
         std::string longId(64, 'a');
-        CHECK_EQ(Parse("[gbhook]\nid = " + longId + "\nabi = 1\n").refusal, "id is longer than 63 characters");
+        CHECK_EQ(Parse("id = " + longId + "\nabi = 1\n").refusal, "id is longer than 63 characters");
         std::string okId(63, 'a');
-        CHECK_EQ(Parse("[gbhook]\nid = " + okId + "\nabi = 1\n").refusal, "");
+        CHECK_EQ(Parse("id = " + okId + "\nabi = 1\n").refusal, "");
     }
 
     // abi
-    CHECK_EQ(Parse("[gbhook]\nid = gb.x\n").refusal, "modinfo.ini has no abi under [gbhook]");
-    CHECK_EQ(Parse("[gbhook]\nid = gb.x\nabi = 0.1.0\n").refusal, "abi '0.1.0' is not a number (the integer GBHOOK_ABI_VERSION)");
-    CHECK_EQ(Parse("[gbhook]\nid = gb.x\nabi = 2\n").refusal, "built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod");
+    CHECK_EQ(Parse("id = gb.x\n").refusal, "modinfo.ini has no abi");
+    CHECK_EQ(Parse("id = gb.x\nabi = 0.1.0\n").refusal, "abi '0.1.0' is not a number (the integer GBHOOK_ABI_VERSION)");
+    CHECK_EQ(Parse("id = gb.x\nabi = 2\n").refusal, "built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod");
 
     // stage, case-insensitive, and every name
     {
@@ -148,19 +179,18 @@ int main()
     CHECK_EQ(Parse(std::string(kMinimal) + "content = content/A.POD, ../B.POD\n").refusal, "content '../B.POD' leaves gbhook/");
     CHECK_EQ(Parse(std::string(kMinimal) + "plugin = bin/Inner.dll\n").refusal, "");
 
-    // Unknown keys in a section warn and do not refuse. Top-level keys are the manager's and are never judged.
+    // Any other key is a setting, never a warning, whatever section it sat under.
     {
-        ModIni::Result r = Parse("author=\"me\"\n[mod]\nformat = 1\nid = gb.x\n[gbhook]\nid = gb.x\nabi = 1\ncolour = red\n[other]\nk = v\n");
+        ModIni::Result r = Parse("author=\"me\"\n[gbhook]\nid = gb.x\nabi = 1\ncolour = red\n[other]\nk = v\n");
         CHECK_EQ(r.refusal, "");
-        CHECK_EQ(r.warnings.size(), (size_t)4);
-        CHECK_EQ(r.warnings[0], "line 3: unknown key 'mod.format'");
-        CHECK_EQ(r.warnings[1], "line 4: unknown key 'mod.id'");
-        CHECK_EQ(r.warnings[2], "line 8: unknown key 'gbhook.colour'");
-        CHECK_EQ(r.warnings[3], "line 10: unknown key 'other.k'");
+        CHECK_EQ(r.warnings.size(), (size_t)0);
+        CHECK_EQ(Setting(r, "author"), "me");
+        CHECK_EQ(Setting(r, "colour"), "red");
+        CHECK_EQ(Setting(r, "k"), "v");
     }
 
     // The first refusal wins; later problems are not reported over it.
-    CHECK_EQ(Parse("[gbhook]\nabi = 9\nplugin = ../x.dll\n").refusal, "modinfo.ini has no id under [gbhook]");
+    CHECK_EQ(Parse("abi = 9\nplugin = ../x.dll\n").refusal, "modinfo.ini has no id");
 
     return check::Done("modini");
 }

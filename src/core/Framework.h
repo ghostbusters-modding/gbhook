@@ -16,7 +16,7 @@ namespace Framework
 {
     // (major << 16) | (minor << 8) | patch
     constexpr uint32_t    kVersion       = (0u << 16) | (2u << 8) | 2u;
-    constexpr const char* kVersionString = "0.2.3";
+    constexpr const char* kVersionString = "0.2.4";
 
     // Directory holding ghost.exe, no trailing separator.
     const char* GameDir();
@@ -47,7 +47,7 @@ namespace ModSet { struct Result; }
 
 namespace Settings
 {
-    // <gamedir>\gbhook.ini, loaded once. Attach folds in each accepted mod's [settings]; pointers are stable after it.
+    // <gamedir>\gbhook.ini, loaded once. Attach folds in each accepted mod's modinfo.ini keys; pointers are stable after it.
     void        Load();
     void        Attach(const ModSet::Result& mods);
     const char* Get(const char* key, const char* dflt);

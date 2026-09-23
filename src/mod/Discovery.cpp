@@ -154,7 +154,7 @@ namespace Mods
                             r.order + 1, r.mod.id.c_str(), r.mod.version.c_str(),
                             ModIni::StageName(r.mod.stage), r.mod.priority, r.folder.c_str(),
                             r.mod.plugin.empty() ? "" : ", plugin ", r.mod.plugin.c_str(),
-                            r.implicit ? ", no [gbhook] section" : "");
+                            r.implicit ? ", no id in modinfo.ini" : "");
             }
             else if (r.disabled)
             {
@@ -172,7 +172,7 @@ namespace Mods
         for (const std::string& c : g_result.conflicts)
             Log::Writef("MODS", "CONFLICT %s", c.c_str());
 
-        Log::Writef("MODS", "%d mod folder(s), %d accepted (%d without a [gbhook] section), %d off, %d refused, %d folder(s) that are not mods",
+        Log::Writef("MODS", "%d mod folder(s), %d accepted (%d without an id), %d off, %d refused, %d folder(s) that are not mods",
                     (int)found.size(), accepted, implicit, off, refused, notMods);
     }
 

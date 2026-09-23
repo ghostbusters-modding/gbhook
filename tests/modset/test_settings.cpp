@@ -25,7 +25,7 @@ int main()
     CHECK_EQ(Qualify(nullptr, "Mods.Root"), "mods.root");
     CHECK_EQ(Qualify("", "mods.root"), "mods.root");
 
-    const Ini::Document ini = Ini::Parse("mods.root = mods\ngb.qol.bootskip = 0\nGB.QOL.Late = Yes\n[gb.mymod]\ngreeting = from ini\n");
+    const Ini::Document ini = Ini::Parse("mods.root = mods\ngb.qol.bootskip = 0\nGB.QOL.Late = Yes\ngb.mymod.greeting = from ini\n");
     const std::vector<Defaults> mods = {
         { "gb.qol",   { { "bootskip", "1" }, { "bootskip.screens", "1" } } },
         { "gb.mymod", { { "greeting", "hello" }, { "bootskip", "unrelated" } } },
@@ -40,7 +40,7 @@ int main()
     CHECK_EQ(S(Get(t, "gb.qol", "missing")), "<null>");
     // Case never matters for keys or ids; values keep their case.
     CHECK_EQ(S(Get(t, "GB.QOL", "LATE")), "Yes");
-    // A [section] in gbhook.ini folds into the same key space.
+    // gbhook.ini wins over the mod's own modinfo.ini key.
     CHECK_EQ(S(Get(t, "gb.mymod", "greeting")), "from ini");
     // Two mods with one key name do not collide.
     CHECK_EQ(S(Get(t, "gb.mymod", "bootskip")), "unrelated");
@@ -58,11 +58,11 @@ int main()
         CHECK_EQ(S(Get(d, "gb.a", "k")), "2");
     }
 
-    // A [settings] key that repeats the mod id is read doubled, and the mod is warned.
+    // A modinfo.ini key that repeats the mod id is read doubled, and the mod is warned.
     {
         const Table w = Build(Ini::Parse(""), { { "gb.a", { { "gb.a.k", "v" } } } });
         CHECK_EQ(w.warnings.size(), (size_t)1);
-        CHECK_EQ(w.warnings[0], "gb.a: [settings] key 'gb.a.k' repeats the mod id; it is read as 'gb.a.gb.a.k'");
+        CHECK_EQ(w.warnings[0], "gb.a: modinfo.ini key 'gb.a.k' repeats the mod id; it is read as 'gb.a.gb.a.k'");
         CHECK_EQ(S(Get(w, "gb.a", "gb.a.k")), "v");
         CHECK_EQ(S(Get(w, "gb.a", "k")), "<null>");
     }

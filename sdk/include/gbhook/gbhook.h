@@ -236,7 +236,7 @@ typedef struct GbhApi {
     void (*log)(const char* tag, const char* line);
     void (*logf)(const char* tag, const char* fmt, ...);
 
-    /* -- settings: gbhook.ini "<id>.<key>", then the mod's own [settings] default, then dflt -- */
+    /* -- settings: gbhook.ini "<id>.<key>", then the mod's own modinfo.ini key, then dflt -- */
     const char* (*setting)(const char* key, const char* dflt);
     int         (*setting_int)(const char* key, int dflt);
     float       (*setting_float)(const char* key, float dflt);

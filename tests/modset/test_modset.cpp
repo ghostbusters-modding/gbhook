@@ -29,7 +29,7 @@ namespace
 
     std::string Ini(const char* id, const char* extra = "")
     {
-        return std::string("version=\"1.0\"\n[gbhook]\nid = ") + id + "\nabi = 1\n" + extra;
+        return std::string("version=\"1.0\"\nid = ") + id + "\nabi = 1\n" + extra;
     }
 
     Candidate Cand(const char* folder, const std::string& ini, Binary binary = Binary::None)
@@ -79,7 +79,7 @@ int main()
         ModSet::Result r = Resolve({ c });
         CHECK(r.records[0].accepted);
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
-        CHECK_EQ(r.records[0].warnings[0], "gbhook/mod.ini is no longer read: its keys go under [gbhook] in previews/modinfo.ini");
+        CHECK_EQ(r.records[0].warnings[0], "gbhook/mod.ini is no longer read: its keys go in previews/modinfo.ini");
         Candidate h; h.root = "mods"; h.folder = "Half"; h.hasModIni = true; h.hasGbhookDir = true;
         r = Resolve({ h });
         CHECK_EQ(r.records[0].refusal, "gbhook/ exists but there is no previews/modinfo.ini");
@@ -88,12 +88,12 @@ int main()
 
     // A modinfo.ini refusal and its warnings carry through.
     {
-        ModSet::Result r = Resolve({ Cand("B", "[gbhook]\ncolour = red\nabi = 1\n") });
-        CHECK_EQ(r.records[0].refusal, "modinfo.ini has no id under [gbhook]");
+        ModSet::Result r = Resolve({ Cand("B", "disabled = 1\nabi = 1\n") });
+        CHECK_EQ(r.records[0].refusal, "modinfo.ini has no id");
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
     }
 
-    // A plain Mod Manager folder, no [gbhook] section and no gbhook/: a content mod under the folder's own name.
+    // A plain Mod Manager folder, none of our keys and no gbhook/: a content mod under the folder's own name.
     {
         Candidate m = Cand("My Level", "version=\"1.0\"\ndescription=\"a level\"\n"); m.hasAssets = true;
         ModSet::Result r = Resolve({ m });
@@ -132,7 +132,7 @@ int main()
         Candidate d = Cand("Dll", "version=\"1.0\"\n"); d.hasGbhookDir = true; d.hasAssets = true;
         r = Resolve({ d });
         CHECK(!r.records[0].accepted);
-        CHECK_EQ(r.records[0].refusal, "previews/modinfo.ini has no [gbhook] section");
+        CHECK_EQ(r.records[0].refusal, "previews/modinfo.ini has no id");
 
         // An explicit id and a folder-derived one collide like any two ids: the first folder keeps it.
         Candidate f = Cand("Zed", Ini("harbor")); f.hasAssets = true;
@@ -198,7 +198,7 @@ int main()
     }
     {
         ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "requires = gb.b\n")),
-                                     Cand("B", "[gbhook]\nid = gb.b\n") });
+                                     Cand("B", "id = gb.b\n") });
         CHECK_EQ(Find(r, "A")->refusal, "requires 'gb.b', which was refused");
     }
     {
@@ -248,7 +248,7 @@ int main()
         ModSet::Result r = Resolve({ Cand("Z", Ini("gb.z", "stage = boot\npriority = 50\n")),
                                      Cand("Y", Ini("gb.y", "stage = preboot\npriority = 500\n")),
                                      Cand("X", Ini("gb.x", "stage = boot\npriority = 50\n")),
-                                     Cand("Bad", "[gbhook]\nabi = 9\n"),
+                                     Cand("Bad", "abi = 9\n"),
                                      Cand("W", Ini("gb.w", "stage = ready\n")),
                                      half });
         CHECK_EQ(r.records.size(), (size_t)6);

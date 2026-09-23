@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Colin Sullivan and contributors
 // SPDX-License-Identifier: GPL-2.0-only
 #pragma once
-// The two settings layers as one lookup: gbhook.ini "<id>.<key>" over a mod's own [settings] default.
+// The two settings layers as one lookup: gbhook.ini "<id>.<key>" over a mod's own modinfo.ini key.
 // Pure. tests/modset/test_settings.cpp is the spec; docs/MOD_FORMAT.md states the rule.
 
 #include "format/Ini.h"
@@ -14,7 +14,7 @@
 
 namespace SettingsTable
 {
-    // One accepted mod's [settings] block, keys as the mod reads them.
+    // One accepted mod's modinfo.ini keys, as the mod reads them.
     struct Defaults
     {
         std::string id;
