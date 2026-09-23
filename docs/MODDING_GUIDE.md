@@ -18,7 +18,7 @@ code mod adds a DLL on gbhook's C ABI. Both live at `<gamedir>/mods/<name>/`, an
 
 ```
 mods/DuelArena/
-├── previews/modinfo.ini          the Mod Manager's metadata, and gbhook's section
+├── previews/modinfo.ini          the Mod Manager's metadata, and gbhook's keys
 ├── world/duel_arena.lvl          the level
 ├── world/duel_arena.dante        its script
 ├── world/en/duel_arena.txt       its text
@@ -34,7 +34,6 @@ compatibility="PC"
 description="Duel Arena -- a bare 200x200ft test range for 1-on-1 play."
 link=""
 
-[gbhook]
 id    = gb.duelarena
 abi   = 1
 stage = boot
@@ -81,7 +80,6 @@ compatibility="PC"
 description="A small example mod."
 link=""
 
-[gbhook]
 id     = gb.mymod
 abi    = 1
 plugin = MyMod.dll
@@ -164,8 +162,8 @@ const int   rate = gbh::setting_int("spawn_rate", 4);
 const auto  font = gbh::setting("overlay.font", "");
 ```
 
-Keys are read as `gb.mymod.<key>` from `gbhook.ini`, then from the mod's own `[settings]`
-block, then the default given. A mod ships its defaults in `modinfo.ini` and the user
+Keys are read as `gb.mymod.<key>` from `gbhook.ini`, then from the same key in the mod's own
+`modinfo.ini`, then the default given. A mod ships its defaults in `modinfo.ini` and the user
 overrides them in `gbhook.ini`.
 
 ### Commands

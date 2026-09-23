@@ -1,6 +1,6 @@
 # gbhook.ini: copy next to ghost.exe and edit. Nothing here is needed for a default install.
 # Flat key = value. A '#' or ';' starts a comment, mid-line too. Double-quote a value to keep them.
-# Lists are comma-separated. A [section] folds into the key as a prefix.
+# Lists are comma-separated.
 
 # Where mods are looked for. Comma-separated, <gamedir>-relative or absolute.
 mods.root = mods

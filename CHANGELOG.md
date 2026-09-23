@@ -3,6 +3,11 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.2.4 (2026-09-23)
+
+- Removed section [headers] from modinfo.ini and gbhook.ini. Keys are read raw from the files.
+
+
 ## 0.2.3 (2026-09-22)
 
 - `mods.disabled` in `gbhook.ini` switches mods off by id or folder name, a content mod

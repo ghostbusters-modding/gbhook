@@ -78,7 +78,7 @@ gb.mymod.mycommand = 0         ; a mod's setting, under its id; the mod's own de
 
 ## Writing a mod
 
-A content mod is a folder of loose assets and a `[gbhook]` section in its `modinfo.ini`. A code mod adds a DLL
+A content mod is a folder of loose assets and gbhook's keys in its `modinfo.ini`. A code mod adds a DLL
 built against `sdk/include/gbhook/gbhook.h`.
 
 ```cpp

@@ -104,7 +104,7 @@ crosses the table.
 ### Settings, any thread
 
 `setting(key, dflt)`, `setting_int`, `setting_float`, `setting_bool`. A key is resolved as
-`<id>.<key>` in `gbhook.ini`, then the mod's own `[settings]` default, then `dflt`.
+`<id>.<key>` in `gbhook.ini`, then the same key in the mod's own `modinfo.ini`, then `dflt`.
 
 ### Hooks, any thread, install at init
 

@@ -4,8 +4,8 @@ A mod is one folder carrying assets, code and metadata together. It installs by 
 copied into `<gamedir>/mods/` and uninstalls by being deleted.
 
 The format is the **Ghostbusters Mod Manager's**. Any folder the manager would deploy loads
-under gbhook as it is, with no edit. A `[gbhook]` section in the manager's own
-`previews/modinfo.ini` is needed only for a DLL, or to choose the id, stage and settings.
+under gbhook as it is, with no edit. gbhook's keys go in the manager's own
+`previews/modinfo.ini`, needed only for a DLL, or to choose the id, stage and settings.
 The manager deploys the assets as before either way.
 
 ## 1. The folder
@@ -16,7 +16,7 @@ My_Mod.zip                        the upload: one folder, named for the mod, not
     ├── LICENSE
     ├── README.txt
     ├── previews/
-    │   ├── modinfo.ini           the Mod Manager's keys, then gbhook's sections
+    │   ├── modinfo.ini           the Mod Manager's keys, then gbhook's
     │   └── preview_01.png
     ├── art/  data/  world/       loose assets, mirroring the game's archive tree
     │   sets/  models/ ...
@@ -40,15 +40,14 @@ my_tool/
 | tool | key | form |
 |---|---|---|
 | the Mod Manager | the folder name | `my_mod`, lowercase, fixed once published |
-| gbhook | `id` under `[gbhook]` in `modinfo.ini`, or the folder name lowercased when there is no section | `gb.mymod`; also the command, settings and log namespace |
+| gbhook | `id` in `modinfo.ini`, or the folder name lowercased when there is none | `gb.mymod`; also the command, settings and log namespace |
 
 ## 3. `previews/modinfo.ini`
 
-One file, two owners. The top-level keys are the Mod Manager's, written the way it writes
-them, in double quotes. Below them, an optional `[gbhook]` section: required for a DLL, and
-otherwise the folder loads as content under its own name with the defaults below. A `#` or
-`;` starts a comment, mid-line too, except inside a double-quoted value. Lists are
-comma-separated. The same parser reads `gbhook.ini`.
+One file, two owners. The Mod Manager's keys come first, written the way it writes them, in
+double quotes. gbhook's keys follow: required for a DLL, and otherwise the folder loads as
+content under its own name with the defaults below. A `#` or `;` starts a comment, mid-line
+too, except inside a double-quoted value. Lists are comma-separated.
 
 ```ini
 version="0.1.0"
@@ -56,7 +55,6 @@ compatibility="PC"
 description="What the mod is, for the manager's listing."
 link=""
 
-[gbhook]
 id          = gb.mymod
 abi         = 1
 plugin      = MyMod.dll           ; a DLL under gbhook/, or leave the key out
@@ -64,20 +62,19 @@ stage       = boot                ; preboot | early | boot | ready
 priority    = 100                 ; within a stage, low runs first
 ;requires   = gb.othermod         ; mod ids that must be present and loaded
 
-[settings]
-spawn_rate  = 4                   ; this mod's defaults, in its own namespace
+spawn_rate  = 4                   ; a setting: any other key is one
 ```
 
 | key | meaning |
 |---|---|
-| `version`, `compatibility`, `description`, `link` | the manager's, top level. gbhook reads `version` and `description` and never judges the rest. |
+| `version`, `compatibility`, `description`, `link` | the manager's. gbhook reads `version` and `description` and never judges the rest. |
 | `id` | unique across every root. The namespace for commands, settings and log lines. |
 | `abi` | `GBHOOK_ABI_VERSION` from `gbhook.h`. Cross-checked against the DLL's manifest. |
 | `plugin` | a DLL under `gbhook/`, or absent. |
 | `stage` | when the DLL's init runs. Names, never numbers: a number baked into a shipped mod is what forced an ABI break the last time a stage was inserted. |
 | `priority` | within a stage, low runs first. Default 100. |
 | `requires` | mod ids that must be present and accepted, else this mod is refused. It does not order anything: see section 6. |
-| `[settings]` | defaults in the mod's namespace. `gbhook.ini` overrides them as `<id>.<key>`. |
+| any other key | a setting default in the mod's namespace. `gbhook.ini` overrides it as `<id>.<key>`. |
 
 Two keys are parsed and reserved: `content`, a list of prebuilt archives under `gbhook/`,
 is reported when two mods name the same archive but is not mounted; `scripts` is not read.
@@ -87,8 +84,8 @@ Neither belongs in a shipped `modinfo.ini` yet.
 
 | file | owns | required |
 |---|---|---|
-| `previews/modinfo.ini`, top level | human metadata: `version`, `compatibility`, `description`, `link` | every mod |
-| `previews/modinfo.ini`, `[gbhook]` and `[settings]` | loading facts: what exists, what to load, in what order, with what defaults | for a DLL, or to set the id, stage, priority, `requires` or settings |
+| `previews/modinfo.ini`, the manager's keys | human metadata: `version`, `compatibility`, `description`, `link` | every mod |
+| `previews/modinfo.ini`, gbhook's keys | loading facts: what exists, what to load, in what order, with what defaults | for a DLL, or to set the id, stage, priority, `requires` or settings |
 | the DLL's manifest | what only the binary can assert: `id`, `abi`, the target `ghost.exe` md5, exclusive hook claims | when a DLL exists |
 
 A folder under a root is a mod when it has any of the three: the manager's `modinfo.ini`, a
@@ -99,9 +96,9 @@ valid" because no asset folder exists, then deploys the rest. That line in its l
 expected outcome, not a fault.
 
 gbhook reads `modinfo.ini` and never writes it. The manager reads its own keys and leaves
-the file as authored, so a `[gbhook]` section survives a deploy byte for byte. Its one
+the file as authored, so gbhook's keys survive a deploy byte for byte. Its one
 write is the modder-only Force Compatibility action, through `QSettings`: keys reordered,
-comments dropped, the top-level keys moved under `[General]`, and gbhook reads that too.
+comments dropped, the keys moved under `[General]`, and gbhook reads that too.
 
 The manager packs everything but `previews/` into `MODS.POD`, `gbhook/` included. That
 costs the DLL's size in the archive and nothing else: the engine never asks for that path.
@@ -189,12 +186,13 @@ correction.
 
 ## 8. Settings
 
-A mod's `[settings]` block supplies defaults, keyed as the mod reads them. `gbhook.ini`
-overrides them under the mod's id, so a mod works out of the box and the user's edit wins:
+Every key in a mod's `modinfo.ini` is a default, keyed as the mod reads it. `gbhook.ini`
+overrides it under the mod's id, so a mod works out of the box and the user's edit wins.
+A mod can read the manager's keys the same way: `version` is one setting for both tools.
+A setting cannot reuse a name gbhook reads for itself, such as `id` or `stage`.
 
 ```ini
 # mods/harbor_docks/previews/modinfo.ini
-[settings]
 spawn_rate = 4
 
 # <gamedir>/gbhook.ini
@@ -202,7 +200,7 @@ gb.mymod.spawn_rate = 12
 ```
 
 `mods.disabled` in `gbhook.ini` turns mods off without touching them: ids or folder names,
-comma-separated. It works on a folder with no `[gbhook]` section too. The Mods page's Disable
+comma-separated. It works on a folder with no gbhook keys too. The Mods page's Disable
 and Enable rows write it, and the change takes effect at the next start. A mod cannot switch
 itself off: `disabled` in `modinfo.ini` is no longer read, and the log names the line.
 
@@ -214,8 +212,8 @@ mod's page under View Mods. The reasons:
 
 | reason | fix |
 |---|---|
-| `gbhook/ exists but there is no previews/modinfo.ini` | add one, with a `[gbhook]` section |
-| `previews/modinfo.ini has no [gbhook] section` | a `gbhook/` folder exists, so a DLL is meant: add the section. Without `gbhook/` the folder loads as content and nothing is said |
+| `gbhook/ exists but there is no previews/modinfo.ini` | add one, with an `id` and `abi` |
+| `previews/modinfo.ini has no id` | a `gbhook/` folder exists, so a DLL is meant: add gbhook's keys. Without `gbhook/` the folder loads as content and nothing is said |
 | `modinfo.ini says abi N` | rebuild against this gbhook, or set `abi` to match |
 | `modinfo.ini says id 'x'` | the DLL's manifest says another; make them agree |
 | `duplicate id` | two folders claim one id |
