@@ -57,7 +57,7 @@ int main()
     };
     std::vector<Mod> mods = {
         M("gb.qol", "0.1.0", State::Loaded, "", 0, 1, Origin::None, Mount::None),
-        M("gb.duelarena", "", State::NoCode, "", 20, 0, Origin::Built, Mount::Mounted),
+        M("duelarena", "", State::NoCode, "", 20, 0, Origin::Built, Mount::Mounted),
         M("gb.old", "2.0", State::Refused, "plugin 'Old.dll': built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod", 0, 1, Origin::None, Mount::None),
         M("gb.off", "", State::OffIni, "", 7, 1, Origin::Cached, Mount::Mounted, Switch::TurnOn),
         M("gb.averyveryveryverylongidentifiername", "1.2.3", State::Failed, "GbhPluginInit returned -1", 0, 1, Origin::None, Mount::None),
@@ -78,7 +78,7 @@ int main()
             CHECK_EQ(rows.size(), mods.size() + 1);
             CHECK_EQ(rows[0].label, "ON  gb.qol 0.1.0");
             CHECK_EQ(rows[0].action, 0);
-            CHECK_EQ(rows[1].label, "ON  gb.duelarena");
+            CHECK_EQ(rows[1].label, "ON  duelarena");
             CHECK_EQ(rows[2].label, "OFF gb.old 2.0");
             CHECK_EQ(rows[2].action, 2);
             CHECK_EQ(rows[3].label, "OFF gb.off");

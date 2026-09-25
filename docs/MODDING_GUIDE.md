@@ -34,13 +34,13 @@ compatibility="PC"
 description="Duel Arena -- a bare 200x200ft test range for 1-on-1 play."
 link=""
 
-id    = gb.duelarena
+id    = duelarena
 abi   = 1
 stage = boot
 ```
 
 That is the whole mod. At boot gbhook hashes the tree, builds it into
-`gbhook/cache/gb.duelarena/<hash>.POD` the first time and after any change, and mounts the
+`gbhook/cache/duelarena/<hash>.POD` the first time and after any change, and mounts the
 archive above the game's own. The level appears under **Mods ▸ Load Level ▸ Custom**, and
 the checkpoints its script registers with `defineCheckpoint` appear when it is chosen.
 
@@ -62,7 +62,7 @@ What to know:
 #include "gbhook/gbhook.h"
 #include "gbhook/gbhook.hpp"
 
-GBHOOK_PLUGIN("gb.mymod");
+GBHOOK_PLUGIN("mymod");
 
 extern "C" GBHOOK_EXPORT int GbhPluginInit(const GbhApi* api)
 {
@@ -80,7 +80,7 @@ compatibility="PC"
 description="A small example mod."
 link=""
 
-id     = gb.mymod
+id     = mymod
 abi    = 1
 plugin = MyMod.dll
 stage  = boot
@@ -135,7 +135,7 @@ A mod that detours an engine function nobody else may touch declares it in the m
 and the claim is checked against every other mod at discovery:
 
 ```cpp
-GBHOOK_PLUGIN_EXCLUSIVE("gb.fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
+GBHOOK_PLUGIN_EXCLUSIVE("fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
 ```
 
 Two mods claiming one address: whichever loads first wins, and the other's claim is refused
@@ -153,7 +153,7 @@ gbh::log("MOD", "one line");
 gbh::logf("MOD", "%d things", n);
 ```
 
-Lines land in `gbhook.log` as `TAG  [gb.mymod] text`. The tag names the subsystem; the id
+Lines land in `gbhook.log` as `TAG  [mymod] text`. The tag names the subsystem; the id
 is added by gbhook.
 
 ```cpp
@@ -162,7 +162,7 @@ const int   rate = gbh::setting_int("spawn_rate", 4);
 const auto  font = gbh::setting("overlay.font", "");
 ```
 
-Keys are read as `gb.mymod.<key>` from `gbhook.ini`, then from the same key in the mod's own
+Keys are read as `mymod.<key>` from `gbhook.ini`, then from the same key in the mod's own
 `modinfo.ini`, then the default given. A mod ships its defaults in `modinfo.ini` and the user
 overrides them in `gbhook.ini`.
 
@@ -179,7 +179,7 @@ int CmdHello(int argc, const char* const* argv, const char** err, void*)
 gbh::command_register("hello", CmdHello, nullptr, "<name> -- say hello");
 ```
 
-The command is `gb.mymod.hello`, reachable from `gbhook.cmd`, from other mods and from
+The command is `mymod.hello`, reachable from `gbhook.cmd`, from other mods and from
 gbhook. `argv` holds the arguments only. Every handler runs on the game thread, so engine
 calls are safe inside it. `gbh::run(line)` runs a command now, or queues it when the caller
 is not on the game thread; `gbh::queue(line)` always waits for the next frame, front end
@@ -363,7 +363,7 @@ gbh::action_register("menu", OnMenu, nullptr, "open the overlay");
 bind.menu = F1
 ```
 
-The player rebinds it in `gbhook.ini` as `gb.mymod.bind.menu = CTRL+SHIFT+M`, or turns it off
+The player rebinds it in `gbhook.ini` as `mymod.bind.menu = CTRL+SHIFT+M`, or turns it off
 with `NONE`. The handler runs on the main thread once per press, and a bound key never
 reaches the game. If another mod already has the chord, the log names both and yours stays
 unbound. `gbh::action_held("menu")` answers while the chord is down. `gbh::action_capture(true)`
@@ -390,9 +390,9 @@ A mod that offers a table to other mods publishes it by name, and a consumer fin
 ```cpp
 struct MyTable { uint32_t struct_size; int (*answer)(void); };
 static const MyTable g_table = { sizeof g_table, Answer };
-gbh::service_publish("gb.mymod.table", &g_table, sizeof g_table);      // once; a second name is refused
+gbh::service_publish("mymod.table", &g_table, sizeof g_table);      // once; a second name is refused
 
-const MyTable* t = gbh::service_find<MyTable>("gb.mymod.table");      // null until the publisher has loaded
+const MyTable* t = gbh::service_find<MyTable>("mymod.table");      // null until the publisher has loaded
 ```
 
 The table lives for the process and starts with `struct_size`, so a consumer gates on what

@@ -3,6 +3,12 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.2.6 (2026-09-25)
+
+- A mod id may not contain a dot. Such a mod is refused and must be rebuilt under a new id.
+- `mods.root` and `mods.disabled` are now `mods_root` and `mods_disabled`. The old keys are
+  ignored, so rename them in `gbhook.ini`.
+
 ## 0.2.5 (2026-09-23)
 
 - Actions: a mod names a key action and the player binds it as `bind.<action>` in

@@ -41,8 +41,8 @@ int main()
 
     // Keys fold to lower case; values keep theirs.
     {
-        Ini::Document d = Parse("MODS.Root = Mods");
-        CHECK_EQ(d.entries[0].key, "mods.root");
+        Ini::Document d = Parse("MODS_Root = Mods");
+        CHECK_EQ(d.entries[0].key, "mods_root");
         CHECK_EQ(d.entries[0].value, "Mods");
     }
 
@@ -140,15 +140,15 @@ int main()
 
     // ListOf: the last value's list, by value, empty when the key is absent or blank.
     {
-        const std::string text = "a = 1\nmods.disabled = gb.old\nMODS.Disabled = gb.a,  Harbor Docks , gb.c\n";
-        std::vector<std::string> l = Ini::ListOf(text, "mods.disabled");
+        const std::string text = "a = 1\nmods_disabled = gb.old\nMODS_Disabled = gb.a,  Harbor Docks , gb.c\n";
+        std::vector<std::string> l = Ini::ListOf(text, "mods_disabled");
         CHECK_EQ(l.size(), (size_t)3);
         CHECK_EQ(l[0], "gb.a");
         CHECK_EQ(l[1], "Harbor Docks");
         CHECK_EQ(l[2], "gb.c");
         CHECK_EQ(Ini::ListOf(text, "missing").size(), (size_t)0);
-        CHECK_EQ(Ini::ListOf("mods.disabled =\n", "mods.disabled").size(), (size_t)0);
-        CHECK_EQ(Ini::ListOf("", "mods.disabled").size(), (size_t)0);
+        CHECK_EQ(Ini::ListOf("mods_disabled =\n", "mods_disabled").size(), (size_t)0);
+        CHECK_EQ(Ini::ListOf("", "mods_disabled").size(), (size_t)0);
         Ini::Document d = Parse("content = content/A.POD, content/B.POD");
         CHECK_EQ(Ini::List(Value(d, "content")).size(), (size_t)2);
         CHECK_EQ(Ini::List(Value(d, "content"))[1], "content/B.POD");
@@ -177,17 +177,17 @@ int main()
 
     // Set: one line changed in place, everything else byte for byte.
     {
-        CHECK_EQ(Ini::Set("", "mods.disabled", "gb.a"), "mods.disabled = gb.a\n");
-        CHECK_EQ(Ini::Set("mods.root = mods\n", "mods.disabled", "gb.a"), "mods.root = mods\nmods.disabled = gb.a\n");
+        CHECK_EQ(Ini::Set("", "mods_disabled", "gb.a"), "mods_disabled = gb.a\n");
+        CHECK_EQ(Ini::Set("mods_root = mods\n", "mods_disabled", "gb.a"), "mods_root = mods\nmods_disabled = gb.a\n");
         CHECK_EQ(Ini::Set("a = 1\r\n\r\n", "b", "2"), "a = 1\r\nb = 2\r\n\r\n");
-        CHECK_EQ(Ini::Set("# top\nmods.disabled = gb.a   # off for now\nx = 1\n", "mods.disabled", "gb.a, gb.b"),
-                 "# top\nmods.disabled = gb.a, gb.b   # off for now\nx = 1\n");
-        CHECK_EQ(Ini::Set("MODS.Disabled=gb.a", "mods.disabled", ""), "MODS.Disabled = ");
+        CHECK_EQ(Ini::Set("# top\nmods_disabled = gb.a   # off for now\nx = 1\n", "mods_disabled", "gb.a, gb.b"),
+                 "# top\nmods_disabled = gb.a, gb.b   # off for now\nx = 1\n");
+        CHECK_EQ(Ini::Set("MODS_Disabled=gb.a", "mods_disabled", ""), "MODS_Disabled = ");
         CHECK_EQ(Ini::Set("k = \"a;b\" ; note\n", "k", "c"), "k = c   ; note\n");
         // Last one wins when read, so the last one is the one changed.
         CHECK_EQ(Ini::Set("k = 1\nk = 2\n", "k", "3"), "k = 1\nk = 3\n");
         // A header changes nothing: a new key goes at the end, past it.
-        CHECK_EQ(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods.disabled", "gb.b"), "a = 1\n[gb.x]\nk = 2\nmods.disabled = gb.b\n");
+        CHECK_EQ(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods_disabled", "gb.b"), "a = 1\n[gb.x]\nk = 2\nmods_disabled = gb.b\n");
     }
 
     return check::Done("ini");

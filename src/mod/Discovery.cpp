@@ -111,7 +111,7 @@ namespace Mods
         std::vector<ModSet::Candidate> found;
         int notMods = 0;
 
-        for (const std::string& raw : Ini::List(Settings::Get("mods.root", "mods")))
+        for (const std::string& raw : Ini::List(Settings::Get("mods_root", "mods")))
         {
             const std::string root = AbsoluteRoot(raw);
             if (!IsDir(root))
@@ -141,7 +141,7 @@ namespace Mods
             }
         }
 
-        g_result = ModSet::Resolve(found, Ini::List(Settings::Get("mods.disabled", "")));
+        g_result = ModSet::Resolve(found, Ini::List(Settings::Get("mods_disabled", "")));
 
         int accepted = 0, implicit = 0, off = 0, refused = 0;
         for (const ModSet::Record& r : g_result.records)

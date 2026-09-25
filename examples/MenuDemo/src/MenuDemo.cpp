@@ -9,7 +9,7 @@
 #include "gbhook/gbhook.h"
 #include "gbhook/gbhook.hpp"
 
-GBHOOK_PLUGIN("gb.menudemo");
+GBHOOK_PLUGIN("menudemo");
 
 namespace
 {

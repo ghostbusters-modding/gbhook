@@ -54,11 +54,11 @@ int main()
 {
     // One script-only mod: accepted, first in the order.
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a")) });
+        ModSet::Result r = Resolve({ Cand("A", Ini("a")) });
         CHECK_EQ(r.records.size(), (size_t)1);
         CHECK(r.records[0].accepted);
         CHECK_EQ(r.records[0].order, 0);
-        CHECK_EQ(r.records[0].mod.id, "gb.a");
+        CHECK_EQ(r.records[0].mod.id, "a");
         CHECK_EQ(r.records[0].mod.version, "1.0");
         CHECK_EQ(r.records[0].refusal, "");
         CHECK_EQ(r.conflicts.size(), (size_t)0);
@@ -75,7 +75,7 @@ int main()
 
     // A leftover gbhook/mod.ini is named once, whatever else the folder does.
     {
-        Candidate c = Cand("Old", Ini("gb.old")); c.hasModIni = true;
+        Candidate c = Cand("Old", Ini("old")); c.hasModIni = true;
         ModSet::Result r = Resolve({ c });
         CHECK(r.records[0].accepted);
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
@@ -145,37 +145,37 @@ int main()
 
     // The plugin named by modinfo.ini must exist, be readable, and pass the manifest checks.
     {
-        ModSet::Result r = Resolve({ Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Missing) });
+        ModSet::Result r = Resolve({ Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Missing) });
         CHECK_EQ(r.records[0].refusal, "plugin 'C.dll' is not in gbhook/");
     }
     {
-        Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Unreadable);
+        Candidate c = Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Unreadable);
         c.binaryWhy = "not a PE file (bad DOS header)";
         CHECK_EQ(Resolve({ c }).records[0].refusal, "plugin 'C.dll': not a PE file (bad DOS header)");
     }
     {
-        Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Ok);
-        c.manifest = Mf("gb.c"); c.manifest.magic[0] = 'X';
+        Candidate c = Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Ok);
+        c.manifest = Mf("c"); c.manifest.magic[0] = 'X';
         CHECK_EQ(Resolve({ c }).records[0].refusal, "plugin 'C.dll': manifest magic mismatch (stale SDK?)");
     }
 
     // The two facts stated twice must agree.
     {
-        Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Ok);
-        c.manifest = Mf("gb.other");
+        Candidate c = Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Ok);
+        c.manifest = Mf("other");
         CHECK_EQ(Resolve({ c }).records[0].refusal,
-                 "modinfo.ini says id 'gb.c' but C.dll says 'gb.other' -- one was edited after the build");
+                 "modinfo.ini says id 'c' but C.dll says 'other' -- one was edited after the build");
     }
     {
-        Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Ok);
-        c.manifest = Mf("gb.c", 2);
+        Candidate c = Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Ok);
+        c.manifest = Mf("c", 2);
         CHECK_EQ(Resolve({ c }).records[0].refusal, "plugin 'C.dll': built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod");
     }
 
     // A good binary: accepted, exclusive hooks carried over.
     {
-        Candidate c = Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Ok);
-        c.manifest = Mf("gb.c");
+        Candidate c = Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Ok);
+        c.manifest = Mf("c");
         strcpy(c.manifest.exclusive_hooks[0], "ghost+0x46A110");
         ModSet::Result r = Resolve({ c });
         CHECK(r.records[0].accepted);
@@ -185,77 +185,77 @@ int main()
 
     // Duplicate ids: the first folder keeps it.
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a")), Cand("B", Ini("gb.a")) });
+        ModSet::Result r = Resolve({ Cand("A", Ini("a")), Cand("B", Ini("a")) });
         CHECK(Find(r, "A")->accepted);
         CHECK(!Find(r, "B")->accepted);
-        CHECK_EQ(Find(r, "B")->refusal, "duplicate id 'gb.a', already claimed by folder 'A'");
+        CHECK_EQ(Find(r, "B")->refusal, "duplicate id 'a', already claimed by folder 'A'");
     }
 
     // requires: absent, refused, and a cascade.
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "requires = gb.z\n")) });
-        CHECK_EQ(r.records[0].refusal, "requires 'gb.z', which is not present");
+        ModSet::Result r = Resolve({ Cand("A", Ini("a", "requires = z\n")) });
+        CHECK_EQ(r.records[0].refusal, "requires 'z', which is not present");
     }
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "requires = gb.b\n")),
-                                     Cand("B", "id = gb.b\n") });
-        CHECK_EQ(Find(r, "A")->refusal, "requires 'gb.b', which was refused");
+        ModSet::Result r = Resolve({ Cand("A", Ini("a", "requires = b\n")),
+                                     Cand("B", "id = b\n") });
+        CHECK_EQ(Find(r, "A")->refusal, "requires 'b', which was refused");
     }
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "requires = gb.b\n")),
-                                     Cand("B", Ini("gb.b", "requires = gb.c\n")),
-                                     Cand("C", Ini("gb.c", "requires = gb.z\n")) });
-        CHECK_EQ(Find(r, "C")->refusal, "requires 'gb.z', which is not present");
-        CHECK_EQ(Find(r, "B")->refusal, "requires 'gb.c', which was refused");
-        CHECK_EQ(Find(r, "A")->refusal, "requires 'gb.b', which was refused");
+        ModSet::Result r = Resolve({ Cand("A", Ini("a", "requires = b\n")),
+                                     Cand("B", Ini("b", "requires = c\n")),
+                                     Cand("C", Ini("c", "requires = z\n")) });
+        CHECK_EQ(Find(r, "C")->refusal, "requires 'z', which is not present");
+        CHECK_EQ(Find(r, "B")->refusal, "requires 'c', which was refused");
+        CHECK_EQ(Find(r, "A")->refusal, "requires 'b', which was refused");
     }
 
     // requires does not order; a dependency that initialises later is called out.
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "requires = gb.b\n")),
-                                     Cand("B", Ini("gb.b", "priority = 200\n")) });
+        ModSet::Result r = Resolve({ Cand("A", Ini("a", "requires = b\n")),
+                                     Cand("B", Ini("b", "priority = 200\n")) });
         CHECK(Find(r, "A")->accepted);
         CHECK_EQ(Find(r, "A")->warnings.size(), (size_t)1);
         CHECK_EQ(Find(r, "A")->warnings[0],
-                 "requires 'gb.b', which initialises after it -- give this mod a higher priority or a later stage");
-        ModSet::Result ok = Resolve({ Cand("A", Ini("gb.a", "requires = gb.b\npriority = 300\n")),
-                                      Cand("B", Ini("gb.b", "priority = 200\n")) });
+                 "requires 'b', which initialises after it -- give this mod a higher priority or a later stage");
+        ModSet::Result ok = Resolve({ Cand("A", Ini("a", "requires = b\npriority = 300\n")),
+                                      Cand("B", Ini("b", "priority = 200\n")) });
         CHECK_EQ(Find(ok, "A")->warnings.size(), (size_t)0);
     }
 
     // Set-wide conflicts: both stay accepted, the conflict is named.
     {
-        Candidate a = Cand("A", Ini("gb.a", "plugin = A.dll\n"), Binary::Ok); a.manifest = Mf("gb.a");
-        Candidate b = Cand("B", Ini("gb.b", "plugin = B.dll\n"), Binary::Ok); b.manifest = Mf("gb.b");
+        Candidate a = Cand("A", Ini("a", "plugin = A.dll\n"), Binary::Ok); a.manifest = Mf("a");
+        Candidate b = Cand("B", Ini("b", "plugin = B.dll\n"), Binary::Ok); b.manifest = Mf("b");
         strcpy(a.manifest.exclusive_hooks[0], "ghost+0x1F1210");
         strcpy(b.manifest.exclusive_hooks[0], "ghost+0x1F1210");
         ModSet::Result r = Resolve({ a, b });
         CHECK(Find(r, "A")->accepted);
         CHECK(Find(r, "B")->accepted);
         CHECK_EQ(r.conflicts.size(), (size_t)1);
-        CHECK_EQ(r.conflicts[0], "hook ghost+0x1F1210 claimed by both 'gb.a' and 'gb.b' -- whichever loads first wins and the other is refused at install time");
+        CHECK_EQ(r.conflicts[0], "hook ghost+0x1F1210 claimed by both 'a' and 'b' -- whichever loads first wins and the other is refused at install time");
     }
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "content = content/HAUNT.POD\n")),
-                                     Cand("B", Ini("gb.b", "content = pods/haunt.pod, pods/OTHER.POD\n")) });
+        ModSet::Result r = Resolve({ Cand("A", Ini("a", "content = content/HAUNT.POD\n")),
+                                     Cand("B", Ini("b", "content = pods/haunt.pod, pods/OTHER.POD\n")) });
         CHECK_EQ(r.conflicts.size(), (size_t)1);
-        CHECK_EQ(r.conflicts[0], "content HAUNT.POD shipped by both 'gb.a' and 'gb.b' -- mount order decides, silently");
+        CHECK_EQ(r.conflicts[0], "content HAUNT.POD shipped by both 'a' and 'b' -- mount order decides, silently");
     }
 
     // The code order: stage, then priority, then id; refused folders follow in discovery order.
     {
         Candidate half; half.root = "mods"; half.folder = "Half"; half.hasGbhookDir = true;
-        ModSet::Result r = Resolve({ Cand("Z", Ini("gb.z", "stage = boot\npriority = 50\n")),
-                                     Cand("Y", Ini("gb.y", "stage = preboot\npriority = 500\n")),
-                                     Cand("X", Ini("gb.x", "stage = boot\npriority = 50\n")),
+        ModSet::Result r = Resolve({ Cand("Z", Ini("z", "stage = boot\npriority = 50\n")),
+                                     Cand("Y", Ini("y", "stage = preboot\npriority = 500\n")),
+                                     Cand("X", Ini("x", "stage = boot\npriority = 50\n")),
                                      Cand("Bad", "abi = 9\n"),
-                                     Cand("W", Ini("gb.w", "stage = ready\n")),
+                                     Cand("W", Ini("w", "stage = ready\n")),
                                      half });
         CHECK_EQ(r.records.size(), (size_t)6);
-        CHECK_EQ(r.records[0].mod.id, "gb.y");
-        CHECK_EQ(r.records[1].mod.id, "gb.x");
-        CHECK_EQ(r.records[2].mod.id, "gb.z");
-        CHECK_EQ(r.records[3].mod.id, "gb.w");
+        CHECK_EQ(r.records[0].mod.id, "y");
+        CHECK_EQ(r.records[1].mod.id, "x");
+        CHECK_EQ(r.records[2].mod.id, "z");
+        CHECK_EQ(r.records[3].mod.id, "w");
         CHECK_EQ(r.records[3].order, 3);
         CHECK_EQ(r.records[4].folder, "Bad");
         CHECK_EQ(r.records[5].folder, "Half");
@@ -264,7 +264,7 @@ int main()
 
     // disabled = 1 in modinfo.ini is not a switch any more: the mod loads and the line is named.
     {
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a", "disabled = 1\n")) });
+        ModSet::Result r = Resolve({ Cand("A", Ini("a", "disabled = 1\n")) });
         CHECK(r.records[0].accepted && !r.records[0].disabled);
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
     }
@@ -290,7 +290,7 @@ int main()
     // An entry the Mods page wrote under the legacy folder id still turns the mod off. Explicit ids get no alias.
     {
         Candidate p; p.root = "mods"; p.folder = "My Mod (PC)"; p.hasAssets = true;
-        ModSet::Result r = Resolve({ p, Cand("My Mod", Ini("gb.m")) }, { "my_mod_(pc)", "my_mod" });
+        ModSet::Result r = Resolve({ p, Cand("My Mod", Ini("m")) }, { "my_mod_(pc)", "my_mod" });
         CHECK(Find(r, "My Mod (PC)")->disabled);
         CHECK(Find(r, "My Mod")->accepted);
         CHECK(ModSet::Names("MY_MOD_(PC)", *Find(r, "My Mod (PC)")));
@@ -301,14 +301,14 @@ int main()
     // gbhook.ini mods_disabled: by id or folder, any case, a section-less mod and a refused one included.
     {
         Candidate plain; plain.root = "mods"; plain.folder = "Plain Mod"; plain.hasAssets = true;
-        ModSet::Result r = Resolve({ Cand("A", Ini("gb.a")), Cand("B", Ini("gb.b", "requires = gb.a\n")), plain,
-                                     Cand("C", Ini("gb.c", "plugin = C.dll\n"), Binary::Missing), Cand("D", Ini("gb.d")) },
-                                   { "GB.A", "plain mod", "c" });
+        ModSet::Result r = Resolve({ Cand("A", Ini("alpha")), Cand("B", Ini("b", "requires = alpha\n")), plain,
+                                     Cand("C", Ini("c", "plugin = C.dll\n"), Binary::Missing), Cand("D", Ini("d")) },
+                                   { "ALPHA", "plain mod", "c" });
         const Record* a = Find(r, "A");
         CHECK(a && !a->accepted && a->disabled);
         CHECK_EQ(a->refusal, "");
         CHECK_EQ(a->order, -1);
-        CHECK_EQ(Find(r, "B")->refusal, "requires 'gb.a', which is disabled in gbhook.ini");
+        CHECK_EQ(Find(r, "B")->refusal, "requires 'alpha', which is disabled in gbhook.ini");
         const Record* p = Find(r, "Plain Mod");
         CHECK(p && p->disabled && p->implicit && !p->accepted);
         CHECK_EQ(p->mod.id, "plain_mod");

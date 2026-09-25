@@ -55,9 +55,9 @@ int main()
     CHECK_EQ(t.Count(), 1);
 
     // A second name is fine, and the same table may sit under two names.
-    CHECK(t.Publish("gb.coop", "gb.coop.net", &g_net, sizeof(NetState), &why));
+    CHECK(t.Publish("gbcoop", "gb.coop.net", &g_net, sizeof(NetState), &why));
     CHECK(t.Publish(nullptr, "gb.camera", g_cam, sizeof g_cam, &why));
-    CHECK(t.Publish("gb.coop", "gb.coop.net.alias", &g_net, sizeof(NetState), &why));
+    CHECK(t.Publish("gbcoop", "gb.coop.net.alias", &g_net, sizeof(NetState), &why));
     CHECK_EQ(t.Count(), 4);
     CHECK(t.Find("gb.coop.net", &size) == &g_net);
     CHECK_EQ(size, (uint32_t)sizeof(NetState));
@@ -66,7 +66,7 @@ int main()
 
     // Owner attribution: the mod id verbatim, "" for the framework, null for a name nobody published.
     CHECK_EQ(std::string(t.OwnerOf("gb.menu.ui")), "gb.menu");
-    CHECK_EQ(std::string(t.OwnerOf("gb.coop.net")), "gb.coop");
+    CHECK_EQ(std::string(t.OwnerOf("gb.coop.net")), "gbcoop");
     CHECK_EQ(std::string(t.OwnerOf("gb.camera")), "");
     CHECK(t.OwnerOf("gb.nobody") == nullptr);
     CHECK(t.OwnerOf(nullptr) == nullptr);

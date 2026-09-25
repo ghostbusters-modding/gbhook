@@ -9,13 +9,13 @@
 #include "gbhook/gbhook.h"
 #include "gbhook/gbhook.hpp"
 
-GBHOOK_PLUGIN("gb.mymod");
+GBHOOK_PLUGIN("mymod");
 
 namespace
 {
     int g_frames = 0;
 
-    // gb.mymod.hello [words...]: logs its arguments. Handlers run on the game thread.
+    // mymod.hello [words...]: logs its arguments. Handlers run on the game thread.
     int CmdHello(int argc, const char* const* argv, const char** err, void*)
     {
         if (argc < 1) { *err = "usage: hello <words>"; return GBH_ERR_ARG; }
@@ -33,7 +33,7 @@ namespace
     // Once per frame while a level is live. Keep it short: every mod shares this budget.
     void OnFrame(void*)
     {
-        if (++g_frames == 1) gbh::hud("hello from gb.mymod", 4.0f);
+        if (++g_frames == 1) gbh::hud("hello from mymod", 4.0f);
         if (g_frames % 600 == 0) gbh::logf("EVT", "%d frames in '%s'", g_frames, gbh::level_name().c_str());
     }
 }

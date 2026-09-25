@@ -14,25 +14,25 @@ static const char* kFull =
     "description=\"A local test mod; with a # in it\"\n"
     "link=\"\"\n"
     "\n"
-    "id          = gb.mymod              ; trailing note\n"
+    "id          = mymod              ; trailing note\n"
     "abi         = 1\n"
     "plugin      = MyMod.dll\n"
     "scripts     = scripts/\n"
     "content     = content/A.POD, content/B.POD\n"
     "stage       = early\n"
     "priority    = 50\n"
-    "requires    = gb.sensors, gb.core\n"
+    "requires    = sensors, core\n"
     "\n"
     "greeting    = hello\n"
     "net.port    = 12345\n";
 
-static const char* kMinimal = "id = gb.x\nabi = 1\n";
+static const char* kMinimal = "id = x\nabi = 1\n";
 
 // The same record in the sectioned form older mods shipped with.
 static const char* kSectioned =
     "version=\"0.1.0\"\n"
     "[gbhook]\n"
-    "id       = gb.mymod\n"
+    "id       = mymod\n"
     "abi      = 1\n"
     "plugin   = MyMod.dll\n"
     "[settings]\n"
@@ -54,7 +54,7 @@ int main()
         CHECK(r.gbhook);
         CHECK_EQ(r.refusal, "");
         CHECK_EQ(r.warnings.size(), (size_t)0);
-        CHECK_EQ(r.mod.id, "gb.mymod");
+        CHECK_EQ(r.mod.id, "mymod");
         CHECK_EQ(r.mod.version, "0.1.0");
         CHECK_EQ(r.mod.description, "A local test mod; with a # in it");
         CHECK_EQ(r.mod.abi, 1);
@@ -65,12 +65,12 @@ int main()
         CHECK_EQ((int)r.mod.stage, (int)GBH_STAGE_EARLY);
         CHECK_EQ(r.mod.priority, 50);
         CHECK_EQ(r.mod.requires_.size(), (size_t)2);
-        CHECK_EQ(r.mod.requires_[0], "gb.sensors");
+        CHECK_EQ(r.mod.requires_[0], "sensors");
         CHECK_EQ(r.mod.settings.size(), (size_t)14);
         CHECK_EQ(Setting(r, "greeting"), "hello");
         CHECK_EQ(Setting(r, "net.port"), "12345");
         CHECK_EQ(Setting(r, "version"), "0.1.0");      // shared with the Mod Manager
-        CHECK_EQ(Setting(r, "id"), "gb.mymod");
+        CHECK_EQ(Setting(r, "id"), "mymod");
     }
 
     // Section headers are skipped, so the old form reads as the flat one.
@@ -79,7 +79,7 @@ int main()
         CHECK(r.gbhook);
         CHECK_EQ(r.refusal, "");
         CHECK_EQ(r.warnings.size(), (size_t)0);
-        CHECK_EQ(r.mod.id, "gb.mymod");
+        CHECK_EQ(r.mod.id, "mymod");
         CHECK_EQ(r.mod.version, "0.1.0");
         CHECK_EQ(r.mod.plugin, "MyMod.dll");
         CHECK_EQ(Setting(r, "greeting"), "hello");
@@ -113,7 +113,7 @@ int main()
         CHECK_EQ(Parse("junk\n[settings]\na = 1\n").refusal, "");
         CHECK_EQ(Parse("[General]\nversion=\"3.1\"\n").mod.version, "3.1");
         CHECK_EQ(Parse("version=\"\"\n[General]\nversion=\"3.2\"\n").mod.version, "3.2");   // empty reads as absent
-        CHECK(Parse("[GBHook]\nid = gb.x\n").gbhook);
+        CHECK(Parse("[GBHook]\nid = x\n").gbhook);
     }
 
     // The manager's keys read unquoted too, and from [General] where QSettings puts them.
@@ -123,13 +123,14 @@ int main()
     CHECK_EQ(Parse(std::string("[General]\nversion=\"3.0\"\n") + kMinimal).warnings.size(), (size_t)0);
 
     // A malformed line refuses the whole file, by number.
-    CHECK_EQ(Parse("id = gb.x\njunk\nabi = 1\n").refusal, "modinfo.ini line 2 is not key = value");
+    CHECK_EQ(Parse("id = x\njunk\nabi = 1\n").refusal, "modinfo.ini line 2 is not key = value");
 
     // id
     CHECK_EQ(Parse("abi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id =\nabi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id = \"\"\nabi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id = gb x\nabi = 1\n").refusal, "id 'gb x' contains whitespace");
+    CHECK_EQ(Parse("id = gb.x\nabi = 1\n").refusal, "id 'gb.x' contains a dot");
     {
         std::string longId(64, 'a');
         CHECK_EQ(Parse("id = " + longId + "\nabi = 1\n").refusal, "id is longer than 63 characters");
@@ -138,9 +139,9 @@ int main()
     }
 
     // abi
-    CHECK_EQ(Parse("id = gb.x\n").refusal, "modinfo.ini has no abi");
-    CHECK_EQ(Parse("id = gb.x\nabi = 0.1.0\n").refusal, "abi '0.1.0' is not a number (the integer GBHOOK_ABI_VERSION)");
-    CHECK_EQ(Parse("id = gb.x\nabi = 2\n").refusal, "built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod");
+    CHECK_EQ(Parse("id = x\n").refusal, "modinfo.ini has no abi");
+    CHECK_EQ(Parse("id = x\nabi = 0.1.0\n").refusal, "abi '0.1.0' is not a number (the integer GBHOOK_ABI_VERSION)");
+    CHECK_EQ(Parse("id = x\nabi = 2\n").refusal, "built for ABI 2, this gbhook speaks ABI 1 -- rebuild the mod");
 
     // stage, case-insensitive, and every name
     {
@@ -182,7 +183,7 @@ int main()
 
     // Any other key is a setting, never a warning, whatever section it sat under.
     {
-        ModIni::Result r = Parse("author=\"me\"\n[gbhook]\nid = gb.x\nabi = 1\ncolour = red\n[other]\nk = v\n");
+        ModIni::Result r = Parse("author=\"me\"\n[gbhook]\nid = x\nabi = 1\ncolour = red\n[other]\nk = v\n");
         CHECK_EQ(r.refusal, "");
         CHECK_EQ(r.warnings.size(), (size_t)0);
         CHECK_EQ(Setting(r, "author"), "me");

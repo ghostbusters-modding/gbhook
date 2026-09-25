@@ -33,8 +33,8 @@ mod's manifest carries it, and a mod naming another build is refused.
 ## 2. The manifest
 
 ```c
-GBHOOK_PLUGIN("gb.mymod");
-GBHOOK_PLUGIN_EXCLUSIVE("gb.fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
+GBHOOK_PLUGIN("mymod");
+GBHOOK_PLUGIN_EXCLUSIVE("fastboot") { "ghost+0x248190", "ghost+0x2487E0", "" } GBHOOK_PLUGIN_END;
 ```
 
 Exactly one translation unit per DLL. The manifest is exported as `GbhPluginManifest`, a
@@ -321,7 +321,7 @@ from firing actions.
 
 An action is a name the mod registers and the player binds. The chord comes from the
 setting `bind.<name>`, so `bind.menu = F1` in the mod's `modinfo.ini` is the default and
-`gb.mymod.bind.menu` in `gbhook.ini` overrides it. A chord is one key plus any of `CTRL`,
+`mymod.bind.menu` in `gbhook.ini` overrides it. A chord is one key plus any of `CTRL`,
 `SHIFT` and `ALT`, joined by `+`, any case, in any order. `LCTRL`, `RSHIFT` and the other
 sided spellings mean the plain modifier, since the window cannot tell the sides apart. Key
 names are the ones `input_dik_from_name` knows. An empty value or `NONE` leaves the action

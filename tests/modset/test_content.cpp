@@ -15,7 +15,7 @@ namespace
     Content::Input WithLoose()
     {
         Input in;
-        in.id = "gb.harbor";
+        in.id = "harbor";
         in.loose = { { "world\\harbor.lvl", 10, 100 }, { "sets\\harbor.bst", 20, 200 } };
         return in;
     }
@@ -25,7 +25,7 @@ int main()
 {
     // A code-only mod, no loose files: nothing to do.
     {
-        Input in; in.id = "gb.code";
+        Input in; in.id = "code";
         Content::Verdict v = Decide(in);
         CHECK_EQ((int)v.action, (int)Action::Skip);
     }

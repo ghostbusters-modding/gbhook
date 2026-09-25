@@ -64,16 +64,16 @@ ping                          liveness and thread state
 sleep <ms>                    pause the command stream
 ```
 
-A mod's commands are `<id>.<name>`, `gb.mymod.mycommand` for example.
+A mod's commands are `<id>.<name>`, `mymod.mycommand` for example.
 
 ## Settings
 
 `<gamedir>/gbhook.ini`, flat `key = value`, `#` or `;` comments.
 
 ```ini
-mods.root = mods            ; comma-separated, <gamedir>-relative or absolute
-mods.disabled = gb.mymod    ; ids or folder names left off; the Mods page writes this line
-gb.mymod.mycommand = 0         ; a mod's setting, under its id; the mod's own default otherwise
+mods_root = mods            ; comma-separated, <gamedir>-relative or absolute
+mods_disabled = mymod    ; ids or folder names left off; the Mods page writes this line
+mymod.mycommand = 0         ; a mod's setting, under its id; the mod's own default otherwise
 ```
 
 ## Writing a mod
@@ -85,7 +85,7 @@ built against `sdk/include/gbhook/gbhook.h`.
 #include "gbhook/gbhook.h"
 #include "gbhook/gbhook.hpp"
 
-GBHOOK_PLUGIN("gb.mymod");
+GBHOOK_PLUGIN("mymod");
 
 static void OnFrame(void*) { /* game thread, once per frame in a level */ }
 

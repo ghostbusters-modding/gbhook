@@ -37,7 +37,7 @@ namespace ModSet
         std::vector<std::string> exclusiveHooks;   // from the manifest
         bool                     accepted = false;
         bool                     implicit = false;   // no id in modinfo.ini: a content mod under the folder's own name
-        bool                     disabled = false;   // in gbhook.ini's mods.disabled: listed, never loaded, no content
+        bool                     disabled = false;   // in gbhook.ini's mods_disabled: listed, never loaded, no content
         int                      order    = -1;      // position in the code order, accepted only
         std::string              refusal;
         std::vector<std::string> warnings;
@@ -49,9 +49,9 @@ namespace ModSet
         std::vector<std::string> conflicts;   // set-wide warnings: hooks and archives claimed twice
     };
 
-    // Whether a mods.disabled entry means this mod: its folder, its id, or or a folder-named mod's legacy id.
+    // Whether a mods_disabled entry means this mod: its folder, its id, or or a folder-named mod's legacy id.
     bool Names(const std::string& entry, const Record& r);
 
-    // `off` is gbhook.ini's mods.disabled: ids or folder names, any case. It beats a refusal too.
+    // `off` is gbhook.ini's mods_disabled: ids or folder names, any case. It beats a refusal too.
     Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off = {});
 }

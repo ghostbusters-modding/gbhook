@@ -87,13 +87,13 @@ typedef struct GbhManifest {
 #define GBH_EXPORT_MANIFEST     "GbhPluginManifest"   /* data, required */
 #define GBH_EXPORT_INIT         "GbhPluginInit"       /* code, required */
 
-/* GBHOOK_PLUGIN("gb.mymod"); at file scope in exactly one translation unit. */
+/* GBHOOK_PLUGIN("mymod"); at file scope in exactly one translation unit. */
 #define GBHOOK_PLUGIN(id_) \
     GBHOOK_LINKAGE GBHOOK_EXPORT const GbhManifest GbhPluginManifest = { \
         GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5, {{0}} }
 
 /* Long form, for exclusive hook claims:
- *   GBHOOK_PLUGIN_EXCLUSIVE("gb.coop") { "ghost+0x46A110", "" } GBHOOK_PLUGIN_END; */
+ *   GBHOOK_PLUGIN_EXCLUSIVE("gbcoop") { "ghost+0x46A110", "" } GBHOOK_PLUGIN_END; */
 #define GBHOOK_PLUGIN_EXCLUSIVE(id_) \
     GBHOOK_LINKAGE GBHOOK_EXPORT const GbhManifest GbhPluginManifest = { \
         GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5,

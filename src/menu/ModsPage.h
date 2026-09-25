@@ -15,7 +15,7 @@ namespace ModsPage
     // Both pages say ON or OFF; a refusal or failure adds its reason on the detail page.
     enum class State { Loaded, NoCode, Pending, OffIni, Refused, Failed };
 
-    // The detail page's switch: gbhook.ini's mods.disabled, read by the next boot.
+    // The detail page's switch: gbhook.ini's mods_disabled, read by the next boot.
     enum class Switch { None, TurnOff, TurnOn };
 
     // How the cache POD came to be, and what became of it.

@@ -104,7 +104,7 @@ namespace ModIni
         for (const Ini::Entry& e : d.entries)
         {
             if (e.key == "disabled")
-                r.warnings.push_back(Fmt("line %d: 'disabled' is no longer read; list the mod under mods.disabled in gbhook.ini", e.line));
+                r.warnings.push_back(Fmt("line %d: 'disabled' is no longer read; list the mod under mods_disabled in gbhook.ini", e.line));
             else
                 r.mod.settings.emplace_back(e.key, e.value);
         }
@@ -112,6 +112,8 @@ namespace ModIni
         v = get("id");
         if (!v) { r.refusal = "modinfo.ini has no id"; return r; }
         if (v->find_first_of(" \t") != std::string::npos) { r.refusal = Fmt("id '%s' contains whitespace", v->c_str()); return r; }
+        // A setting or command is <id>.<name>, split at the first dot.
+        if (v->find('.') != std::string::npos) { r.refusal = Fmt("id '%s' contains a dot", v->c_str()); return r; }
         if (v->size() > 63) { r.refusal = "id is longer than 63 characters"; return r; }
         r.mod.id = *v;
 

@@ -21,7 +21,7 @@ namespace
         return s;
     }
 
-    // Lowercase, blanks to '_'. Existing mods.disabled entries carry this form.
+    // Lowercase, blanks to '_'. Existing mods_disabled entries carry this form.
     std::string LegacyFolderId(const std::string& folder)
     {
         std::string id = Lower(folder);

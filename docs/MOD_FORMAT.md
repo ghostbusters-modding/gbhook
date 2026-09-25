@@ -40,7 +40,47 @@ my_tool/
 | tool | key | form |
 |---|---|---|
 | the Mod Manager | the folder name | `my_mod`, lowercase, fixed once published |
-| gbhook | `id` in `modinfo.ini`, or the folder name lowercased when there is none | `gb.mymod`; also the command, settings and log namespace |
+| gbhook | `id` in `modinfo.ini`, or derived from the folder name when there is none | `mymod`; also the command, settings and log namespace |
+
+### Mod ids
+
+- `id` is required once `modinfo.ini` has any gbhook key: `id`, `abi`, `plugin`, `scripts`, `content`, `stage`, `priority` or `requires`.
+- It is one word. A blank or a dot refuses the mod.
+- It is at most 63 characters.
+- It is unique across every root. A second folder with the same id is refused, and the first folder found keeps it.
+- A DLL's `GBHOOK_PLUGIN` id must match it exactly, or the mod is refused.
+- Write it in lowercase. Settings, commands and `mods_disabled` ignore case, but the duplicate and DLL checks do not.
+
+gbhook builds these names from it:
+
+| name | form |
+|---|---|
+| setting | `<id>.<key>` in `gbhook.ini` |
+| key binding | `<id>.bind.<action>` in `gbhook.ini` |
+| command | `<id>.<name>` |
+| log line | `TAG  [<id>] text` |
+| content cache | `gbhook/cache/<id>/` |
+
+Service names are not built from the id. They are exact, case-sensitive strings, and by
+convention start with the publisher's id: `mymod.table`.
+
+### Content-only ids
+
+A folder with no gbhook key in `modinfo.ini`, or no `modinfo.ini` at all, loads as content.
+Its id comes from the folder name, the way the Mod Manager names it:
+
+- ASCII letters and digits are kept and lowercased.
+- Every run of anything else becomes one `_`.
+- A `_` left at either end is trimmed.
+- A name with no letter or digit at all is lowercased, with blanks turned to `_`.
+
+| folder | id |
+|---|---|
+| `DuelArena` | `duelarena` |
+| `Duel Arena` | `duel_arena` |
+| `My Mod (PC)` | `my_mod_pc` |
+| `mp_maps` | `mp_maps` |
+| `v1.2 Pack` | `v1_2_pack` |
 
 ## 3. `previews/modinfo.ini`
 
@@ -55,12 +95,12 @@ compatibility="PC"
 description="What the mod is, for the manager's listing."
 link=""
 
-id          = gb.mymod
+id          = mymod
 abi         = 1
 plugin      = MyMod.dll           ; a DLL under gbhook/, or leave the key out
 stage       = boot                ; preboot | early | boot | ready
 priority    = 100                 ; within a stage, low runs first
-;requires   = gb.othermod         ; mod ids that must be present and loaded
+;requires   = othermod         ; mod ids that must be present and loaded
 
 spawn_rate  = 4                   ; a setting: any other key is one
 ```
@@ -177,7 +217,7 @@ gbhook prints the resolved code order at boot.
 ## 7. Where gbhook looks
 
 ```ini
-mods.root = mods        ; comma-separated; <gamedir>-relative or absolute
+mods_root = mods        ; comma-separated; <gamedir>-relative or absolute
 ```
 
 Default `<gamedir>/mods`. Extra roots are opt-in because the Mod Manager's own folder can
@@ -197,10 +237,10 @@ A setting cannot reuse a name gbhook reads for itself, such as `id` or `stage`.
 spawn_rate = 4
 
 # <gamedir>/gbhook.ini
-gb.mymod.spawn_rate = 12
+mymod.spawn_rate = 12
 ```
 
-`mods.disabled` in `gbhook.ini` turns mods off without touching them: ids or folder names,
+`mods_disabled` in `gbhook.ini` turns mods off without touching them: ids or folder names,
 comma-separated. It works on a folder with no gbhook keys too. The Mods page's Disable
 and Enable rows write it, and the change takes effect at the next start. A mod cannot switch
 itself off: `disabled` in `modinfo.ini` is no longer read, and the log names the line.

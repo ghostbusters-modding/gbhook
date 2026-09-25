@@ -12,7 +12,7 @@
 #include "gbhook/gbhook.h"
 #include "gbhook/gbhook.hpp"
 
-GBHOOK_PLUGIN("gb.selftest");
+GBHOOK_PLUGIN("selftest");
 
 namespace
 {
@@ -54,10 +54,10 @@ namespace
         {
             const char* id = a->mod_id_at(i);
             gbh::logf("TEST", "mod %d: %s (%s)", i, id ? id : "?", a->mod_is_loaded(id) ? "loaded" : "not loaded");
-            if (id && strcmp(id, "gb.selftest") == 0) self = true;
+            if (id && strcmp(id, "selftest") == 0) self = true;
         }
         Check(self, "mod_id_at lists this mod");
-        Check(a->mod_is_loaded("gb.selftest") == 0, "mod_is_loaded is still false during our own init");
+        Check(a->mod_is_loaded("selftest") == 0, "mod_is_loaded is still false during our own init");
     }
 
     // ---- hooks: a function of our own, detoured through the framework's MinHook ----
@@ -202,7 +202,7 @@ namespace
         gbh::logf("TEST", "%d passed, %d failed so far", g_pass, g_fail);
     }
 
-    // ---- commands: registered as gb.selftest.hello, run and queued from init, drained by the pump ----
+    // ---- commands: registered as selftest.hello, run and queued from init, drained by the pump ----
     int CmdHello(int argc, const char* const* argv, const char** err, void*)
     {
         ++g_helloCalls;
@@ -217,8 +217,8 @@ namespace
     {
         Check(gbh::command_register("hello", CmdHello, nullptr, "log the arguments; `fail` returns an error") == GBH_OK, "command_register");
         Check(gbh::command_register("hello", CmdHello) == GBH_ERR_CONFLICT, "duplicate command refused");
-        Check(gbh::run("gb.selftest.hello from init") == GBH_OK, "command_run queues a game-thread handler from init");
-        Check(gbh::queue("gb.selftest.hello queued") == GBH_OK, "command_queue");
+        Check(gbh::run("selftest.hello from init") == GBH_OK, "command_run queues a game-thread handler from init");
+        Check(gbh::queue("selftest.hello queued") == GBH_OK, "command_queue");
         Check(gbh::run("no.such.command") == GBH_ERR_NOT_FOUND, "unknown command reported");
         Check(gbh::dik("W") == 0x11 && gbh::dik("nope") == -1, "input_dik_from_name");
     }
@@ -271,7 +271,7 @@ namespace
         Check(t == &g_service && t->answer() == 42, "service_find hands back the published pointer");
         Check(gbh::service_find<SelfTestTable>("gb.selftest.none") == nullptr, "service_find of an unknown name is null");
         const char* owner = gbh::api()->service_owner("gb.selftest.table");
-        Check(owner && strcmp(owner, "gb.selftest") == 0, "service_owner names this mod");
+        Check(owner && strcmp(owner, "selftest") == 0, "service_owner names this mod");
 
         uint32_t word = 0;
         Check(gbh::read(&g_service.struct_size, word) && word == sizeof(SelfTestTable), "mem_read copies our own memory");
@@ -314,7 +314,7 @@ extern "C" GBHOOK_EXPORT int GbhPluginInit(const GbhApi* api)
 {
     if (!api || api->abi_version != GBHOOK_ABI_VERSION) return GBH_ERR;
     gbh::bind(api);
-    gbh::log("MOD", "hello from gb.selftest");
+    gbh::log("MOD", "hello from selftest");
 
     TestBasics();
     TestHooks();

@@ -24,7 +24,7 @@ int main()
     CHECK_EQ(Line("INI", nullptr, "3 settings"), "[01:02:03] INI  3 settings");
 
     // Mod line: the id in brackets between tag and text.
-    CHECK_EQ(Line("NET", "gb.coop", "listening"), "[01:02:03] NET  [gb.coop] listening");
+    CHECK_EQ(Line("NET", "gbcoop", "listening"), "[01:02:03] NET  [gbcoop] listening");
 
     // An empty id is the framework, same as null.
     CHECK_EQ(Line("NET", "", "x"), "[01:02:03] NET  x");
