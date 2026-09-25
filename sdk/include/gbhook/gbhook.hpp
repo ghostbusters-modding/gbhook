@@ -219,7 +219,7 @@ namespace gbh
     // ---- the block appended after file_read; every wrapper answers as if unsupported on an older framework ----
     inline bool has_services() { return gbh_api_has(api(), on_char); }
 
-    // ---- services: publish a table of your own, or find another mod's. A found table is gated on its size ----
+    // ---- services: publish `name`, found by others as `<your id>.<name>`. A found table is gated on its size ----
     inline int service_publish(const char* name, const void* table, uint32_t size)
     {
         return has_services() ? api()->service_publish(name, table, size) : GBH_ERR_UNSUPPORTED;

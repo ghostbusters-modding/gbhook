@@ -14,11 +14,13 @@ public:
     static constexpr int kMaxEntries = 64;
     static constexpr int kNameCap    = 64;   // a longer name is refused, never cut: Find is an exact match
 
-    // `owner` is a mod id, or null for the framework. Refused with `why` for an empty or overlong name, a null
-    // table, a size under 4, a full table, or a name already taken (Find answers non-null for that case only).
+    // `<owner>.<name>` lowered, the command rule; the framework's own names stay bare.
+    static std::string Qualify(const char* owner, const char* name);
+
+    // `name` is the publisher's own part: `ui` from gbgui is found as `gbgui.ui`. `owner` is null for the framework.
     bool Publish(const char* owner, const char* name, const void* table, uint32_t size, std::string* why);
 
-    // Case-sensitive, exact. Null when unknown; `size` may be null and is zeroed on a miss.
+    // The qualified name, any case. Null when unknown; `size` may be null and is zeroed on a miss.
     const void* Find(const char* name, uint32_t* size) const;
 
     int         Count() const { return m_count; }

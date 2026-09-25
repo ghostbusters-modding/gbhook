@@ -228,13 +228,13 @@ A negative return is a status. Any thread but the engine's main thread gets
 
 | entry | notes |
 |---|---|
-| `service_publish(name, table, size)` | one publisher per name; a second answers `GBH_ERR_CONFLICT`. The table lives for the process |
-| `service_find(name, &size)` | null until published; `size` is what the publisher stated |
+| `service_publish(name, table, size)` | listed as `<id>.<name>` under the caller's id; a second publish answers `GBH_ERR_CONFLICT`. The table lives for the process |
+| `service_find(name, &size)` | the full `<id>.<name>`, any case; null until published; `size` is what the publisher stated |
 | `service_count()`, `service_name_at(i)`, `service_owner(name)` | the directory; the owner is the publishing mod's id |
 
 A service is a C struct of function pointers one mod owns and others call, the way this
 table is: its first field is a `uint32_t struct_size`, so a consumer gates on what it carries
-the way `gbh_api_has` does. Name it under the publisher's id, `gb.menu.ui`. A mod that needs
+the way `gbh_api_has` does. gbgui publishes `ui` and every other mod finds `gbgui.ui`. A mod that needs
 another's table loads after it: a later stage, or a higher `priority` in the same stage.
 `gbh::service_find<T>(name)` is the typed wrapper.
 

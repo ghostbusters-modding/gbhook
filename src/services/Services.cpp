@@ -57,13 +57,14 @@ namespace Services
         std::string why;
         EnterCriticalSection(&g_lock);
         const bool ok     = g_table->Publish(owner, name, table, size, &why);
-        const bool taken  = !ok && g_table->Find(name, nullptr) != nullptr;
+        const std::string q = ServiceTable::Qualify(owner, name);
+        const bool taken  = !ok && g_table->Find(q.c_str(), nullptr) != nullptr;
         const bool full   = !ok && !taken && g_table->Full();
         LeaveCriticalSection(&g_lock);
 
         if (ok)
         {
-            Log::Writef("SVC", "'%s' published by %s (%u bytes)", name, Shown(owner), size);
+            Log::Writef("SVC", "'%s' published by %s (%u bytes)", q.c_str(), Shown(owner), size);
             return GBH_OK;
         }
         Log::Writef("SVC", "%s could not publish: %s", Shown(owner), why.c_str());

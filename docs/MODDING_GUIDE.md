@@ -390,15 +390,15 @@ A mod that offers a table to other mods publishes it by name, and a consumer fin
 ```cpp
 struct MyTable { uint32_t struct_size; int (*answer)(void); };
 static const MyTable g_table = { sizeof g_table, Answer };
-gbh::service_publish("mymod.table", &g_table, sizeof g_table);      // once; a second name is refused
+gbh::service_publish("table", &g_table, sizeof g_table);            // listed as mymod.table; once only
 
 const MyTable* t = gbh::service_find<MyTable>("mymod.table");      // null until the publisher has loaded
 ```
 
 The table lives for the process and starts with `struct_size`, so a consumer gates on what
 it carries the way `gbh_api_has` does. A consumer loads after its publisher: a later stage,
-or a higher `priority` in the same stage. `mods/gbmenu` is the first: the ImGui overlay, one
-per process, publishing `gb.menu.ui` so every mod's pages share one keyboard and one frame.
+or a higher `priority` in the same stage. `mods/gbgui` is the first: the ImGui overlay, one
+per process, publishing `gbgui.ui` so every mod's pages share one keyboard and one frame.
 
 ## 4. The native menu
 

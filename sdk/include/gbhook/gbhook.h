@@ -318,8 +318,8 @@ typedef struct GbhApi {
 
     /* -- services: a C table one mod publishes, others find by name. The table lives for the process and starts
      *    with a uint32_t struct_size, like this one, so a consumer gates on what it carries -- */
-    int         (*service_publish)(const char* name, const void* table, uint32_t size);   /* GBH_ERR_CONFLICT when taken */
-    const void* (*service_find)(const char* name, uint32_t* size);                        /* NULL until published */
+    int         (*service_publish)(const char* name, const void* table, uint32_t size);   /* listed as <id>.<name> */
+    const void* (*service_find)(const char* name, uint32_t* size);                        /* <id>.<name>, any case */
     int         (*service_count)(void);
     const char* (*service_name_at)(int i);
     const char* (*service_owner)(const char* name);                                        /* the publisher's id */

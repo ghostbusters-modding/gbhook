@@ -58,11 +58,9 @@ gbhook builds these names from it:
 | setting | `<id>.<key>` in `gbhook.ini` |
 | key binding | `<id>.bind.<action>` in `gbhook.ini` |
 | command | `<id>.<name>` |
+| service | `<id>.<name>`, from the name the mod publishes |
 | log line | `TAG  [<id>] text` |
 | content cache | `gbhook/cache/<id>/` |
-
-Service names are not built from the id. They are exact, case-sensitive strings, and by
-convention start with the publisher's id: `mymod.table`.
 
 ### Content-only ids
 

@@ -265,12 +265,14 @@ namespace
     void TestServices()
     {
         Check(gbh::has_services(), "the table carries the block appended after file_read");
-        Check(gbh::service_publish("gb.selftest.table", &g_service, sizeof g_service) == GBH_OK, "service_publish");
-        Check(gbh::service_publish("gb.selftest.table", &g_service, sizeof g_service) == GBH_ERR_CONFLICT, "republish refused");
-        const SelfTestTable* t = gbh::service_find<SelfTestTable>("gb.selftest.table");
+        Check(gbh::service_publish("table", &g_service, sizeof g_service) == GBH_OK, "service_publish");
+        Check(gbh::service_publish("table", &g_service, sizeof g_service) == GBH_ERR_CONFLICT, "republish refused");
+        const SelfTestTable* t = gbh::service_find<SelfTestTable>("selftest.table");
         Check(t == &g_service && t->answer() == 42, "service_find hands back the published pointer");
-        Check(gbh::service_find<SelfTestTable>("gb.selftest.none") == nullptr, "service_find of an unknown name is null");
-        const char* owner = gbh::api()->service_owner("gb.selftest.table");
+        Check(gbh::service_find<SelfTestTable>("SelfTest.Table") == &g_service, "service_find ignores case");
+        Check(gbh::service_find<SelfTestTable>("table") == nullptr, "the bare name is not the service");
+        Check(gbh::service_find<SelfTestTable>("selftest.none") == nullptr, "service_find of an unknown name is null");
+        const char* owner = gbh::api()->service_owner("selftest.table");
         Check(owner && strcmp(owner, "selftest") == 0, "service_owner names this mod");
 
         uint32_t word = 0;
