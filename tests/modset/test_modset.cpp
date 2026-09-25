@@ -269,7 +269,36 @@ int main()
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
     }
 
-    // gbhook.ini mods.disabled: by id or folder, any case, a section-less mod and a refused one included.
+    // Folder-named ids follow the Mod Manager. A name with no letter or digit keeps the legacy form.
+    {
+        const char* in[][2] = { { "My_Mod (PC)", "my_mod_pc" }, { "Cool__Mod", "cool_mod" }, { "Cool - Mod", "cool_mod" },
+                                { "(My Mod)", "my_mod" }, { "My Mod!", "my_mod" }, { "!!!", "!!!" }, { "! !", "!_!" } };
+        for (auto& t : in)
+        {
+            Candidate c; c.root = "mods"; c.folder = t[0]; c.hasAssets = true;
+            ModSet::Result r = Resolve({ c });
+            CHECK(r.records[0].accepted);
+            CHECK_EQ(r.records[0].mod.id, t[1]);
+        }
+        Candidate a; a.root = "mods"; a.folder = "Cool Mod"; a.hasAssets = true;
+        Candidate b; b.root = "mods"; b.folder = "Cool-Mod"; b.hasAssets = true;
+        ModSet::Result r = Resolve({ a, b });
+        CHECK(Find(r, "Cool Mod")->accepted);
+        CHECK_EQ(Find(r, "Cool-Mod")->refusal, "duplicate id 'cool_mod', already claimed by folder 'Cool Mod'");
+    }
+
+    // An entry the Mods page wrote under the legacy folder id still turns the mod off. Explicit ids get no alias.
+    {
+        Candidate p; p.root = "mods"; p.folder = "My Mod (PC)"; p.hasAssets = true;
+        ModSet::Result r = Resolve({ p, Cand("My Mod", Ini("gb.m")) }, { "my_mod_(pc)", "my_mod" });
+        CHECK(Find(r, "My Mod (PC)")->disabled);
+        CHECK(Find(r, "My Mod")->accepted);
+        CHECK(ModSet::Names("MY_MOD_(PC)", *Find(r, "My Mod (PC)")));
+        CHECK(ModSet::Names("my_mod_pc", *Find(r, "My Mod (PC)")));
+        CHECK(!ModSet::Names("my_mod_pc", *Find(r, "My Mod")));
+    }
+
+    // gbhook.ini mods_disabled: by id or folder, any case, a section-less mod and a refused one included.
     {
         Candidate plain; plain.root = "mods"; plain.folder = "Plain Mod"; plain.hasAssets = true;
         ModSet::Result r = Resolve({ Cand("A", Ini("gb.a")), Cand("B", Ini("gb.b", "requires = gb.a\n")), plain,

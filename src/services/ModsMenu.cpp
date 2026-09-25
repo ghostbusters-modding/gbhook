@@ -48,35 +48,30 @@ namespace
         return true;
     }
 
-    // mods.disabled as it is on disk now, not as this boot read it.
+    // mods_disabled as it is on disk now, not as this boot read it.
     std::vector<std::string> OffOnDisk()
     {
         std::string text;
         ReadIni(text);
-        return Ini::ListOf(text, "mods.disabled");
+        return Ini::ListOf(text, "mods_disabled");
     }
 
-    bool Names(const std::string& item, const ModsPage::Mod& m)
+    bool Listed(const std::vector<std::string>& off, const ModSet::Record& r)
     {
-        return _stricmp(item.c_str(), m.id.c_str()) == 0 || _stricmp(item.c_str(), m.folder.c_str()) == 0;
-    }
-
-    bool Listed(const std::vector<std::string>& off, const ModsPage::Mod& m)
-    {
-        for (const std::string& o : off) if (Names(o, m)) return true;
+        for (const std::string& o : off) if (ModSet::Names(o, r)) return true;
         return false;
     }
 
     // Rewrites the one line; a mod listed under its folder name is replaced by its id.
-    bool WriteOff(const ModsPage::Mod& m, bool off)
+    bool WriteOff(const ModSet::Record& r, const ModsPage::Mod& m, bool off)
     {
         std::string text;
         ReadIni(text);
         std::string value;
-        for (const std::string& o : Ini::ListOf(text, "mods.disabled"))
-            if (!Names(o, m)) value += (value.empty() ? "" : ", ") + o;
+        for (const std::string& o : Ini::ListOf(text, "mods_disabled"))
+            if (!ModSet::Names(o, r)) value += (value.empty() ? "" : ", ") + o;
         if (off) value += (value.empty() ? "" : ", ") + m.id;
-        text = Ini::Set(text, "mods.disabled", value);
+        text = Ini::Set(text, "mods_disabled", value);
 
         const std::string path = IniPath(), tmp = path + ".tmp";
         FILE* f = nullptr;
@@ -106,7 +101,7 @@ namespace
     void Gather()
     {
         g_mods.clear();
-        const std::vector<std::string> bootOff = Ini::List(Settings::Get("mods.disabled", ""));
+        const std::vector<std::string> bootOff = Ini::List(Settings::Get("mods_disabled", ""));
         const std::vector<std::string> diskOff = OffOnDisk();
         for (const ModSet::Record& r : Mods::Result().records)
         {
@@ -120,13 +115,13 @@ namespace
             m.note    = m.state == ModsPage::State::Refused ? r.refusal : (m.state == ModsPage::State::Failed && s ? s->note : "");
             m.codeFiles = r.mod.plugin.empty() ? 0 : 1;
             if (!r.mod.id.empty() && r.accepted) FillContent(m, ContentBuild::InfoOf(r.mod.id.c_str()));
-            m.toggle  = Listed(diskOff, m) ? ModsPage::Switch::TurnOn : ModsPage::Switch::TurnOff;
-            m.changed = Listed(diskOff, m) != Listed(bootOff, m);
+            m.toggle  = Listed(diskOff, r) ? ModsPage::Switch::TurnOn : ModsPage::Switch::TurnOff;
+            m.changed = Listed(diskOff, r) != Listed(bootOff, r);
             g_mods.push_back(m);
         }
         g_header.version      = Framework::kVersionString;
         g_header.targetMd5    = GBHOOK_TARGET_MD5;
-        g_header.roots        = Ini::List(Settings::Get("mods.root", "mods"));
+        g_header.roots        = Ini::List(Settings::Get("mods_root", "mods"));
         g_header.missingRoots = Mods::MissingRoots();
     }
 
@@ -142,7 +137,7 @@ namespace
         if (action != ModsPage::kToggle || g_detail < 0 || g_detail >= (int)g_mods.size()) return GBH_NATIVE_STAY;
         const ModsPage::Mod& m = g_mods[(size_t)g_detail];
         const bool off = m.toggle == ModsPage::Switch::TurnOff;
-        const bool ok  = WriteOff(m, off);
+        const bool ok  = WriteOff(Mods::Result().records[(size_t)g_detail], m, off);
         if (ok) Log::Writef("MODS", "%s %s in gbhook.ini, from the next start", m.id.c_str(), off ? "disabled" : "enabled");
         else    Log::Writef("MODS", "gbhook.ini could not be written; %s is unchanged", m.id.c_str());
         Gather();

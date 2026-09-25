@@ -128,6 +128,7 @@ int main()
     // id
     CHECK_EQ(Parse("abi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id =\nabi = 1\n").refusal, "modinfo.ini has no id");
+    CHECK_EQ(Parse("id = \"\"\nabi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id = gb x\nabi = 1\n").refusal, "id 'gb x' contains whitespace");
     {
         std::string longId(64, 'a');
@@ -164,7 +165,7 @@ int main()
         ModIni::Result r = Parse(std::string(kMinimal) + "disabled = 1\n");
         CHECK_EQ(r.refusal, "");
         CHECK_EQ(r.warnings.size(), (size_t)1);
-        CHECK(r.warnings[0].find("mods.disabled in gbhook.ini") != std::string::npos);
+        CHECK(r.warnings[0].find("mods_disabled in gbhook.ini") != std::string::npos);
     }
 
     // priority
