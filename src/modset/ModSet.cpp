@@ -21,6 +21,27 @@ namespace
         return s;
     }
 
+    // Lowercase, blanks to '_'. Existing mods.disabled entries carry this form.
+    std::string LegacyFolderId(const std::string& folder)
+    {
+        std::string id = Lower(folder);
+        for (char& ch : id) if (ch == ' ' || ch == '\t') ch = '_';
+        return id;
+    }
+
+    // The Mod Manager's rule: runs of anything but a letter or digit become one '_', trimmed at both ends.
+    std::string FolderId(const std::string& folder)
+    {
+        std::string id;
+        for (char ch : folder)
+        {
+            if (std::isalnum((unsigned char)ch)) id += (char)std::tolower((unsigned char)ch);
+            else if (!id.empty() && id.back() != '_') id += '_';
+        }
+        if (!id.empty() && id.back() == '_') id.pop_back();
+        return id.empty() ? LegacyFolderId(folder) : id;   // "!!!" still needs a name
+    }
+
     // Judgement over one folder on its own.
     ModSet::Record Judge(const ModSet::Candidate& c)
     {
@@ -42,26 +63,7 @@ namespace
             }
             if (!c.hasModInfo && !c.hasAssets) { r.refusal = "not a mod: no previews/modinfo.ini and no asset folder"; return r; }
             r.mod    = c.ini.mod;
-            r.mod.id.clear();
-
-            bool underscore = false;
-            for (char ch : c.folder)
-            {
-                if (std::isalnum(static_cast<unsigned char>(ch)))
-                {
-                    r.mod.id += static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
-                    underscore = false;
-                }
-                else if (!underscore && !r.mod.id.empty())
-                {
-                    r.mod.id += '_';
-                    underscore = true;
-                }
-            }
-
-            // Remove trailing underscore.
-            if (!r.mod.id.empty() && r.mod.id.back() == '_')
-                r.mod.id.pop_back();
+            r.mod.id = FolderId(c.folder);
             r.implicit = true;
             r.accepted = true;
             return r;
@@ -108,6 +110,13 @@ namespace
 
 namespace ModSet
 {
+    bool Names(const std::string& entry, const Record& r)
+    {
+        const std::string k = Lower(entry);
+        return k == Lower(r.folder) || (!r.mod.id.empty() && k == Lower(r.mod.id)) ||
+               (r.implicit && k == LegacyFolderId(r.folder));
+    }
+
     Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off)
     {
         std::vector<Record> recs;
@@ -118,8 +127,7 @@ namespace ModSet
         {
             for (const std::string& o : off)
             {
-                const std::string k = Lower(o);
-                if (k != Lower(r.folder) && (r.mod.id.empty() || k != Lower(r.mod.id))) continue;
+                if (!Names(o, r)) continue;
                 r.accepted = false;
                 r.disabled = true;
                 r.refusal.clear();
