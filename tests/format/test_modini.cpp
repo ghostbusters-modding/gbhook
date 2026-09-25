@@ -129,8 +129,11 @@ int main()
     CHECK_EQ(Parse("abi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id =\nabi = 1\n").refusal, "modinfo.ini has no id");
     CHECK_EQ(Parse("id = \"\"\nabi = 1\n").refusal, "modinfo.ini has no id");
-    CHECK_EQ(Parse("id = gb x\nabi = 1\n").refusal, "id 'gb x' contains whitespace");
-    CHECK_EQ(Parse("id = gb.x\nabi = 1\n").refusal, "id 'gb.x' contains a dot");
+    CHECK_EQ(Parse("id = gb x\nabi = 1\n").refusal, "id 'gb x' may only use a-z, 0-9 and _");
+    CHECK_EQ(Parse("id = gb.x\nabi = 1\n").refusal, "id 'gb.x' may only use a-z, 0-9 and _");
+    CHECK_EQ(Parse("id = MyMod\nabi = 1\n").refusal, "id 'MyMod' may only use a-z, 0-9 and _");
+    CHECK_EQ(Parse("id = x!\nabi = 1\n").refusal, "id 'x!' may only use a-z, 0-9 and _");
+    CHECK_EQ(Parse("id = my_mod_2\nabi = 1\n").refusal, "");
     {
         std::string longId(64, 'a');
         CHECK_EQ(Parse("id = " + longId + "\nabi = 1\n").refusal, "id is longer than 63 characters");

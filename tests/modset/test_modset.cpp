@@ -269,16 +269,23 @@ int main()
         CHECK_EQ(r.records[0].warnings.size(), (size_t)1);
     }
 
-    // Folder-named ids follow the Mod Manager. A name with no letter or digit keeps the legacy form.
+    // Folder-named ids follow the Mod Manager. A name with no letter or digit is refused.
     {
         const char* in[][2] = { { "My_Mod (PC)", "my_mod_pc" }, { "Cool__Mod", "cool_mod" }, { "Cool - Mod", "cool_mod" },
-                                { "(My Mod)", "my_mod" }, { "My Mod!", "my_mod" }, { "!!!", "!!!" }, { "! !", "!_!" } };
+                                { "(My Mod)", "my_mod" }, { "My Mod!", "my_mod" }, { "Caf\xE9 2", "caf_2" } };
         for (auto& t : in)
         {
             Candidate c; c.root = "mods"; c.folder = t[0]; c.hasAssets = true;
             ModSet::Result r = Resolve({ c });
             CHECK(r.records[0].accepted);
             CHECK_EQ(r.records[0].mod.id, t[1]);
+        }
+        for (const char* f : { "!!!", "! !", "!!!~", "\xE9\xE9" })
+        {
+            Candidate c; c.root = "mods"; c.folder = f; c.hasAssets = true;
+            ModSet::Result r = Resolve({ c });
+            CHECK(!r.records[0].accepted);
+            CHECK_EQ(r.records[0].refusal, "folder name '" + std::string(f) + "' has no letter or digit: set an id in previews/modinfo.ini");
         }
         Candidate a; a.root = "mods"; a.folder = "Cool Mod"; a.hasAssets = true;
         Candidate b; b.root = "mods"; b.folder = "Cool-Mod"; b.hasAssets = true;
@@ -287,14 +294,15 @@ int main()
         CHECK_EQ(Find(r, "Cool-Mod")->refusal, "duplicate id 'cool_mod', already claimed by folder 'Cool Mod'");
     }
 
-    // An entry the Mods page wrote under the legacy folder id still turns the mod off. Explicit ids get no alias.
+    // mods_disabled names a mod by its folder or its id, nothing else.
     {
         Candidate p; p.root = "mods"; p.folder = "My Mod (PC)"; p.hasAssets = true;
         ModSet::Result r = Resolve({ p, Cand("My Mod", Ini("m")) }, { "my_mod_(pc)", "my_mod" });
-        CHECK(Find(r, "My Mod (PC)")->disabled);
+        CHECK(!Find(r, "My Mod (PC)")->disabled);
         CHECK(Find(r, "My Mod")->accepted);
-        CHECK(ModSet::Names("MY_MOD_(PC)", *Find(r, "My Mod (PC)")));
+        CHECK(ModSet::Names("MY MOD (PC)", *Find(r, "My Mod (PC)")));
         CHECK(ModSet::Names("my_mod_pc", *Find(r, "My Mod (PC)")));
+        CHECK(!ModSet::Names("my_mod_(pc)", *Find(r, "My Mod (PC)")));
         CHECK(!ModSet::Names("my_mod_pc", *Find(r, "My Mod")));
     }
 

@@ -45,11 +45,9 @@ my_tool/
 ### Mod ids
 
 - `id` is required once `modinfo.ini` has any gbhook key: `id`, `abi`, `plugin`, `scripts`, `content`, `stage`, `priority` or `requires`.
-- It is one word. A blank or a dot refuses the mod.
-- It is at most 63 characters.
+- It uses only `a-z`, `0-9` and `_`, at most 63 characters. Anything else refuses the mod.
 - It is unique across every root. A second folder with the same id is refused, and the first folder found keeps it.
 - A DLL's `GBHOOK_PLUGIN` id must match it exactly, or the mod is refused.
-- Write it in lowercase. Settings, commands and `mods_disabled` ignore case, but the duplicate and DLL checks do not.
 
 gbhook builds these names from it:
 
@@ -70,7 +68,7 @@ Its id comes from the folder name, the way the Mod Manager names it:
 - ASCII letters and digits are kept and lowercased.
 - Every run of anything else becomes one `_`.
 - A `_` left at either end is trimmed.
-- A name with no letter or digit at all is lowercased, with blanks turned to `_`.
+- A name with no ASCII letter or digit at all, such as `!!!`, is refused. Set an `id` instead.
 
 | folder | id |
 |---|---|

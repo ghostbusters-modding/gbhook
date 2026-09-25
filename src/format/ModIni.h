@@ -36,6 +36,9 @@ namespace ModIni
 
     Result Parse(const std::string& text);
 
+    // Why `id` cannot be a mod id, or "" when it can: a-z, 0-9 and _, at most 63 characters.
+    std::string IdProblem(const std::string& id);
+
     const char* StageName(GbhStage s);
     bool        StageFromName(const std::string& name, GbhStage* out);
 }

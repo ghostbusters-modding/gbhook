@@ -5,9 +5,15 @@ section 1 says when it would not.
 
 ## 0.2.6 (2026-09-25)
 
-- A mod id may not contain a dot. Such a mod is refused and must be rebuilt under a new id.
+- A mod id may only use `a-z`, `0-9` and `_`. Any other id is refused, and the mod must be
+  rebuilt under a new one. A folder name with no letter or digit needs an `id` in `modinfo.ini`.
+- A content-only mod takes its id from its folder name by the Mod Manager's rule: lowercase,
+  each run of other characters becomes one `_`, trimmed at both ends. `My_Mod (PC)` is now
+  `my_mod_pc`, and its content cache rebuilds once.
 - `mods.root` and `mods.disabled` are now `mods_root` and `mods_disabled`. The old keys are
   ignored, so rename them in `gbhook.ini`.
+- A service is listed under its publisher's id: a mod publishes `ui` and others find
+  `<id>.ui`, in any case. A name with a blank or quote is refused.
 
 ## 0.2.5 (2026-09-23)
 

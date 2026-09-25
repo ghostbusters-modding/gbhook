@@ -49,7 +49,7 @@ namespace ModSet
         std::vector<std::string> conflicts;   // set-wide warnings: hooks and archives claimed twice
     };
 
-    // Whether a mods_disabled entry means this mod: its folder, its id, or or a folder-named mod's legacy id.
+    // Whether a mods_disabled entry means this mod: its folder, or its id.
     bool Names(const std::string& entry, const Record& r);
 
     // `off` is gbhook.ini's mods_disabled: ids or folder names, any case. It beats a refusal too.

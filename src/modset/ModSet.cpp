@@ -21,25 +21,18 @@ namespace
         return s;
     }
 
-    // Lowercase, blanks to '_'. Existing mods_disabled entries carry this form.
-    std::string LegacyFolderId(const std::string& folder)
-    {
-        std::string id = Lower(folder);
-        for (char& ch : id) if (ch == ' ' || ch == '\t') ch = '_';
-        return id;
-    }
-
     // The Mod Manager's rule: runs of anything but a letter or digit become one '_', trimmed at both ends.
     std::string FolderId(const std::string& folder)
     {
         std::string id;
         for (char ch : folder)
         {
-            if (std::isalnum((unsigned char)ch)) id += (char)std::tolower((unsigned char)ch);
+            const bool alnum = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9');
+            if (alnum) id += (char)std::tolower((unsigned char)ch);
             else if (!id.empty() && id.back() != '_') id += '_';
         }
         if (!id.empty() && id.back() == '_') id.pop_back();
-        return id.empty() ? LegacyFolderId(folder) : id;   // "!!!" still needs a name
+        return id;   // empty for "!!!": the mod is refused and must set an id
     }
 
     // Judgement over one folder on its own.
@@ -65,6 +58,8 @@ namespace
             r.mod    = c.ini.mod;
             r.mod.id = FolderId(c.folder);
             r.implicit = true;
+            if (r.mod.id.empty()) { r.refusal = "folder name '" + c.folder + "' has no letter or digit: set an id in previews/modinfo.ini"; return r; }
+            if (!(r.refusal = ModIni::IdProblem(r.mod.id)).empty()) return r;
             r.accepted = true;
             return r;
         }
@@ -113,8 +108,7 @@ namespace ModSet
     bool Names(const std::string& entry, const Record& r)
     {
         const std::string k = Lower(entry);
-        return k == Lower(r.folder) || (!r.mod.id.empty() && k == Lower(r.mod.id)) ||
-               (r.implicit && k == LegacyFolderId(r.folder));
+        return k == Lower(r.folder) || (!r.mod.id.empty() && k == Lower(r.mod.id));
     }
 
     Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off)

@@ -75,6 +75,15 @@ namespace ModIni
         return false;
     }
 
+    std::string IdProblem(const std::string& id)
+    {
+        if (id.size() > 63) return "id is longer than 63 characters";
+        for (char c : id)
+            if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
+                return Fmt("id '%s' may only use a-z, 0-9 and _", id.c_str());
+        return "";
+    }
+
     Result Parse(const std::string& text)
     {
         Result r;
@@ -111,10 +120,8 @@ namespace ModIni
 
         v = get("id");
         if (!v) { r.refusal = "modinfo.ini has no id"; return r; }
-        if (v->find_first_of(" \t") != std::string::npos) { r.refusal = Fmt("id '%s' contains whitespace", v->c_str()); return r; }
-        // A setting or command is <id>.<name>, split at the first dot.
-        if (v->find('.') != std::string::npos) { r.refusal = Fmt("id '%s' contains a dot", v->c_str()); return r; }
-        if (v->size() > 63) { r.refusal = "id is longer than 63 characters"; return r; }
+        // A setting or command is <id>.<name>, split at the first dot, so the id can never hold one.
+        if (!(r.refusal = IdProblem(*v)).empty()) return r;
         r.mod.id = *v;
 
         v = get("abi");
