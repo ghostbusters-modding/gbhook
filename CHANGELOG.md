@@ -13,6 +13,8 @@ section 1 says when it would not.
 - A mod's page under View Mods is ON or OFF, the reason when it is off by refusal or error,
   its asset and code file counts with how its content was cached and mounted, and Disable or
   Enable. Once pressed, the switch reads Restart to Apply Changes until the game restarts.
+- Enable and Disable no longer drop the other entries from `mods.disabled`. The list was
+  read through a pointer into a parsed copy that had already been freed.
 - gbhook creates `%LOCALAPPDATA%\GHOSTBUSTERS` at boot when it is missing. The game refuses
   to write its settings and saves without it.
 
