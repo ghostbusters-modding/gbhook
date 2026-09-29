@@ -190,5 +190,32 @@ int main()
         CHECK_EQ(Ini::Set("a = 1\n[gb.x]\nk = 2\n", "mods_disabled", "gb.b"), "a = 1\n[gb.x]\nk = 2\nmods_disabled = gb.b\n");
     }
 
+    // Remove drops every line of the key, any case, and keeps the rest and the line endings.
+    {
+        CHECK_EQ(Ini::Remove("a = 1\nk = 2\nb = 3\n", "k"), "a = 1\nb = 3\n");
+        CHECK_EQ(Ini::Remove("k = 1\na = 1\nK = 2\n", "k"), "a = 1\n");
+        CHECK_EQ(Ini::Remove("a = 1\r\nx.k = 2   # note\r\n", "X.K"), "a = 1\r\n");
+        CHECK_EQ(Ini::Remove("# k = 1\na = 1\n", "k"), "# k = 1\na = 1\n");
+        CHECK_EQ(Ini::Remove("a = 1\n", "k"), "a = 1\n");
+        CHECK_EQ(Ini::Remove("k = 1\n", "k"), "");
+        CHECK_EQ(Ini::Remove("", "k"), "");
+    }
+
+    // Written round-trips through Parse: quoted only when a bare value would not come back.
+    {
+        CHECK_EQ(Ini::Written("mayormp"), "mayormp");
+        CHECK_EQ(Ini::Written("a;b"), "\"a;b\"");
+        CHECK_EQ(Ini::Written("#1"), "\"#1\"");
+        CHECK_EQ(Ini::Written(" x"), "\" x\"");
+        CHECK_EQ(Ini::Written(""), "");
+        for (const char* v : { "plain", "a;b", "#1", " pad ", "a # b", "" })
+        {
+            const Ini::Document d = Ini::Parse(Ini::Set("", "k", Ini::Written(v)));
+            const std::string* got = Ini::Find(d, "k");
+            CHECK(got != nullptr);
+            if (got) CHECK_EQ(*got, std::string(v));
+        }
+    }
+
     return check::Done("ini");
 }

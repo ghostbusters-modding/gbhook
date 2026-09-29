@@ -35,4 +35,11 @@ namespace SettingsTable
 
     // The value for a mod's key, or nullptr when neither layer has it. Pointers stay valid while `t` lives.
     const char* Get(const Table& t, const char* id, const char* key);
+
+    // Whether a mod may write this pair: a key of letters, digits, '_', '.', '-', and a value with no line break or '"'.
+    bool Writable(const char* key, const char* value);
+
+    // The gbhook.ini layer, changed in place. Unset lets the mod's own default answer again.
+    void Set(Table& t, const char* id, const char* key, const std::string& value);
+    void Unset(Table& t, const char* id, const char* key);
 }

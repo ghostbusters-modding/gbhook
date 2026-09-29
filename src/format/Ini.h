@@ -30,6 +30,12 @@ namespace Ini
     // `text` with the last `key` line set to `value`, its comment kept. A new key goes at the end.
     std::string Set(const std::string& text, const std::string& key, const std::string& value);
 
+    // A value as it must be written to read back unchanged: quoted when it holds '#', ';' or edge spaces.
+    std::string Written(const std::string& value);
+
+    // `text` without any `key` line, so an earlier duplicate never comes back as the value.
+    std::string Remove(const std::string& text, const std::string& key);
+
     // Comma-separated list, items trimmed, empties dropped.
     std::vector<std::string> List(const std::string& value);
 

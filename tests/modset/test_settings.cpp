@@ -67,5 +67,38 @@ int main()
         CHECK_EQ(S(Get(w, "a", "k")), "<null>");
     }
 
+    // Writable: a key that parses back as one key, a value that stays on its line.
+    CHECK(SettingsTable::Writable("hero", "mayormp"));
+    CHECK(SettingsTable::Writable("skin.ray-2_b", "a;b # c"));
+    CHECK(SettingsTable::Writable("hero", nullptr));
+    CHECK(SettingsTable::Writable("hero", ""));
+    CHECK(!SettingsTable::Writable("", "x"));
+    CHECK(!SettingsTable::Writable(nullptr, "x"));
+    CHECK(!SettingsTable::Writable("a b", "x"));
+    CHECK(!SettingsTable::Writable("a=b", "x"));
+    CHECK(!SettingsTable::Writable("a#b", "x"));
+    CHECK(!SettingsTable::Writable(".a", "x"));
+    CHECK(!SettingsTable::Writable("a.", "x"));
+    CHECK(!SettingsTable::Writable("[a]", "x"));
+    CHECK(!SettingsTable::Writable("a", "x\ny = 1"));
+    CHECK(!SettingsTable::Writable("a", "x\r"));
+    CHECK(!SettingsTable::Writable("a", "say \"hi\""));
+
+    // Set writes the gbhook.ini layer over the default; Unset hands the key back to the default.
+    {
+        Table m = Build(Ini::Parse(""), { { "gbskin", { { "hero", "retail" } } } });
+        SettingsTable::Set(m, "GbSkin", "Hero", "mayormp");
+        CHECK_EQ(S(Get(m, "gbskin", "hero")), "mayormp");
+        SettingsTable::Set(m, "gbskin", "ray", "off");
+        CHECK_EQ(S(Get(m, "gbskin", "ray")), "off");
+        CHECK_EQ(S(Get(m, "other", "ray")), "<null>");
+        SettingsTable::Unset(m, "gbskin", "HERO");
+        CHECK_EQ(S(Get(m, "gbskin", "hero")), "retail");
+        SettingsTable::Unset(m, "gbskin", "ray");
+        CHECK_EQ(S(Get(m, "gbskin", "ray")), "<null>");
+        SettingsTable::Unset(m, "gbskin", "never");
+        CHECK_EQ(S(Get(m, "gbskin", "hero")), "retail");
+    }
+
     return check::Done("settings");
 }

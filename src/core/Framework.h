@@ -6,6 +6,8 @@
 
 #include <windows.h>
 #include <cstdint>
+#include <functional>
+#include <string>
 
 #include "gbhook/gbhook.h"
 
@@ -60,4 +62,11 @@ namespace Settings
     int         GetIntFor(const char* id, const char* key, int dflt);
     float       GetFloatFor(const char* id, const char* key, float dflt);
     bool        GetBoolFor(const char* id, const char* key, bool dflt);
+
+    // "<id>.<key>" into gbhook.ini and the live table at once; a null value removes it. GBH_OK or a GBH_ERR_*.
+    int  SetFor(const char* id, const char* key, const char* value);
+
+    // gbhook.ini as it is on disk now. Rewrite reads, edits and writes it under the settings lock.
+    bool ReadFile(std::string& text);
+    bool Rewrite(const std::function<std::string(const std::string&)>& edit);
 }

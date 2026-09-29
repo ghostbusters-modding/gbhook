@@ -103,6 +103,7 @@
     <ClCompile Include="src\menu\Rows.cpp" />
     <ClCompile Include="src\menu\ModsPage.cpp" />
     <ClCompile Include="src\menu\LevelsPage.cpp" />
+    <ClCompile Include="src\menu\ModRows.cpp" />
     <ClCompile Include="src\services\Files.cpp" />
     <ClCompile Include="src\services\NativeMenu.cpp" />
     <ClCompile Include="src\services\ModsMenu.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\menu\Rows.h" />
     <ClInclude Include="src\menu\ModsPage.h" />
     <ClInclude Include="src\menu\LevelsPage.h" />
+    <ClInclude Include="src\menu\ModRows.h" />
     <ClInclude Include="src\services\Files.h" />
     <ClInclude Include="src\services\NativeMenu.h" />
     <ClInclude Include="src\services\ModsMenu.h" />

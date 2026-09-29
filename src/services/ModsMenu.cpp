@@ -9,17 +9,30 @@
 #include "../mod/Discovery.h"
 #include "../mod/Host.h"
 #include "format/Ini.h"
+#include "menu/ModRows.h"
 #include "menu/ModsPage.h"
 
 #include <windows.h>
+#include <cstddef>
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <vector>
 
 namespace
 {
     constexpr int kRow = 2;
-    enum { kLoadLevel = 1, kViewMods = 2 };
+
+    // A mod's page, copied at registration; the title is ours so the mod's string need not outlive the call.
+    struct ModPage
+    {
+        GbhNativeMenuDesc desc;
+        std::string       title;
+    };
+
+    SRWLOCK              g_pagesLock = SRWLOCK_INIT;   // mods register on the boot thread, the menu reads on the main one
+    ModRows::Table       g_rows;
+    std::vector<ModPage> g_pages;
 
     std::vector<ModsPage::Mod> g_mods;
     ModsPage::Header           g_header;
@@ -35,24 +48,11 @@ namespace
         return s->state == Host::State::Loaded ? ModsPage::State::Loaded : ModsPage::State::NoCode;
     }
 
-    std::string IniPath() { return std::string(Framework::GameDir()) + "\\gbhook.ini"; }
-
-    bool ReadIni(std::string& out)
-    {
-        FILE* f = nullptr;
-        if (fopen_s(&f, IniPath().c_str(), "rb") != 0 || !f) return false;
-        char   buf[4096];
-        size_t n;
-        while ((n = fread(buf, 1, sizeof buf, f)) > 0) out.append(buf, n);
-        fclose(f);
-        return true;
-    }
-
     // mods_disabled as it is on disk now, not as this boot read it.
     std::vector<std::string> OffOnDisk()
     {
         std::string text;
-        ReadIni(text);
+        Settings::ReadFile(text);
         return Ini::ListOf(text, "mods_disabled");
     }
 
@@ -65,21 +65,13 @@ namespace
     // Rewrites the one line; a mod listed under its folder name is replaced by its id.
     bool WriteOff(const ModSet::Record& r, const ModsPage::Mod& m, bool off)
     {
-        std::string text;
-        ReadIni(text);
-        std::string value;
-        for (const std::string& o : Ini::ListOf(text, "mods_disabled"))
-            if (!ModSet::Names(o, r)) value += (value.empty() ? "" : ", ") + o;
-        if (off) value += (value.empty() ? "" : ", ") + m.id;
-        text = Ini::Set(text, "mods_disabled", value);
-
-        const std::string path = IniPath(), tmp = path + ".tmp";
-        FILE* f = nullptr;
-        if (fopen_s(&f, tmp.c_str(), "wb") != 0 || !f) return false;
-        const bool ok = fwrite(text.data(), 1, text.size(), f) == text.size();
-        fclose(f);
-        if (!ok || !MoveFileExA(tmp.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING)) { DeleteFileA(tmp.c_str()); return false; }
-        return true;
+        return Settings::Rewrite([&](const std::string& text) {
+            std::string value;
+            for (const std::string& o : Ini::ListOf(text, "mods_disabled"))
+                if (!ModSet::Names(o, r)) value += (value.empty() ? "" : ", ") + o;
+            if (off) value += (value.empty() ? "" : ", ") + m.id;
+            return Ini::Set(text, "mods_disabled", value);
+        });
     }
 
     void FillContent(ModsPage::Mod& m, const ContentBuild::Info& i)
@@ -161,13 +153,33 @@ namespace
 
     void BuildRoot(void*)
     {
-        NativeMenu::AddRow("Load Level", kLoadLevel);
-        NativeMenu::AddRow("View Mods", kViewMods);
+        AcquireSRWLockShared(&g_pagesLock);
+        std::vector<bool> live;
+        for (const ModRows::Entry& e : g_rows.Entries())
+        {
+            const Host::Status* s = Host::StatusOf(e.owner.c_str());
+            live.push_back(s && s->state == Host::State::Loaded);
+        }
+        const std::vector<Rows::Row> rows = ModRows::Root(g_rows, live);
+        ReleaseSRWLockShared(&g_pagesLock);
+        for (const Rows::Row& r : rows) NativeMenu::AddRow(r.label.c_str(), r.action);
     }
+
+    void OpenModPage(int i)
+    {
+        AcquireSRWLockShared(&g_pagesLock);
+        const bool known = i >= 0 && i < (int)g_pages.size();
+        GbhNativeMenuDesc d = known ? g_pages[(size_t)i].desc : GbhNativeMenuDesc{};
+        const std::string owner = known ? g_rows.Entries()[(size_t)i].owner : "";
+        ReleaseSRWLockShared(&g_pagesLock);
+        if (known && NativeMenu::OpenPage(&d) != GBH_OK) Log::Writef("MODS", "%s's page could not be opened", owner.c_str());
+    }
+
     int ActivateRoot(int action, void*)
     {
-        if (action == kLoadLevel) LevelsMenu::Open();
-        else if (action == kViewMods)
+        if (action >= ModRows::kFirstMod) OpenModPage(action - ModRows::kFirstMod);
+        else if (action == ModRows::kLoadLevel) LevelsMenu::Open();
+        else if (action == ModRows::kViewMods)
         {
             Gather();
             GbhNativeMenuDesc d = { sizeof d, BuildList, ActivateList, nullptr, "Mods" };
@@ -189,5 +201,43 @@ namespace ModsMenu
     {
         if (NativeMenu::ClaimRow(nullptr, kRow, OnRow, nullptr) != GBH_OK) return;
         NativeMenu::SetRowLabel(nullptr, kRow, "Mods");
+    }
+
+    int AddPage(const char* owner, const char* label, const GbhNativeMenuDesc* desc)
+    {
+        if (!owner || !*owner) return GBH_ERR_STATE;
+        if (!label || !desc || !desc->build || !desc->activate || desc->struct_size < offsetof(GbhNativeMenuDesc, title))
+            return GBH_ERR_ARG;
+
+        ModPage p = {};
+        const size_t n = desc->struct_size < sizeof p.desc ? desc->struct_size : sizeof p.desc;
+        memcpy(&p.desc, desc, n);
+        p.desc.struct_size = sizeof p.desc;
+        const bool hasTitle = n >= offsetof(GbhNativeMenuDesc, title) + sizeof p.desc.title && p.desc.title;
+        p.title = hasTitle ? p.desc.title : label;
+
+        AcquireSRWLockExclusive(&g_pagesLock);
+        const ModRows::Added a = g_rows.Add(owner, label);
+        if (a == ModRows::Added::Ok)
+        {
+            g_pages.push_back(p);
+            for (ModPage& q : g_pages) q.desc.title = q.title.c_str();   // the push may have moved every string
+        }
+        ReleaseSRWLockExclusive(&g_pagesLock);
+
+        switch (a)
+        {
+        case ModRows::Added::Ok:
+            Log::WriteFrom(owner, "MODS", ("page '" + std::string(label) + "' added to the Mods page").c_str());
+            return GBH_OK;
+        case ModRows::Added::Taken:
+            Log::WriteFrom(owner, "MODS", "a second Mods page refused: one per mod");
+            return GBH_ERR_CONFLICT;
+        case ModRows::Added::Full:
+            Log::WriteFrom(owner, "MODS", "the Mods page is full; this mod's row is not shown");
+            return GBH_ERR;
+        default:
+            return GBH_ERR_ARG;
+        }
     }
 }

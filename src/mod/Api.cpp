@@ -13,6 +13,7 @@
 #include "../services/Game.h"
 #include "../services/Hud.h"
 #include "../services/InputInject.h"
+#include "../services/ModsMenu.h"
 #include "../services/NativeMenu.h"
 #include "../services/Registry.h"
 #include "../services/Services.h"
@@ -328,6 +329,17 @@ namespace
         return World::ToScreen(pos, out);
     }
 
+    // ---- mod pages and written settings ------------------------------------------------
+    // Pending is the state a mod's code is in only while its GbhPluginInit runs.
+    int ModsPageAdd(const char* label, const GbhNativeMenuDesc* desc)
+    {
+        const char*         id = Who(GBH_CALLER());
+        const Host::Status* s  = id ? Host::StatusOf(id) : nullptr;
+        if (!s || s->state != Host::State::Pending) return GBH_ERR_STATE;
+        return ModsMenu::AddPage(id, label, desc);
+    }
+    int SettingSet(const char* key, const char* value) { return Settings::SetFor(Who(GBH_CALLER()), key, value); }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -438,6 +450,9 @@ namespace Api
         g_api.paused          = Paused;
         g_api.pause           = Pause;
         g_api.world_to_screen = WorldToScreen;
+
+        g_api.mods_page_add = ModsPageAdd;
+        g_api.setting_set   = SettingSet;
 
         g_built = true;
         return &g_api;

@@ -330,4 +330,15 @@ namespace gbh
     inline int  paused()        { return has_actions() ? api()->paused() : 0; }
     inline int  pause(bool on)  { return has_actions() ? api()->pause(on ? 1 : 0) : GBH_ERR_UNSUPPORTED; }
     inline bool world_to_screen(const float* pos, float* out) { return has_actions() && api()->world_to_screen(pos, out) == 1; }
+
+    // ---- mod pages and written settings, appended after world_to_screen ----
+    inline bool has_mod_pages() { return gbh_api_has(api(), mods_page_add); }
+
+    // Call from GbhPluginInit. The row sits on the Mods page under View Mods and opens `d` when chosen.
+    inline int mods_page_add(const char* label, const GbhNativeMenuDesc& d)
+    {
+        return has_mod_pages() ? api()->mods_page_add(label, &d) : GBH_ERR_UNSUPPORTED;
+    }
+    inline int setting_set(const char* key, const char* value) { return has_mod_pages() ? api()->setting_set(key, value) : GBH_ERR_UNSUPPORTED; }
+    inline int setting_clear(const char* key)                  { return setting_set(key, nullptr); }
 }

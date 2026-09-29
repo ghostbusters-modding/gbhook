@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #include "SettingsTable.h"
 
+#include <cctype>
+#include <cstring>
+
 namespace SettingsTable
 {
     std::string Qualify(const char* id, const char* key)
@@ -42,5 +45,27 @@ namespace SettingsTable
         if (!id || !*id) return nullptr;
         it = t.defaults.find(q);
         return it == t.defaults.end() ? nullptr : it->second.c_str();
+    }
+
+    bool Writable(const char* key, const char* value)
+    {
+        if (!key || !*key) return false;
+        for (const char* c = key; *c; ++c)
+            if (!isalnum((unsigned char)*c) && *c != '_' && *c != '.' && *c != '-') return false;
+        if (key[0] == '.' || key[strlen(key) - 1] == '.') return false;
+        if (value)
+            for (const char* c = value; *c; ++c)
+                if (*c == '\r' || *c == '\n' || *c == '"') return false;
+        return true;
+    }
+
+    void Set(Table& t, const char* id, const char* key, const std::string& value)
+    {
+        if (key && *key) t.ini[Qualify(id, key)] = value;
+    }
+
+    void Unset(Table& t, const char* id, const char* key)
+    {
+        if (key && *key) t.ini.erase(Qualify(id, key));
     }
 }

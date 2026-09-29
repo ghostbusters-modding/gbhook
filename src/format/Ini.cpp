@@ -123,6 +123,41 @@ namespace Ini
         return out;
     }
 
+    std::string Written(const std::string& value)
+    {
+        const bool quote = value.find_first_of("#;") != std::string::npos || Trim(value) != value;
+        return quote ? "\"" + value + "\"" : value;
+    }
+
+    std::string Remove(const std::string& text, const std::string& key)
+    {
+        const size_t npos = std::string::npos;
+        const std::string eol = text.find("\r\n") != npos ? "\r\n" : "\n";
+
+        std::vector<std::string> lines;
+        for (size_t pos = 0; pos <= text.size();)
+        {
+            size_t nl = text.find('\n', pos);
+            lines.push_back(text.substr(pos, nl == npos ? npos : nl - pos));
+            pos = nl == npos ? text.size() + 1 : nl + 1;
+        }
+        for (std::string& l : lines) if (!l.empty() && l.back() == '\r') l.pop_back();
+
+        std::vector<bool> drop(lines.size(), false);
+        for (const Entry& e : Parse(text).entries) if (e.key == Lower(key)) drop[(size_t)e.line - 1] = true;
+
+        std::string out;
+        bool first = true;
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            if (drop[i]) continue;
+            if (!first) out += eol;
+            out += lines[i];
+            first = false;
+        }
+        return out;
+    }
+
     std::vector<std::string> List(const std::string& value)
     {
         std::vector<std::string> out;

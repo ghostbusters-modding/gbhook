@@ -3,6 +3,13 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.2.6 (2026-09-29)
+
+- `mods_page_add`: a mod adds one row of its own to the Mods page, under View Mods, that
+  opens its page. Call it from `GbhPluginInit`.
+- `setting_set` writes a mod's own key to `gbhook.ini`, and `setting()` reads the new value
+  at once. A `NULL` value removes the key.
+
 ## 0.2.6 (2026-09-25)
 
 - A mod id may only use `a-z`, `0-9` and `_`. Any other id is refused, and the mod must be

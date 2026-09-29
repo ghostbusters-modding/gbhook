@@ -360,6 +360,15 @@ typedef struct GbhApi {
     int (*paused)(void);                                            /* GBH_PAUSED_* bits */
     int (*pause)(int on);                                           /* hold or release the freeze; frozen while any mod holds it */
     int (*world_to_screen)(const float pos[3], float out[2]);       /* pixels; 1 on screen, 0 behind or outside; GBH_ERR_STATE when unreadable */
+
+    /* -- appended after world_to_screen: gbh_api_has(api, mods_page_add) gates the block ----------------- */
+
+    /* -- mod pages: one row per mod on the Mods page, below View Mods, in code order. From GbhPluginInit only;
+     *    desc is copied and opened when the row is chosen, a NULL title shows the label -- */
+    int (*mods_page_add)(const char* label, const GbhNativeMenuDesc* desc);   /* GBH_ERR_CONFLICT on a second call */
+
+    /* -- settings, written: gbhook.ini "<id>.<key>" on disk and for the next setting() read. NULL removes it -- */
+    int (*setting_set)(const char* key, const char* value);        /* GBH_ERR_ARG on a key or value that would not read back */
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

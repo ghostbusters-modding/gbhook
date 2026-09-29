@@ -362,6 +362,23 @@ cameras. A point in front of the camera but off screen still fills `out`, so an 
 clamped to the edge. The last step, from the projected point to a pixel row, was never
 traced in the engine: if a marker comes out mirrored vertically, that one line is flipped.
 
+### Mod pages and written settings
+
+| entry | notes |
+|---|---|
+| `mods_page_add(label, desc)` | from `GbhPluginInit` only, else `GBH_ERR_STATE`. One per mod: a second call is `GBH_ERR_CONFLICT` |
+| `setting_set(key, value)` | writes `<id>.<key>` to `gbhook.ini` and to what `setting()` answers next. `NULL` removes the key |
+
+A mod page is a row on the Mods page, under Load Level and View Mods, in code order. `desc`
+is copied, so it need not outlive the call. Choosing the row opens it like
+`native_submenu_open`, and a `NULL` title shows the label. The row is hidden once its mod
+fails. The page holds 38 mod rows, and a later one is refused with `GBH_ERR`.
+
+`setting_set` takes a key of letters, digits, `_`, `.` and `-`, and a value with no line
+break or `"`. Anything else is `GBH_ERR_ARG`. A value holding `#` or `;` is written quoted
+so it reads back whole. Removing a key lets the mod's `modinfo.ini` default answer again.
+`GBH_ERR` means the file could not be written, and nothing changed.
+
 ## 5. The C++ wrapper
 
 `gbhook.hpp` is header-only and compiles into the mod, so it adds nothing to the contract.
@@ -372,5 +389,6 @@ subscription, `gbh::Patch` for a byte patch, `gbh::VtableOverride` for a cloned 
 hooks one. `gbh::has_services()` says whether the framework carries the block appended after
 `file_read`; every wrapper for that block answers as unsupported without it.
 `gbh::has_actions()` does the same for the actions and world entries appended after
-`on_char` in 0.2.5.
+`on_char` in 0.2.5. `gbh::has_mod_pages()` covers `mods_page_add` and `setting_set`, and
+`gbh::setting_clear(key)` is `setting_set(key, nullptr)`.
  
