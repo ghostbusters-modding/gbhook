@@ -3,6 +3,12 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.3.1 (2026-09-29)
+
+- The main menu no longer comes up showing Load Level and Start Demo. When the menu was
+  shown before gbhook finished loading mods, its rows kept their shipped labels while doing
+  gbhook's actions. gbhook now relabels that menu on the next frame and logs that it did.
+
 ## 0.2.6 (2026-09-29)
 
 - `mods_page_add`: a mod adds one row of its own to the Mods page, under View Mods, that

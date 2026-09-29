@@ -103,6 +103,8 @@ namespace
     tRowActivate oRowActivate = nullptr;
     tIsRowHidden oIsRowHidden = nullptr;
     tRefill      oRefill      = nullptr;
+    void*        g_labelled   = nullptr;   // the CMainMenu our labels last went onto
+    void*        g_healQueued = nullptr;
 
     void**       g_vt         = nullptr;   // the copied CLevelMenu table, the broker's for the process
     int          g_hideSlot   = -1;
@@ -487,8 +489,26 @@ namespace
         if (row >= 0 && row < kMainRows && kLayout[row].retail >= 0 && oRowActivate) oRowActivate(self, kLayout[row].retail);
     }
 
+    void __fastcall hkRefill(void* self);
+
+    // The menu's first show can beat Install, and the refill never runs again. Relabel it from the pump, not mid-draw.
+    bool HealLabels(void* self)
+    {
+        g_healQueued = nullptr;
+        if (self == g_labelled) return true;
+        bool live = false;
+        GBH_SEH_TRY { live = *(void**)self == (void*)(gameBase + kMainVtRva); }
+        GBH_SEH_EXCEPT { live = false; }
+        if (!live) { Log::Write("NMENU", "main menu gone before its labels could be re-applied"); return true; }
+        hkRefill(self);
+        Log::Write("NMENU", "main menu was shown before the broker installed; labels re-applied");
+        return true;
+    }
+
     char __fastcall hkIsRowHidden(void* self, int idx)
     {
+        if (self != g_labelled && self != g_healQueued && Pump::Park(HealLabels, self, "re-label the main menu"))
+            g_healQueued = self;
         if (idx >= 0 && idx < kMainRows) return (g_rows[idx].held || kLayout[idx].retail >= 0) ? (char)0 : (char)1;
         return oIsRowHidden ? oIsRowHidden(self, idx) : (char)1;
     }
@@ -498,6 +518,7 @@ namespace
     void __fastcall hkRefill(void* self)
     {
         if (oRefill) oRefill(self);
+        g_labelled = self;
         for (int i = 0; i < kMainRows; ++i)
         {
             char text[96] = { 0 };
