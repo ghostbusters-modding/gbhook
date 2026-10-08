@@ -27,6 +27,9 @@
 #include "services/Bindings.h"
 #include "services/Window.h"
 #include "services/World.h"
+#include "gb/HookTargets.h"
+
+#include <cstring>
 
 namespace
 {
@@ -43,6 +46,18 @@ namespace
         if (GetFileAttributesW(dir) != INVALID_FILE_ATTRIBUTES) return;
         if (CreateDirectoryW(dir, nullptr)) Log::Writef("SAVE", "created %ls", dir);
         else Log::Writef("SAVE", "could not create %ls (error %lu)", dir, (unsigned long)GetLastError());
+    }
+
+    // A modded run never earns an achievement.
+    void BlockAchievements()
+    {
+        static const uint8_t kExpect[] = { 0x40, 0x53, 0x48, 0x83, 0xEC, 0x30 };   // push rbx; sub rsp,30h
+        static const uint8_t kRet = 0xC3;
+        void* at = gameBase + HookTargets::achievementUnlock;
+        if (memcmp(at, kExpect, sizeof kExpect) != 0)
+            Log::Write("BOOT", "achievement unlock is not the expected code: achievements are NOT blocked");
+        else if (HookBroker::PatchWrite(nullptr, at, &kRet, 1))
+            Log::Write("BOOT", "achievements blocked for this run");
     }
 }
 
@@ -63,6 +78,7 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
 
     // Armed before anything can fault, so a crash inside ghost.exe is reported as a ghost-relative address.
     FaultLogger::Install();
+    BlockAchievements();
 
     Settings::Load();
 

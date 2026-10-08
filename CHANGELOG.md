@@ -3,6 +3,12 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.3.2 (2026-10-08)
+
+- Steam achievements are blocked while gbhook is loaded. A modded run cannot unlock an
+  achievement. If the unlock code in `ghost.exe` is not what gbhook expects, it leaves it
+  alone and the log says achievements are NOT blocked.
+
 ## 0.3.1 (2026-09-29)
 
 - The main menu no longer comes up showing Load Level and Start Demo. When the menu was

@@ -43,4 +43,7 @@ namespace HookTargets
 
     // The GENERAL movie player, cutscenes included. Only its "video\logo" argument is the boot reel.
     static constexpr uintptr_t playMovie = 0x1F45F0;
+
+    // CGame vtable+0x390, the only achievement unlock: Steam and the save flag both. gbhook patches it to ret.
+    static constexpr uintptr_t achievementUnlock = 0x1F3DF0;
 }

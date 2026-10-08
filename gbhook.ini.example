@@ -11,3 +11,6 @@ mods_root = mods
 # A mod's own settings live under its id, as <id>.<key>. The mod's previews/modinfo.ini
 # lists the keys it reads and their defaults. A line here overrides one of them.
 # mymod.spawn_rate = 12
+
+# The chord for a mod's key action, <id>.bind.<action>. NONE or empty leaves it unbound.
+# mymod.bind.fire = CTRL+SHIFT+F5

@@ -14,7 +14,6 @@ struct Vector3
 	float z;
 };
 
-//---------------PDB----------------
 
 struct String
 {
@@ -50,4 +49,3 @@ struct SScriptWalkInfo
 	int cancelScriptControl;
 };
 
-//---------------PDB-END------------

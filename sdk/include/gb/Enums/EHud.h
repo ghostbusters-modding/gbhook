@@ -12,27 +12,6 @@ namespace EHUD
         eHudMessage_Subtitle,
         eHudMessage_HelpMessage,
         eHudMessage_QuitWarining
-        /*
-		* MP PDB Enum
-        eHudMessage_DebugText = 0x0,
-        eHudMessage_GenericText = 0x1,
-        eHudMessage_SpiritGuideUpdated = 0x2,
-        eHudMessage_ObjectivesUpdated = 0x3,
-        eHudMessage_ScanFailed = 0x4,
-        eHudMessage_TugOfWar = 0x5,
-        eHudMessage_EvadeSprint = 0x6,
-        eHudMessage_EvadeDown = 0x7,
-        eHudMessage_EvadeLeft = 0x8,
-        eHudMessage_EvadeUp = 0x9,
-        eHudMessage_EvadeRight = 0xA,
-        eHudMessage_EvadeSuccess = 0xB,
-        eHudMessage_EvadeFail = 0xC,
-        eHudMessage_StatusMessage = 0xD,
-        eHudMessage_Subtitle = 0xE,
-        eHudMessage_HelpMessage = 0xF,
-        eHudMessage_ConfirmQuitMessage = 0x10,
-        eHudMessage_Max = 0x11,
-        */
     };
 
     enum eButtonAction
