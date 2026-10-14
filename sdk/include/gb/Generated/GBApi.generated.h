@@ -4,7 +4,8 @@
 //  AUTO-GENERATED -- DO NOT EDIT BY HAND.
 //
 //    source binary : ghost.exe
-//    md5           : 0b89556c07e5b737efe444351227e747
+//    md5 (Steam)   : 0b89556c07e5b737efe444351227e747
+//    md5 (Epic)    : 017d9364e5d8249e5bfe43b9090ddfc9
 //    functions     : 966 across 114 classes
 //
 //  Calls go through each function's script thunk using the VM's own calling
@@ -13,6 +14,7 @@
 //  'self' and reports a script error rather than crashing.
 // ============================================================================
 #include <cstdint>
+#include "gb/Build.h"
 #include <cstring>
 #include "../Structs/Types.h"
 
@@ -54,14 +56,14 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, type);
-        vm::call(0x16CC0, _gb);
+        vm::call(GbAddr{0x16CC0, 0x16CC0}, _gb);
     }
     // @CActor getActorGrabbingMe()
     //   thunk 0x16BE0  (via indirect)
     inline void* getActorGrabbingMe(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16BE0, _gb);
+        vm::call(GbAddr{0x16BE0, 0x16BE0}, _gb);
         return _gb.get_p(0);
     }
     // int getAttachedTetherCount()
@@ -69,7 +71,7 @@ namespace CActor {
     inline int getAttachedTetherCount(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16EC0, _gb);
+        vm::call(GbAddr{0x16EC0, 0x16EC0}, _gb);
         return _gb.get_i(0);
     }
     // ETeam getCurrentTeam()
@@ -77,7 +79,7 @@ namespace CActor {
     inline int getCurrentTeam(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16C90, _gb);
+        vm::call(GbAddr{0x16C90, 0x16C90}, _gb);
         return _gb.get_i(0);
     }
     // bool hasBeenScanned()
@@ -85,7 +87,7 @@ namespace CActor {
     inline bool hasBeenScanned(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16F60, _gb);
+        vm::call(GbAddr{0x16F60, 0x16F60}, _gb);
         return _gb.get_b(0);
     }
     // bool isActorGrabbingMe()
@@ -93,7 +95,7 @@ namespace CActor {
     inline bool isActorGrabbingMe(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16C20, _gb);
+        vm::call(GbAddr{0x16C20, 0x16C20}, _gb);
         return _gb.get_b(0);
     }
     // int isHideable()
@@ -101,7 +103,7 @@ namespace CActor {
     inline int isHideable(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16D20, _gb);
+        vm::call(GbAddr{0x16D20, 0x16D20}, _gb);
         return _gb.get_i(0);
     }
     // bool isPartiallyTethered()
@@ -109,7 +111,7 @@ namespace CActor {
     inline bool isPartiallyTethered(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16E80, _gb);
+        vm::call(GbAddr{0x16E80, 0x16E80}, _gb);
         return _gb.get_b(0);
     }
     // bool isSnared()
@@ -117,7 +119,7 @@ namespace CActor {
     inline bool isSnared(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16D90, _gb);
+        vm::call(GbAddr{0x16D90, 0x16D90}, _gb);
         return _gb.get_b(0);
     }
     // bool isTethered()
@@ -125,7 +127,7 @@ namespace CActor {
     inline bool isTethered(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x16E00, _gb);
+        vm::call(GbAddr{0x16E00, 0x16E00}, _gb);
         return _gb.get_b(0);
     }
     // bool isTetheredTo(@CActor who)
@@ -134,7 +136,7 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, who);
-        vm::call(0x16E40, _gb);
+        vm::call(GbAddr{0x16E40, 0x16E40}, _gb);
         return _gb.get_b(0);
     }
     // void releaseAllSnaressOnMeFromScript()
@@ -142,21 +144,21 @@ namespace CActor {
     inline void releaseAllSnaressOnMeFromScript(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x16DD0, _gb);
+        vm::call(GbAddr{0x16DD0, 0x16DD0}, _gb);
     }
     // void releaseAllTethersOnMe()
     //   thunk 0x16F00  (impl 0x16700)
     inline void releaseAllTethersOnMe(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x16F00, _gb);
+        vm::call(GbAddr{0x16F00, 0x16F00}, _gb);
     }
     // void releaseEldestTether()
     //   thunk 0x16F30  (impl 0x167A0)
     inline void releaseEldestTether(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x16F30, _gb);
+        vm::call(GbAddr{0x16F30, 0x16F30}, _gb);
     }
     // void removeTeamFromAllies(ETeam type)
     //   thunk 0x16CF0  (impl 0x15B70)
@@ -164,7 +166,7 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, type);
-        vm::call(0x16CF0, _gb);
+        vm::call(GbAddr{0x16CF0, 0x16CF0}, _gb);
     }
     // void setCurrentTeam(ETeam type)
     //   thunk 0x16C60  (impl 0x15B20)
@@ -172,7 +174,7 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, type);
-        vm::call(0x16C60, _gb);
+        vm::call(GbAddr{0x16C60, 0x16C60}, _gb);
     }
     // void setPossessedStatus(bool flag)
     //   thunk 0x16BB0  (impl 0x15880)
@@ -180,7 +182,7 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x16BB0, _gb);
+        vm::call(GbAddr{0x16BB0, 0x16BB0}, _gb);
     }
     // void setScannable(bool flag)
     //   thunk 0x16FA0  (impl 0x16B90)
@@ -188,7 +190,7 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x16FA0, _gb);
+        vm::call(GbAddr{0x16FA0, 0x16FA0}, _gb);
     }
     // void setVisibleInUVLightOnly(bool flag)
     //   thunk 0x16D60  (impl 0x15ED0)
@@ -196,7 +198,7 @@ namespace CActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x16D60, _gb);
+        vm::call(GbAddr{0x16D60, 0x16D60}, _gb);
     }
 } // namespace CActor
 
@@ -208,7 +210,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, attachParent);
-        vm::call(0x2BD780, _gb);
+        vm::call(GbAddr{0x2BD780, 0x2BD590}, _gb);
     }
     // void attachToActorTag(@CActor attachParent, string tagName, bool useCurrentRelativePosition = false)
     //   thunk 0x2BD730  (impl 0x2BEE80)
@@ -218,7 +220,7 @@ namespace CActorBase {
         _gb.set_p(1, attachParent);
         _gb.set_p(2, tagName);
         _gb.set_b(3, useCurrentRelativePosition);
-        vm::call(0x2BD730, _gb);
+        vm::call(GbAddr{0x2BD730, 0x2BD540}, _gb);
     }
     // Vector b2i(Vector point)
     //   thunk 0x2BD7B0  (via call)
@@ -226,7 +228,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_v(4, point);
-        vm::call(0x2BD7B0, _gb);
+        vm::call(GbAddr{0x2BD7B0, 0x2BD5C0}, _gb);
         return _gb.get_v(0);
     }
     // Vector b2w(Vector point)
@@ -235,7 +237,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_v(4, point);
-        vm::call(0x2BD960, _gb);
+        vm::call(GbAddr{0x2BD960, 0x2BD770}, _gb);
         return _gb.get_v(0);
     }
     // @CRoom dante_getRoom()
@@ -243,7 +245,7 @@ namespace CActorBase {
     inline void* dante_getRoom(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BDBD0, _gb);
+        vm::call(GbAddr{0x2BDBD0, 0x2BD9E0}, _gb);
         return _gb.get_p(0);
     }
     // void detachMe()
@@ -251,7 +253,7 @@ namespace CActorBase {
     inline void detachMe(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x2BE2F0, _gb);
+        vm::call(GbAddr{0x2BE2F0, 0x2BE100}, _gb);
     }
     // void enable(bool flag)
     //   thunk 0x2BE320  (impl 0x2DA340)
@@ -259,14 +261,14 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x2BE320, _gb);
+        vm::call(GbAddr{0x2BE320, 0x2BE130}, _gb);
     }
     // @CActor getAttachParent()
     //   thunk 0x2BE350  (via none)
     inline void* getAttachParent(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE350, _gb);
+        vm::call(GbAddr{0x2BE350, 0x2BE160}, _gb);
         return _gb.get_p(0);
     }
     // vector getBodyVelocity()
@@ -274,7 +276,7 @@ namespace CActorBase {
     inline Vector3 getBodyVelocity(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x2BE380, _gb);
+        vm::call(GbAddr{0x2BE380, 0x2BE190}, _gb);
         return _gb.get_v(0);
     }
     // float getBoundingSphereRadius()
@@ -282,7 +284,7 @@ namespace CActorBase {
     inline float getBoundingSphereRadius(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE3D0, _gb);
+        vm::call(GbAddr{0x2BE3D0, 0x2BE1E0}, _gb);
         return _gb.get_f(0);
     }
     // vector getBoundsCenter()
@@ -290,7 +292,7 @@ namespace CActorBase {
     inline Vector3 getBoundsCenter(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x2BE400, _gb);
+        vm::call(GbAddr{0x2BE400, 0x2BE210}, _gb);
         return _gb.get_v(0);
     }
     // @CActor getFirstAttachedChild()
@@ -298,7 +300,7 @@ namespace CActorBase {
     inline void* getFirstAttachedChild(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE440, _gb);
+        vm::call(GbAddr{0x2BE440, 0x2BE250}, _gb);
         return _gb.get_p(0);
     }
     // void getHurt(@SDamageInfo info)
@@ -307,14 +309,14 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x2BDB20, _gb);
+        vm::call(GbAddr{0x2BDB20, 0x2BD930}, _gb);
     }
     // vector getInertialVelocity()
     //   thunk 0x2BE470  (via indirect)
     inline Vector3 getInertialVelocity(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x2BE470, _gb);
+        vm::call(GbAddr{0x2BE470, 0x2BE280}, _gb);
         return _gb.get_v(0);
     }
     // string getName()
@@ -322,7 +324,7 @@ namespace CActorBase {
     inline const char* getName(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE4C0, _gb);
+        vm::call(GbAddr{0x2BE4C0, 0x2BE2D0}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // @CActor getNextAttachedSibling()
@@ -330,7 +332,7 @@ namespace CActorBase {
     inline void* getNextAttachedSibling(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE540, _gb);
+        vm::call(GbAddr{0x2BE540, 0x2BE350}, _gb);
         return _gb.get_p(0);
     }
     // Vector getOrient()
@@ -338,7 +340,7 @@ namespace CActorBase {
     inline Vector3 getOrient(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x2BDB50, _gb);
+        vm::call(GbAddr{0x2BDB50, 0x2BD960}, _gb);
         return _gb.get_v(0);
     }
     // Vector getPos()
@@ -346,7 +348,7 @@ namespace CActorBase {
     inline Vector3 getPos(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x2BDB90, _gb);
+        vm::call(GbAddr{0x2BDB90, 0x2BD9A0}, _gb);
         return _gb.get_v(0);
     }
     // Vector i2b(Vector point)
@@ -355,7 +357,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_v(4, point);
-        vm::call(0x2BDC10, _gb);
+        vm::call(GbAddr{0x2BDC10, 0x2BDA20}, _gb);
         return _gb.get_v(0);
     }
     // Vector i2w(Vector point)
@@ -364,7 +366,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_v(4, point);
-        vm::call(0x2BDDC0, _gb);
+        vm::call(GbAddr{0x2BDDC0, 0x2BDBD0}, _gb);
         return _gb.get_v(0);
     }
     // bool isEnabled()
@@ -372,7 +374,7 @@ namespace CActorBase {
     inline bool isEnabled(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE570, _gb);
+        vm::call(GbAddr{0x2BE570, 0x2BE380}, _gb);
         return _gb.get_b(0);
     }
     // bool isHidden()
@@ -380,7 +382,7 @@ namespace CActorBase {
     inline bool isHidden(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE5A0, _gb);
+        vm::call(GbAddr{0x2BE5A0, 0x2BE3B0}, _gb);
         return _gb.get_b(0);
     }
     // bool isOfType(String typeString)
@@ -389,7 +391,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, typeString);
-        vm::call(0x2BDF00, _gb);
+        vm::call(GbAddr{0x2BDF00, 0x2BDD10}, _gb);
         return _gb.get_b(0);
     }
     // void positionAttachedActors()
@@ -397,7 +399,7 @@ namespace CActorBase {
     inline void positionAttachedActors(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x2BE700, _gb);
+        vm::call(GbAddr{0x2BE700, 0x2BE510}, _gb);
     }
     // void setProcessRadius(float radius)
     //   thunk 0x2BE760  (via indirect)
@@ -405,7 +407,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, radius);
-        vm::call(0x2BE760, _gb);
+        vm::call(GbAddr{0x2BE760, 0x2BE570}, _gb);
     }
     // int startSfxTracked(string sampleName)
     //   thunk 0x2BE790  (via indirect)
@@ -413,7 +415,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, sampleName);
-        vm::call(0x2BE790, _gb);
+        vm::call(GbAddr{0x2BE790, 0x2BE5A0}, _gb);
         return _gb.get_i(0);
     }
     // int startTrackedEffect(string effectName)
@@ -422,7 +424,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, effectName);
-        vm::call(0x2BE7D0, _gb);
+        vm::call(GbAddr{0x2BE7D0, 0x2BE5E0}, _gb);
         return _gb.get_i(0);
     }
     // Vector w2b(Vector point)
@@ -431,7 +433,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_v(4, point);
-        vm::call(0x2BDF40, _gb);
+        vm::call(GbAddr{0x2BDF40, 0x2BDD50}, _gb);
         return _gb.get_v(0);
     }
     // Vector w2i(Vector point)
@@ -440,7 +442,7 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_v(4, point);
-        vm::call(0x2BE100, _gb);
+        vm::call(GbAddr{0x2BE100, 0x2BDF10}, _gb);
         return _gb.get_v(0);
     }
     // void warpTo(Vector pos, Vector orient)
@@ -450,7 +452,7 @@ namespace CActorBase {
         _gb.set_p(0, self);
         _gb.set_v(1, pos);
         _gb.set_v(4, orient);
-        vm::call(0x2BE240, _gb);
+        vm::call(GbAddr{0x2BE240, 0x2BE050}, _gb);
     }
     // void warpToActor(@CActor destActor)
     //   thunk 0x2BE810  (impl 0x2C44B0)
@@ -458,14 +460,14 @@ namespace CActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, destActor);
-        vm::call(0x2BE810, _gb);
+        vm::call(GbAddr{0x2BE810, 0x2BE620}, _gb);
     }
     // bool wasVisible()
     //   thunk 0x2BE2C0  (via none)
     inline bool wasVisible(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE2C0, _gb);
+        vm::call(GbAddr{0x2BE2C0, 0x2BE0D0}, _gb);
         return _gb.get_b(0);
     }
     // @CActor whoIsCarryingMe()
@@ -473,7 +475,7 @@ namespace CActorBase {
     inline void* whoIsCarryingMe(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2BE840, _gb);
+        vm::call(GbAddr{0x2BE840, 0x2BE650}, _gb);
         return _gb.get_p(0);
     }
 } // namespace CActorBase
@@ -486,7 +488,7 @@ namespace CActorGroup {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, actor);
-        vm::call(0x48EA20, _gb);
+        vm::call(GbAddr{0x48EA20, 0x48E6B0}, _gb);
         return _gb.get_i(0);
     }
     // void constructor()
@@ -494,14 +496,14 @@ namespace CActorGroup {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x48EA60, _gb);
+        vm::call(GbAddr{0x48EA60, 0x48E6F0}, _gb);
     }
     // void destructor()
     //   thunk 0x48EB00  (via none)
     inline void destructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x48EB00, _gb);
+        vm::call(GbAddr{0x48EB00, 0x48E790}, _gb);
     }
     // int find(@CActor actor)
     //   thunk 0x48EB10  (via none)
@@ -509,7 +511,7 @@ namespace CActorGroup {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, actor);
-        vm::call(0x48EB10, _gb);
+        vm::call(GbAddr{0x48EB10, 0x48E7A0}, _gb);
         return _gb.get_i(0);
     }
     // @CActor get(int index)
@@ -518,7 +520,7 @@ namespace CActorGroup {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, index);
-        vm::call(0x48EA80, _gb);
+        vm::call(GbAddr{0x48EA80, 0x48E710}, _gb);
         return _gb.get_p(0);
     }
     // int n()
@@ -526,7 +528,7 @@ namespace CActorGroup {
     inline int n(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x48EB60, _gb);
+        vm::call(GbAddr{0x48EB60, 0x48E7F0}, _gb);
         return _gb.get_i(0);
     }
     // void removeAll()
@@ -534,7 +536,7 @@ namespace CActorGroup {
     inline void removeAll(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x48EB80, _gb);
+        vm::call(GbAddr{0x48EB80, 0x48E810}, _gb);
     }
     // void removeByIndex(int index)
     //   thunk 0x48EAD0  (via none)
@@ -542,7 +544,7 @@ namespace CActorGroup {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, index);
-        vm::call(0x48EAD0, _gb);
+        vm::call(GbAddr{0x48EAD0, 0x48E760}, _gb);
     }
     // bool removeByPointer(@CActor actor)
     //   thunk 0x48EBA0  (via call)
@@ -550,7 +552,7 @@ namespace CActorGroup {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, actor);
-        vm::call(0x48EBA0, _gb);
+        vm::call(GbAddr{0x48EBA0, 0x48E830}, _gb);
         return _gb.get_b(0);
     }
     // void sortByDistanceToPoint(vector point)
@@ -559,7 +561,7 @@ namespace CActorGroup {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, point);
-        vm::call(0x48EC20, _gb);
+        vm::call(GbAddr{0x48EC20, 0x48E8B0}, _gb);
     }
 } // namespace CActorGroup
 
@@ -570,7 +572,7 @@ namespace CAiSplinePath {
     inline bool isOccupied(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x196E0, _gb);
+        vm::call(GbAddr{0x196E0, 0x196E0}, _gb);
         return _gb.get_b(0);
     }
 } // namespace CAiSplinePath
@@ -582,7 +584,7 @@ namespace CAniModel {
     inline float getFrame(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x1CA40, _gb);
+        vm::call(GbAddr{0x1CA40, 0x1CA40}, _gb);
         return _gb.get_f(0);
     }
     // float getLastFrame()
@@ -590,7 +592,7 @@ namespace CAniModel {
     inline float getLastFrame(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x1CA80, _gb);
+        vm::call(GbAddr{0x1CA80, 0x1CA80}, _gb);
         return _gb.get_f(0);
     }
     // bool isPlaying()
@@ -598,7 +600,7 @@ namespace CAniModel {
     inline bool isPlaying(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x1C9D0, _gb);
+        vm::call(GbAddr{0x1C9D0, 0x1C9D0}, _gb);
         return _gb.get_b(0);
     }
     // void play(bool forward = true, EPlayPattern pattern = ePlayPatternNone, float newSpeed = 1.0f, float rampTime = 0.0f)
@@ -610,7 +612,7 @@ namespace CAniModel {
         _gb.set_i(2, pattern);
         _gb.set_f(3, newSpeed);
         _gb.set_f(4, rampTime);
-        vm::call(0x1C950, _gb);
+        vm::call(GbAddr{0x1C950, 0x1C950}, _gb);
     }
     // void setControlEnable(bool enable)
     //   thunk 0x1CB50  (via indirect)
@@ -618,7 +620,7 @@ namespace CAniModel {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0x1CB50, _gb);
+        vm::call(GbAddr{0x1CB50, 0x1CB50}, _gb);
     }
     // void setFrame(float frame)
     //   thunk 0x1CA10  (impl 0x1C4B0)
@@ -626,7 +628,7 @@ namespace CAniModel {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, frame);
-        vm::call(0x1CA10, _gb);
+        vm::call(GbAddr{0x1CA10, 0x1CA10}, _gb);
     }
     // void setState(int state)
     //   thunk 0x1CAC0  (impl 0x1C560)
@@ -634,7 +636,7 @@ namespace CAniModel {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, state);
-        vm::call(0x1CAC0, _gb);
+        vm::call(GbAddr{0x1CAC0, 0x1CAC0}, _gb);
     }
     // void setStateWithVel(int state, vector debrisVel)
     //   thunk 0x1CAF0  (via call)
@@ -643,7 +645,7 @@ namespace CAniModel {
         _gb.set_p(0, self);
         _gb.set_i(1, state);
         _gb.set_v(2, debrisVel);
-        vm::call(0x1CAF0, _gb);
+        vm::call(GbAddr{0x1CAF0, 0x1CAF0}, _gb);
     }
     // void stop(float rampTime = 0.0f)
     //   thunk 0x1C9A0  (impl 0x1C460)
@@ -651,7 +653,7 @@ namespace CAniModel {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, rampTime);
-        vm::call(0x1C9A0, _gb);
+        vm::call(GbAddr{0x1C9A0, 0x1C9A0}, _gb);
     }
 } // namespace CAniModel
 
@@ -662,63 +664,63 @@ namespace CArchitect {
     inline void flareDown(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24D40, _gb);
+        vm::call(GbAddr{0x24D40, 0x24D40}, _gb);
     }
     // void flareUp()
     //   thunk 0x24D10  (impl 0x21AD0)
     inline void flareUp(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24D10, _gb);
+        vm::call(GbAddr{0x24D10, 0x24D10}, _gb);
     }
     // void lightningStrike()
     //   thunk 0x24E90  (impl 0x21EB0)
     inline void lightningStrike(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24E90, _gb);
+        vm::call(GbAddr{0x24E90, 0x24E90}, _gb);
     }
     // void meteorStrike()
     //   thunk 0x24E30  (impl 0x21E30)
     inline void meteorStrike(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24E30, _gb);
+        vm::call(GbAddr{0x24E30, 0x24E30}, _gb);
     }
     // void moveLeft()
     //   thunk 0x24D70  (impl 0x21D50)
     inline void moveLeft(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24D70, _gb);
+        vm::call(GbAddr{0x24D70, 0x24D70}, _gb);
     }
     // void moveOut()
     //   thunk 0x24E00  (impl 0x21E00)
     inline void moveOut(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24E00, _gb);
+        vm::call(GbAddr{0x24E00, 0x24E00}, _gb);
     }
     // void moveRight()
     //   thunk 0x24DA0  (impl 0x21D90)
     inline void moveRight(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24DA0, _gb);
+        vm::call(GbAddr{0x24DA0, 0x24DA0}, _gb);
     }
     // void moveUnder()
     //   thunk 0x24DD0  (impl 0x21DD0)
     inline void moveUnder(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24DD0, _gb);
+        vm::call(GbAddr{0x24DD0, 0x24DD0}, _gb);
     }
     // void vortex()
     //   thunk 0x24E60  (impl 0x21E70)
     inline void vortex(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x24E60, _gb);
+        vm::call(GbAddr{0x24E60, 0x24E60}, _gb);
     }
 } // namespace CArchitect
 
@@ -729,7 +731,7 @@ namespace CAsteroid {
     inline bool isInFlight(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x25F80, _gb);
+        vm::call(GbAddr{0x25F80, 0x25F80}, _gb);
         return _gb.get_b(0);
     }
     // void setIgnoreDamageUntilLaunched(bool flag = true)
@@ -738,7 +740,7 @@ namespace CAsteroid {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x25F50, _gb);
+        vm::call(GbAddr{0x25F50, 0x25F50}, _gb);
     }
 } // namespace CAsteroid
 
@@ -749,7 +751,7 @@ namespace CBiped {
     inline void activateStatue(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x37560, _gb);
+        vm::call(GbAddr{0x37560, 0x37560}, _gb);
     }
     // void fillInBipedCCSOD(@SBipedCombatComponentInfo info)
     //   thunk 0x37660  (impl 0x37030)
@@ -757,14 +759,14 @@ namespace CBiped {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x37660, _gb);
+        vm::call(GbAddr{0x37660, 0x37660}, _gb);
     }
     // bool hasShieldReady()
     //   thunk 0x37620  (via call)
     inline bool hasShieldReady(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x37620, _gb);
+        vm::call(GbAddr{0x37620, 0x37620}, _gb);
         return _gb.get_b(0);
     }
     // void setAsAmbusher()
@@ -772,14 +774,14 @@ namespace CBiped {
     inline void setAsAmbusher(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x37590, _gb);
+        vm::call(GbAddr{0x37590, 0x37590}, _gb);
     }
     // void setAsAmbusherGroup()
     //   thunk 0x375C0  (impl 0x34BD0)
     inline void setAsAmbusherGroup(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x375C0, _gb);
+        vm::call(GbAddr{0x375C0, 0x375C0}, _gb);
     }
     // void setCowerMode(bool flag)
     //   thunk 0x375F0  (impl 0x34C60)
@@ -787,7 +789,7 @@ namespace CBiped {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x375F0, _gb);
+        vm::call(GbAddr{0x375F0, 0x375F0}, _gb);
     }
 } // namespace CBiped
 
@@ -799,7 +801,7 @@ namespace CBipedLarge {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x3D860, _gb);
+        vm::call(GbAddr{0x3D860, 0x3D860}, _gb);
     }
     // void fillInBipedLargeCCSOD(@SBipedLargeCombatComponentInfo info)
     //   thunk 0x3D890  (impl 0x3D5B0)
@@ -807,7 +809,7 @@ namespace CBipedLarge {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x3D890, _gb);
+        vm::call(GbAddr{0x3D890, 0x3D890}, _gb);
     }
 } // namespace CBipedLarge
 
@@ -818,7 +820,7 @@ namespace CBirdFlock {
     inline Vector3 getFlyToPos(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x41250, _gb);
+        vm::call(GbAddr{0x41250, 0x41250}, _gb);
         return _gb.get_v(0);
     }
     // void leaveGround()
@@ -826,7 +828,7 @@ namespace CBirdFlock {
     inline void leaveGround(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x41220, _gb);
+        vm::call(GbAddr{0x41220, 0x41220}, _gb);
     }
     // void setFlyToPos(vector pos)
     //   thunk 0x412A0  (via call)
@@ -834,7 +836,7 @@ namespace CBirdFlock {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, pos);
-        vm::call(0x412A0, _gb);
+        vm::call(GbAddr{0x412A0, 0x412A0}, _gb);
     }
 } // namespace CBirdFlock
 
@@ -845,21 +847,21 @@ namespace CBlackSlime {
     inline void closePortal(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x43430, _gb);
+        vm::call(GbAddr{0x43430, 0x43430}, _gb);
     }
     // void openPortal()
     //   thunk 0x43400  (impl 0x42550)
     inline void openPortal(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x43400, _gb);
+        vm::call(GbAddr{0x43400, 0x43400}, _gb);
     }
     // void reset()
     //   thunk 0x433D0  (impl 0x42510)
     inline void reset(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x433D0, _gb);
+        vm::call(GbAddr{0x433D0, 0x433D0}, _gb);
     }
     // void toggleAIObstacle(bool enable)
     //   thunk 0x43460  (impl 0x43040)
@@ -867,7 +869,7 @@ namespace CBlackSlime {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0x43460, _gb);
+        vm::call(GbAddr{0x43460, 0x43460}, _gb);
     }
 } // namespace CBlackSlime
 
@@ -879,7 +881,7 @@ namespace CBlinkers {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, wpStart);
-        vm::call(0x46130, _gb);
+        vm::call(GbAddr{0x46130, 0x46130}, _gb);
     }
     // void attackRight(@CWayPoint wpStart)
     //   thunk 0x46160  (impl 0x45FD0)
@@ -887,7 +889,7 @@ namespace CBlinkers {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, wpStart);
-        vm::call(0x46160, _gb);
+        vm::call(GbAddr{0x46160, 0x46160}, _gb);
     }
     // void moveLeft(@CWayPoint wpStart, @CWayPoint wpEnd)
     //   thunk 0x46190  (impl 0x46040)
@@ -896,7 +898,7 @@ namespace CBlinkers {
         _gb.set_p(0, self);
         _gb.set_p(1, wpStart);
         _gb.set_p(2, wpEnd);
-        vm::call(0x46190, _gb);
+        vm::call(GbAddr{0x46190, 0x46190}, _gb);
     }
     // void moveRight(@CWayPoint wpStart, @CWayPoint wpEnd)
     //   thunk 0x461C0  (impl 0x46060)
@@ -905,7 +907,7 @@ namespace CBlinkers {
         _gb.set_p(0, self);
         _gb.set_p(1, wpStart);
         _gb.set_p(2, wpEnd);
-        vm::call(0x461C0, _gb);
+        vm::call(GbAddr{0x461C0, 0x461C0}, _gb);
     }
     // void moveUnder(@CWayPoint wpStart, @CWayPoint wpEnd)
     //   thunk 0x461F0  (impl 0x46080)
@@ -914,14 +916,14 @@ namespace CBlinkers {
         _gb.set_p(0, self);
         _gb.set_p(1, wpStart);
         _gb.set_p(2, wpEnd);
-        vm::call(0x461F0, _gb);
+        vm::call(GbAddr{0x461F0, 0x461F0}, _gb);
     }
     // void stopSummon()
     //   thunk 0x46250  (impl 0x46110)
     inline void stopSummon(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x46250, _gb);
+        vm::call(GbAddr{0x46250, 0x46250}, _gb);
     }
     // void summon(int count)
     //   thunk 0x46220  (impl 0x460D0)
@@ -929,7 +931,7 @@ namespace CBlinkers {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, count);
-        vm::call(0x46220, _gb);
+        vm::call(GbAddr{0x46220, 0x46220}, _gb);
     }
 } // namespace CBlinkers
 
@@ -941,7 +943,7 @@ namespace CBoneSimActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, boneIndex);
-        vm::call(0x3AE8E0, _gb);
+        vm::call(GbAddr{0x3AE8E0, 0x3AE6F0}, _gb);
     }
     // void setMaxWind(vector windVelocity)
     //   thunk 0x3AE910  (via none)
@@ -949,7 +951,7 @@ namespace CBoneSimActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, windVelocity);
-        vm::call(0x3AE910, _gb);
+        vm::call(GbAddr{0x3AE910, 0x3AE720}, _gb);
     }
     // void setMinWind(vector windVelocity)
     //   thunk 0x3AE950  (via none)
@@ -957,14 +959,14 @@ namespace CBoneSimActorBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, windVelocity);
-        vm::call(0x3AE950, _gb);
+        vm::call(GbAddr{0x3AE950, 0x3AE760}, _gb);
     }
     // void stopFollowingCameraPath()
     //   thunk 0x3AE990  (via none)
     inline void stopFollowingCameraPath(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3AE990, _gb);
+        vm::call(GbAddr{0x3AE990, 0x3AE7A0}, _gb);
     }
 } // namespace CBoneSimActorBase
 
@@ -976,14 +978,14 @@ namespace CBookStack {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, reverseDirection);
-        vm::call(0x4D3A0, _gb);
+        vm::call(GbAddr{0x4D3A0, 0x4D3A0}, _gb);
     }
     // void followCameraPath()
     //   thunk 0x4D430  (impl 0x4BCF0)
     inline void followCameraPath(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x4D430, _gb);
+        vm::call(GbAddr{0x4D430, 0x4D430}, _gb);
     }
     // void shiftBooks(float dir)
     //   thunk 0x4D400  (impl 0x4BB80)
@@ -991,14 +993,14 @@ namespace CBookStack {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, dir);
-        vm::call(0x4D400, _gb);
+        vm::call(GbAddr{0x4D400, 0x4D400}, _gb);
     }
     // void shootOutBooks()
     //   thunk 0x4D3D0  (impl 0x4B9B0)
     inline void shootOutBooks(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x4D3D0, _gb);
+        vm::call(GbAddr{0x4D3D0, 0x4D3D0}, _gb);
     }
 } // namespace CBookStack
 
@@ -1009,7 +1011,7 @@ namespace CBookshelf {
     inline void knockMeOver(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x48D70, _gb);
+        vm::call(GbAddr{0x48D70, 0x48D70}, _gb);
     }
     // void moveForward(float distance)
     //   thunk 0x48DA0  (impl 0x47F90)
@@ -1017,7 +1019,7 @@ namespace CBookshelf {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, distance);
-        vm::call(0x48DA0, _gb);
+        vm::call(GbAddr{0x48DA0, 0x48DA0}, _gb);
     }
 } // namespace CBookshelf
 
@@ -1029,7 +1031,7 @@ namespace CBoxActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x355460, _gb);
+        vm::call(GbAddr{0x355460, 0x355270}, _gb);
     }
     // void addForceFromActor(float force, @CActor actor)
     //   thunk 0x355430  (impl 0x355730)
@@ -1038,7 +1040,7 @@ namespace CBoxActor {
         _gb.set_p(0, self);
         _gb.set_f(1, force);
         _gb.set_p(2, actor);
-        vm::call(0x355430, _gb);
+        vm::call(GbAddr{0x355430, 0x355240}, _gb);
     }
     // void addForceFromActorAtPos(float force, @CActor actor)
     //   thunk 0x355400  (impl 0x3557F0)
@@ -1047,7 +1049,7 @@ namespace CBoxActor {
         _gb.set_p(0, self);
         _gb.set_f(1, force);
         _gb.set_p(2, actor);
-        vm::call(0x355400, _gb);
+        vm::call(GbAddr{0x355400, 0x355210}, _gb);
     }
     // void addVelocity(Vector velocity)
     //   thunk 0x3554D0  (via indirect)
@@ -1055,14 +1057,14 @@ namespace CBoxActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, velocity);
-        vm::call(0x3554D0, _gb);
+        vm::call(GbAddr{0x3554D0, 0x3552E0}, _gb);
     }
     // void createJoint()
     //   thunk 0x355530  (via indirect)
     inline void createJoint(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x355530, _gb);
+        vm::call(GbAddr{0x355530, 0x355340}, _gb);
     }
     // void enableAnchor(bool enable)
     //   thunk 0x355560  (impl 0x356FD0)
@@ -1070,28 +1072,28 @@ namespace CBoxActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0x355560, _gb);
+        vm::call(GbAddr{0x355560, 0x355370}, _gb);
     }
     // void immobilize()
     //   thunk 0x355590  (via indirect)
     inline void immobilize(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x355590, _gb);
+        vm::call(GbAddr{0x355590, 0x3553A0}, _gb);
     }
     // void mobilize()
     //   thunk 0x3555C0  (via indirect)
     inline void mobilize(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3555C0, _gb);
+        vm::call(GbAddr{0x3555C0, 0x3553D0}, _gb);
     }
     // void removeAnchor()
     //   thunk 0x3555F0  (via call)
     inline void removeAnchor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3555F0, _gb);
+        vm::call(GbAddr{0x3555F0, 0x355400}, _gb);
     }
     // void removeJoint(@Joint joint)
     //   thunk 0x355660  (via indirect)
@@ -1099,7 +1101,7 @@ namespace CBoxActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, joint);
-        vm::call(0x355660, _gb);
+        vm::call(GbAddr{0x355660, 0x355470}, _gb);
     }
     // void setVelocity(Vector velocity)
     //   thunk 0x355690  (via indirect)
@@ -1107,7 +1109,7 @@ namespace CBoxActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, velocity);
-        vm::call(0x355690, _gb);
+        vm::call(GbAddr{0x355690, 0x3554A0}, _gb);
     }
 } // namespace CBoxActor
 
@@ -1118,21 +1120,21 @@ namespace CBoxTest {
     inline void messWithGravity(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x494840, _gb);
+        vm::call(GbAddr{0x494840, 0x4944D0}, _gb);
     }
     // void messWithGravity2()
     //   thunk 0x4947E0  (via none)
     inline void messWithGravity2(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x4947E0, _gb);
+        vm::call(GbAddr{0x4947E0, 0x494470}, _gb);
     }
     // void messWithGravity3()
     //   thunk 0x494810  (via none)
     inline void messWithGravity3(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x494810, _gb);
+        vm::call(GbAddr{0x494810, 0x4944A0}, _gb);
     }
 } // namespace CBoxTest
 
@@ -1143,7 +1145,7 @@ namespace CBreakable {
     inline float getHitPoints(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x51010, _gb);
+        vm::call(GbAddr{0x51010, 0x51010}, _gb);
         return _gb.get_f(0);
     }
     // float getMaxHitPoints()
@@ -1151,7 +1153,7 @@ namespace CBreakable {
     inline float getMaxHitPoints(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x51050, _gb);
+        vm::call(GbAddr{0x51050, 0x51050}, _gb);
         return _gb.get_f(0);
     }
     // void setHitPoints(float newHitPoints)
@@ -1160,7 +1162,7 @@ namespace CBreakable {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newHitPoints);
-        vm::call(0x51090, _gb);
+        vm::call(GbAddr{0x51090, 0x51090}, _gb);
     }
 } // namespace CBreakable
 
@@ -1172,14 +1174,14 @@ namespace CBreaker {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x3B18A0, _gb);
+        vm::call(GbAddr{0x3B18A0, 0x3B16B0}, _gb);
     }
     // void die()
     //   thunk 0x3B18E0  (impl 0x3B27B0)
     inline void die(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3B18E0, _gb);
+        vm::call(GbAddr{0x3B18E0, 0x3B16F0}, _gb);
     }
     // void enable(bool flag)
     //   thunk 0x3B1BC0  (impl 0x3B5910)
@@ -1187,21 +1189,21 @@ namespace CBreaker {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x3B1BC0, _gb);
+        vm::call(GbAddr{0x3B1BC0, 0x3B19D0}, _gb);
     }
     // void fixIt()
     //   thunk 0x3B1B40  (impl 0x3B5910)
     inline void fixIt(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3B1B40, _gb);
+        vm::call(GbAddr{0x3B1B40, 0x3B1950}, _gb);
     }
     // float getCurrentDamage()
     //   thunk 0x3B1900  (via none)
     inline float getCurrentDamage(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3B1900, _gb);
+        vm::call(GbAddr{0x3B1900, 0x3B1710}, _gb);
         return _gb.get_f(0);
     }
     // float getDistanceFromActor(@CActor a)
@@ -1210,7 +1212,7 @@ namespace CBreaker {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0x3B1930, _gb);
+        vm::call(GbAddr{0x3B1930, 0x3B1740}, _gb);
         return _gb.get_f(0);
     }
     // float getHealth()
@@ -1218,7 +1220,7 @@ namespace CBreaker {
     inline float getHealth(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3B19B0, _gb);
+        vm::call(GbAddr{0x3B19B0, 0x3B17C0}, _gb);
         return _gb.get_f(0);
     }
     // float getHealthPct()
@@ -1226,7 +1228,7 @@ namespace CBreaker {
     inline float getHealthPct(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3B1970, _gb);
+        vm::call(GbAddr{0x3B1970, 0x3B1780}, _gb);
         return _gb.get_f(0);
     }
     // string getName()
@@ -1234,7 +1236,7 @@ namespace CBreaker {
     inline const char* getName(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3B1A10, _gb);
+        vm::call(GbAddr{0x3B1A10, 0x3B1820}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // vector getOrient()
@@ -1242,7 +1244,7 @@ namespace CBreaker {
     inline Vector3 getOrient(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x3B1A90, _gb);
+        vm::call(GbAddr{0x3B1A90, 0x3B18A0}, _gb);
         return _gb.get_v(0);
     }
     // vector getPosAtCenter()
@@ -1250,7 +1252,7 @@ namespace CBreaker {
     inline Vector3 getPosAtCenter(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x3B1AD0, _gb);
+        vm::call(GbAddr{0x3B1AD0, 0x3B18E0}, _gb);
         return _gb.get_v(0);
     }
     // bool isEnabled()
@@ -1258,7 +1260,7 @@ namespace CBreaker {
     inline bool isEnabled(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3B19E0, _gb);
+        vm::call(GbAddr{0x3B19E0, 0x3B17F0}, _gb);
         return _gb.get_b(0);
     }
     // void setCurrentDamage(float amount)
@@ -1267,7 +1269,7 @@ namespace CBreaker {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, amount);
-        vm::call(0x3B1B80, _gb);
+        vm::call(GbAddr{0x3B1B80, 0x3B1990}, _gb);
     }
 } // namespace CBreaker
 
@@ -1278,7 +1280,7 @@ namespace CBurningBushActor {
     inline void ignite(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x52C70, _gb);
+        vm::call(GbAddr{0x52C70, 0x52C70}, _gb);
     }
 } // namespace CBurningBushActor
 
@@ -1290,7 +1292,7 @@ namespace CCable {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, whichEnd);
-        vm::call(0x579D0, _gb);
+        vm::call(GbAddr{0x579D0, 0x579D0}, _gb);
     }
     // vector getEndpointWPos(ECableEndpoint whichEnd)
     //   thunk 0x57A00  (via call)
@@ -1298,7 +1300,7 @@ namespace CCable {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_i(4, whichEnd);
-        vm::call(0x57A00, _gb);
+        vm::call(GbAddr{0x57A00, 0x57A00}, _gb);
         return _gb.get_v(0);
     }
 } // namespace CCable
@@ -1311,7 +1313,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x347DA0, _gb);
+        vm::call(GbAddr{0x347DA0, 0x347BB0}, _gb);
     }
     // float getFollowerKey(@CActor child)
     //   thunk 0x347DF0  (via call)
@@ -1319,7 +1321,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, child);
-        vm::call(0x347DF0, _gb);
+        vm::call(GbAddr{0x347DF0, 0x347C00}, _gb);
         return _gb.get_f(0);
     }
     // float getFollowerSpeed(@CActor child)
@@ -1328,7 +1330,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, child);
-        vm::call(0x347E30, _gb);
+        vm::call(GbAddr{0x347E30, 0x347C40}, _gb);
         return _gb.get_f(0);
     }
     // float getFollowerTime(@CActor child)
@@ -1337,7 +1339,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, child);
-        vm::call(0x347EA0, _gb);
+        vm::call(GbAddr{0x347EA0, 0x347CB0}, _gb);
         return _gb.get_f(0);
     }
     // bool hasFollower(@CActor a)
@@ -1346,7 +1348,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0x347F10, _gb);
+        vm::call(GbAddr{0x347F10, 0x347D20}, _gb);
         return _gb.get_b(0);
     }
     // bool isFollowerPaused(@CActor child)
@@ -1355,7 +1357,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, child);
-        vm::call(0x347F60, _gb);
+        vm::call(GbAddr{0x347F60, 0x347D70}, _gb);
         return _gb.get_b(0);
     }
     // void moveFollowerToEnd(@CActor child)
@@ -1364,7 +1366,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x347FE0, _gb);
+        vm::call(GbAddr{0x347FE0, 0x347DF0}, _gb);
     }
     // void moveFollowerToKey(@CActor child, float key)
     //   thunk 0x348010  (impl 0x34BE50)
@@ -1373,7 +1375,7 @@ namespace CCameraPathActor {
         _gb.set_p(0, self);
         _gb.set_p(1, child);
         _gb.set_f(2, key);
-        vm::call(0x348010, _gb);
+        vm::call(GbAddr{0x348010, 0x347E20}, _gb);
     }
     // void moveFollowerToNextKey(@CActor child)
     //   thunk 0x348040  (impl 0x34BF80)
@@ -1381,7 +1383,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x348040, _gb);
+        vm::call(GbAddr{0x348040, 0x347E50}, _gb);
     }
     // void moveFollowerToPrevKey(@CActor child)
     //   thunk 0x348070  (impl 0x34C000)
@@ -1389,7 +1391,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x348070, _gb);
+        vm::call(GbAddr{0x348070, 0x347E80}, _gb);
     }
     // void moveFollowerToStart(@CActor child)
     //   thunk 0x3480A0  (via none)
@@ -1397,7 +1399,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x3480A0, _gb);
+        vm::call(GbAddr{0x3480A0, 0x347EB0}, _gb);
     }
     // void pauseFollower(@CActor child)
     //   thunk 0x348100  (via none)
@@ -1405,7 +1407,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x348100, _gb);
+        vm::call(GbAddr{0x348100, 0x347F10}, _gb);
     }
     // void removeFollower(@CActor child)
     //   thunk 0x348160  (via indirect)
@@ -1413,7 +1415,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x348160, _gb);
+        vm::call(GbAddr{0x348160, 0x347F70}, _gb);
     }
     // void resumeFollower(@CActor child)
     //   thunk 0x3481B0  (via none)
@@ -1421,7 +1423,7 @@ namespace CCameraPathActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x3481B0, _gb);
+        vm::call(GbAddr{0x3481B0, 0x347FC0}, _gb);
     }
     // void setFollowerSpeed(@CActor child, float speed)
     //   thunk 0x348210  (via none)
@@ -1430,7 +1432,7 @@ namespace CCameraPathActor {
         _gb.set_p(0, self);
         _gb.set_p(1, child);
         _gb.set_f(2, speed);
-        vm::call(0x348210, _gb);
+        vm::call(GbAddr{0x348210, 0x348020}, _gb);
     }
     // void setFollowerTime(@CActor child, float time)
     //   thunk 0x348270  (impl 0x34D240)
@@ -1439,7 +1441,7 @@ namespace CCameraPathActor {
         _gb.set_p(0, self);
         _gb.set_p(1, child);
         _gb.set_f(2, time);
-        vm::call(0x348270, _gb);
+        vm::call(GbAddr{0x348270, 0x348080}, _gb);
     }
 } // namespace CCameraPathActor
 
@@ -1452,7 +1454,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
         _gb.set_f(2, nearEnuf);
-        vm::call(0x6A530, _gb);
+        vm::call(GbAddr{0x6A530, 0x6A530}, _gb);
     }
     // void NotifyWhenNearPosition(vector wPos, float nearEnuf)
     //   thunk 0x6A4D0  (via call)
@@ -1461,7 +1463,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
         _gb.set_f(4, nearEnuf);
-        vm::call(0x6A4D0, _gb);
+        vm::call(GbAddr{0x6A4D0, 0x6A4D0}, _gb);
     }
     // void addForceToChassis(vector wPos, vector iForce, float frequency = 1.0f)
     //   thunk 0x6A7F0  (via call)
@@ -1471,7 +1473,7 @@ namespace CCarEffects {
         _gb.set_v(1, wPos);
         _gb.set_v(4, iForce);
         _gb.set_f(7, frequency);
-        vm::call(0x6A7F0, _gb);
+        vm::call(GbAddr{0x6A7F0, 0x6A7F0}, _gb);
     }
     // void closeDoor(int doorIndex)
     //   thunk 0x699E0  (impl 0x67FE0)
@@ -1479,7 +1481,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, doorIndex);
-        vm::call(0x699E0, _gb);
+        vm::call(GbAddr{0x699E0, 0x699E0}, _gb);
     }
     // void damageChassis(float damage)
     //   thunk 0x697D0  (impl 0x67940)
@@ -1487,7 +1489,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, damage);
-        vm::call(0x697D0, _gb);
+        vm::call(GbAddr{0x697D0, 0x697D0}, _gb);
     }
     // void damageDoor(int doorIndex, float damage)
     //   thunk 0x69830  (impl 0x67BC0)
@@ -1496,7 +1498,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_i(1, doorIndex);
         _gb.set_f(2, damage);
-        vm::call(0x69830, _gb);
+        vm::call(GbAddr{0x69830, 0x69830}, _gb);
     }
     // void damageWheel(int wheelIndex, float damage)
     //   thunk 0x69800  (impl 0x67A50)
@@ -1505,28 +1507,28 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_i(1, wheelIndex);
         _gb.set_f(2, damage);
-        vm::call(0x69800, _gb);
+        vm::call(GbAddr{0x69800, 0x69800}, _gb);
     }
     // void detachAllDoorsFromChassis()
     //   thunk 0x69680  (impl 0x677D0)
     inline void detachAllDoorsFromChassis(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69680, _gb);
+        vm::call(GbAddr{0x69680, 0x69680}, _gb);
     }
     // void detachAllWheelsFromChassis()
     //   thunk 0x69650  (impl 0x67790)
     inline void detachAllWheelsFromChassis(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69650, _gb);
+        vm::call(GbAddr{0x69650, 0x69650}, _gb);
     }
     // void detachAllWheelsFromSet()
     //   thunk 0x69620  (impl 0x67760)
     inline void detachAllWheelsFromSet(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69620, _gb);
+        vm::call(GbAddr{0x69620, 0x69620}, _gb);
     }
     // void detachDoorFromChassis(int doorIndex)
     //   thunk 0x695F0  (impl 0x67740)
@@ -1534,14 +1536,14 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, doorIndex);
-        vm::call(0x695F0, _gb);
+        vm::call(GbAddr{0x695F0, 0x695F0}, _gb);
     }
     // void detachFromCameraPath()
     //   thunk 0x69F60  (impl 0x68600)
     inline void detachFromCameraPath(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69F60, _gb);
+        vm::call(GbAddr{0x69F60, 0x69F60}, _gb);
     }
     // void detachWheelFromChassis(int wheelIndex)
     //   thunk 0x695C0  (impl 0x67720)
@@ -1549,14 +1551,14 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, wheelIndex);
-        vm::call(0x695C0, _gb);
+        vm::call(GbAddr{0x695C0, 0x695C0}, _gb);
     }
     // void detachWheelFromSet(int wheelIndex)
     //   thunk 0x695A0  (via none)
     inline void detachWheelFromSet(int wheelIndex) {
         vm::Block _gb;
         _gb.set_i(0, wheelIndex);
-        vm::call(0x695A0, _gb);
+        vm::call(GbAddr{0x695A0, 0x695A0}, _gb);
     }
     // void detonate(float timer)
     //   thunk 0x6A8C0  (impl 0x690F0)
@@ -1564,7 +1566,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, timer);
-        vm::call(0x6A8C0, _gb);
+        vm::call(GbAddr{0x6A8C0, 0x6A8C0}, _gb);
     }
     // void enableAllLights(bool yah)
     //   thunk 0x6A690  (impl 0x68CD0)
@@ -1572,7 +1574,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A690, _gb);
+        vm::call(GbAddr{0x6A690, 0x6A690}, _gb);
     }
     // void enableAutoDetonation(bool yah)
     //   thunk 0x6A660  (impl 0x68CA0)
@@ -1580,7 +1582,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A660, _gb);
+        vm::call(GbAddr{0x6A660, 0x6A660}, _gb);
     }
     // void enableCameraPathStops(bool yah, float relativeDistance = 0.1f)
     //   thunk 0x6A310  (impl 0x68A40)
@@ -1589,7 +1591,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
         _gb.set_f(2, relativeDistance);
-        vm::call(0x6A310, _gb);
+        vm::call(GbAddr{0x6A310, 0x6A310}, _gb);
     }
     // void enableExplosiveFuelTank(bool yah)
     //   thunk 0x6A630  (impl 0x68C30)
@@ -1597,7 +1599,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A630, _gb);
+        vm::call(GbAddr{0x6A630, 0x6A630}, _gb);
     }
     // void enableHeadLights(bool yah)
     //   thunk 0x6A6C0  (impl 0x68D70)
@@ -1605,7 +1607,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A6C0, _gb);
+        vm::call(GbAddr{0x6A6C0, 0x6A6C0}, _gb);
     }
     // void enableTailLights(bool yah)
     //   thunk 0x6A6F0  (impl 0x68E00)
@@ -1613,14 +1615,14 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A6F0, _gb);
+        vm::call(GbAddr{0x6A6F0, 0x6A6F0}, _gb);
     }
     // int getAttachedTetherCount()
     //   thunk 0x6A7B0  (via call)
     inline int getAttachedTetherCount(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x6A7B0, _gb);
+        vm::call(GbAddr{0x6A7B0, 0x6A7B0}, _gb);
         return _gb.get_i(0);
     }
     // float getCameraPathTime()
@@ -1628,7 +1630,7 @@ namespace CCarEffects {
     inline float getCameraPathTime(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x6A2D0, _gb);
+        vm::call(GbAddr{0x6A2D0, 0x6A2D0}, _gb);
         return _gb.get_f(0);
     }
     // @CActor getChassisActor()
@@ -1636,7 +1638,7 @@ namespace CCarEffects {
     inline void* getChassisActor(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x69C90, _gb);
+        vm::call(GbAddr{0x69C90, 0x69C90}, _gb);
         return _gb.get_p(0);
     }
     // float getDistanceToCameraPathTime(float time)
@@ -1645,7 +1647,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_f(2, time);
-        vm::call(0x6A1C0, _gb);
+        vm::call(GbAddr{0x6A1C0, 0x6A1C0}, _gb);
         return _gb.get_f(0);
     }
     // float getFuelTankHealth()
@@ -1653,7 +1655,7 @@ namespace CCarEffects {
     inline float getFuelTankHealth(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x6A5F0, _gb);
+        vm::call(GbAddr{0x6A5F0, 0x6A5F0}, _gb);
         return _gb.get_f(0);
     }
     // float getMotiveAcceleration()
@@ -1661,7 +1663,7 @@ namespace CCarEffects {
     inline float getMotiveAcceleration(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x69B70, _gb);
+        vm::call(GbAddr{0x69B70, 0x69B70}, _gb);
         return _gb.get_f(0);
     }
     // float getMotiveSpeed()
@@ -1669,7 +1671,7 @@ namespace CCarEffects {
     inline float getMotiveSpeed(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x69BE0, _gb);
+        vm::call(GbAddr{0x69BE0, 0x69BE0}, _gb);
         return _gb.get_f(0);
     }
     // @CActor getMoveToActor()
@@ -1677,7 +1679,7 @@ namespace CCarEffects {
     inline void* getMoveToActor(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x6A490, _gb);
+        vm::call(GbAddr{0x6A490, 0x6A490}, _gb);
         return _gb.get_p(0);
     }
     // vector getMoveToPosition()
@@ -1685,7 +1687,7 @@ namespace CCarEffects {
     inline Vector3 getMoveToPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x6A440, _gb);
+        vm::call(GbAddr{0x6A440, 0x6A440}, _gb);
         return _gb.get_v(0);
     }
     // @CActor getNotifyWhenNearActor()
@@ -1693,7 +1695,7 @@ namespace CCarEffects {
     inline void* getNotifyWhenNearActor(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x6A5B0, _gb);
+        vm::call(GbAddr{0x6A5B0, 0x6A5B0}, _gb);
         return _gb.get_p(0);
     }
     // vector getNotifyWhenNearPosition()
@@ -1701,7 +1703,7 @@ namespace CCarEffects {
     inline Vector3 getNotifyWhenNearPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x6A560, _gb);
+        vm::call(GbAddr{0x6A560, 0x6A560}, _gb);
         return _gb.get_v(0);
     }
     // vector getPositionAtCameraPathTime(float time)
@@ -1710,7 +1712,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_f(4, time);
-        vm::call(0x6A200, _gb);
+        vm::call(GbAddr{0x6A200, 0x6A200}, _gb);
         return _gb.get_v(0);
     }
     // float getSteer()
@@ -1718,7 +1720,7 @@ namespace CCarEffects {
     inline float getSteer(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x69C50, _gb);
+        vm::call(GbAddr{0x69C50, 0x69C50}, _gb);
         return _gb.get_f(0);
     }
     // float getTimeNearCameraPathPosition(vector wPos)
@@ -1727,7 +1729,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_v(2, wPos);
-        vm::call(0x6A260, _gb);
+        vm::call(GbAddr{0x6A260, 0x6A260}, _gb);
         return _gb.get_f(0);
     }
     // float getTimeToCameraPathDistance(float distance)
@@ -1736,7 +1738,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_f(2, distance);
-        vm::call(0x6A180, _gb);
+        vm::call(GbAddr{0x6A180, 0x6A180}, _gb);
         return _gb.get_f(0);
     }
     // @CActor getWheelActor(int wheelIndex)
@@ -1745,7 +1747,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, wheelIndex);
-        vm::call(0x69CD0, _gb);
+        vm::call(GbAddr{0x69CD0, 0x69CD0}, _gb);
         return _gb.get_p(0);
     }
     // bool isChassisWeldedToSet()
@@ -1753,7 +1755,7 @@ namespace CCarEffects {
     inline bool isChassisWeldedToSet(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x69AD0, _gb);
+        vm::call(GbAddr{0x69AD0, 0x69AD0}, _gb);
         return _gb.get_b(0);
     }
     // int isMoveTo()
@@ -1761,7 +1763,7 @@ namespace CCarEffects {
     inline int isMoveTo(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x6A400, _gb);
+        vm::call(GbAddr{0x6A400, 0x6A400}, _gb);
         return _gb.get_i(0);
     }
     // void launchAtTarget(vector wTgtPos, float flightTime)
@@ -1771,7 +1773,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_v(1, wTgtPos);
         _gb.set_f(4, flightTime);
-        vm::call(0x69890, _gb);
+        vm::call(GbAddr{0x69890, 0x69890}, _gb);
     }
     // void launchDoorAtTarget(int doorIndex, vector wTgtPos, float flightTime)
     //   thunk 0x698F0  (via call)
@@ -1781,7 +1783,7 @@ namespace CCarEffects {
         _gb.set_i(1, doorIndex);
         _gb.set_v(2, wTgtPos);
         _gb.set_f(5, flightTime);
-        vm::call(0x698F0, _gb);
+        vm::call(GbAddr{0x698F0, 0x698F0}, _gb);
     }
     // void launchWheelAtTarget(int wheelIndex, vector wTgtPos, float flightTime)
     //   thunk 0x69950  (via call)
@@ -1791,7 +1793,7 @@ namespace CCarEffects {
         _gb.set_i(1, wheelIndex);
         _gb.set_v(2, wTgtPos);
         _gb.set_f(5, flightTime);
-        vm::call(0x69950, _gb);
+        vm::call(GbAddr{0x69950, 0x69950}, _gb);
     }
     // void lockChassisInPlace(bool whenAtRest = true)
     //   thunk 0x69A10  (impl 0x68000)
@@ -1799,28 +1801,28 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, whenAtRest);
-        vm::call(0x69A10, _gb);
+        vm::call(GbAddr{0x69A10, 0x69A10}, _gb);
     }
     // void lockChassisInPlaceWhenAtRest()
     //   thunk 0x69A40  (impl 0x68020)
     inline void lockChassisInPlaceWhenAtRest(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69A40, _gb);
+        vm::call(GbAddr{0x69A40, 0x69A40}, _gb);
     }
     // void lockChassisInPlaceWhenOnGround()
     //   thunk 0x69A70  (impl 0x68040)
     inline void lockChassisInPlaceWhenOnGround(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69A70, _gb);
+        vm::call(GbAddr{0x69A70, 0x69A70}, _gb);
     }
     // void moveCancel()
     //   thunk 0x6A340  (impl 0x68AB0)
     inline void moveCancel(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x6A340, _gb);
+        vm::call(GbAddr{0x6A340, 0x6A340}, _gb);
     }
     // void moveToActor(@CActor actor)
     //   thunk 0x6A3D0  (impl 0x68B00)
@@ -1828,7 +1830,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
-        vm::call(0x6A3D0, _gb);
+        vm::call(GbAddr{0x6A3D0, 0x6A3D0}, _gb);
     }
     // void moveToPosition(vector wPos)
     //   thunk 0x6A370  (via call)
@@ -1836,7 +1838,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
-        vm::call(0x6A370, _gb);
+        vm::call(GbAddr{0x6A370, 0x6A370}, _gb);
     }
     // void openDoor(int doorIndex)
     //   thunk 0x699B0  (impl 0x67FC0)
@@ -1844,21 +1846,21 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, doorIndex);
-        vm::call(0x699B0, _gb);
+        vm::call(GbAddr{0x699B0, 0x699B0}, _gb);
     }
     // void reassemble()
     //   thunk 0x69B10  (impl 0x68160)
     inline void reassemble(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69B10, _gb);
+        vm::call(GbAddr{0x69B10, 0x69B10}, _gb);
     }
     // void reattachToCameraPath()
     //   thunk 0x69F90  (impl 0x68690)
     inline void reattachToCameraPath(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69F90, _gb);
+        vm::call(GbAddr{0x69F90, 0x69F90}, _gb);
     }
     // void setCameraPathEventDistance(float distance, float tol = 1.0f)
     //   thunk 0x6A0C0  (impl 0x688E0)
@@ -1867,7 +1869,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_f(1, distance);
         _gb.set_f(2, tol);
-        vm::call(0x6A0C0, _gb);
+        vm::call(GbAddr{0x6A0C0, 0x6A0C0}, _gb);
     }
     // void setCameraPathEventTime(float timeTag)
     //   thunk 0x6A090  (impl 0x688B0)
@@ -1875,28 +1877,28 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, timeTag);
-        vm::call(0x6A090, _gb);
+        vm::call(GbAddr{0x6A090, 0x6A090}, _gb);
     }
     // void setCameraPathHeadingModeToAligned()
     //   thunk 0x69F00  (via none)
     inline void setCameraPathHeadingModeToAligned(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69F00, _gb);
+        vm::call(GbAddr{0x69F00, 0x69F00}, _gb);
     }
     // void setCameraPathHeadingModeToFree()
     //   thunk 0x69F40  (via none)
     inline void setCameraPathHeadingModeToFree(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69F40, _gb);
+        vm::call(GbAddr{0x69F40, 0x69F40}, _gb);
     }
     // void setCameraPathHeadingModeToPath()
     //   thunk 0x69F20  (via none)
     inline void setCameraPathHeadingModeToPath(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69F20, _gb);
+        vm::call(GbAddr{0x69F20, 0x69F20}, _gb);
     }
     // void setCameraPathMaxAltitude(float maxAlt)
     //   thunk 0x6A0F0  (impl 0x68900)
@@ -1904,7 +1906,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, maxAlt);
-        vm::call(0x6A0F0, _gb);
+        vm::call(GbAddr{0x6A0F0, 0x6A0F0}, _gb);
     }
     // void setCameraPathMaxBankAngle(float maxDeg)
     //   thunk 0x6A120  (impl 0x68910)
@@ -1912,7 +1914,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, maxDeg);
-        vm::call(0x6A120, _gb);
+        vm::call(GbAddr{0x6A120, 0x6A120}, _gb);
     }
     // void setCameraPathMaxPitchAngle(float maxDeg)
     //   thunk 0x6A150  (impl 0x68930)
@@ -1920,21 +1922,21 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, maxDeg);
-        vm::call(0x6A150, _gb);
+        vm::call(GbAddr{0x6A150, 0x6A150}, _gb);
     }
     // void setCameraPathTimeFactor(float pct)
     //   thunk 0x69EC0  (via none)
     inline void setCameraPathTimeFactor(float pct) {
         vm::Block _gb;
         _gb.set_f(0, pct);
-        vm::call(0x69EC0, _gb);
+        vm::call(GbAddr{0x69EC0, 0x69EC0}, _gb);
     }
     // void setCameraPathTimeFactorRate(float rate)
     //   thunk 0x69EE0  (via none)
     inline void setCameraPathTimeFactorRate(float rate) {
         vm::Block _gb;
         _gb.set_f(0, rate);
-        vm::call(0x69EE0, _gb);
+        vm::call(GbAddr{0x69EE0, 0x69EE0}, _gb);
     }
     // void setChargeAtChassis(vector iAccel, float duration)
     //   thunk 0x69770  (via call)
@@ -1943,7 +1945,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_v(1, iAccel);
         _gb.set_f(4, duration);
-        vm::call(0x69770, _gb);
+        vm::call(GbAddr{0x69770, 0x69770}, _gb);
     }
     // void setChargeAtDoor(int doorIndex, vector iAccel, float duration)
     //   thunk 0x696B0  (via call)
@@ -1953,7 +1955,7 @@ namespace CCarEffects {
         _gb.set_i(1, doorIndex);
         _gb.set_v(2, iAccel);
         _gb.set_f(5, duration);
-        vm::call(0x696B0, _gb);
+        vm::call(GbAddr{0x696B0, 0x696B0}, _gb);
     }
     // void setChargeAtWheel(int wheelIndex, vector iAccel, float duration)
     //   thunk 0x69710  (via call)
@@ -1963,7 +1965,7 @@ namespace CCarEffects {
         _gb.set_i(1, wheelIndex);
         _gb.set_v(2, iAccel);
         _gb.set_f(5, duration);
-        vm::call(0x69710, _gb);
+        vm::call(GbAddr{0x69710, 0x69710}, _gb);
     }
     // void setChassisHeightContraint(float ht)
     //   thunk 0x6A890  (impl 0x690A0)
@@ -1971,7 +1973,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, ht);
-        vm::call(0x6A890, _gb);
+        vm::call(GbAddr{0x6A890, 0x6A890}, _gb);
     }
     // void setFastCar(bool yah)
     //   thunk 0x6A780  (impl 0x68ED0)
@@ -1979,7 +1981,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A780, _gb);
+        vm::call(GbAddr{0x6A780, 0x6A780}, _gb);
     }
     // void setInvincible(bool yah)
     //   thunk 0x6A750  (impl 0x68EB0)
@@ -1987,7 +1989,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A750, _gb);
+        vm::call(GbAddr{0x6A750, 0x6A750}, _gb);
     }
     // void setMotiveAcceleration(float acceleration, float deceleration = 0.0f)
     //   thunk 0x69B40  (impl 0x68250)
@@ -1996,7 +1998,7 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_f(1, acceleration);
         _gb.set_f(2, deceleration);
-        vm::call(0x69B40, _gb);
+        vm::call(GbAddr{0x69B40, 0x69B40}, _gb);
     }
     // void setMotiveSpeed(float ft)
     //   thunk 0x69BB0  (impl 0x682A0)
@@ -2004,7 +2006,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, ft);
-        vm::call(0x69BB0, _gb);
+        vm::call(GbAddr{0x69BB0, 0x69BB0}, _gb);
     }
     // void setSteer(float s)
     //   thunk 0x69C20  (impl 0x68340)
@@ -2012,7 +2014,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, s);
-        vm::call(0x69C20, _gb);
+        vm::call(GbAddr{0x69C20, 0x69C20}, _gb);
     }
     // void setTetherable(bool yah)
     //   thunk 0x6A720  (impl 0x68EA0)
@@ -2020,7 +2022,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x6A720, _gb);
+        vm::call(GbAddr{0x6A720, 0x6A720}, _gb);
     }
     // void shake(float factor = 1.0f)
     //   thunk 0x6A860  (impl 0x69010)
@@ -2028,7 +2030,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, factor);
-        vm::call(0x6A860, _gb);
+        vm::call(GbAddr{0x6A860, 0x6A860}, _gb);
     }
     // void switchCameraPath(@CCameraPathActor path, float timeTag=0.0)
     //   thunk 0x69E90  (impl 0x684C0)
@@ -2037,28 +2039,28 @@ namespace CCarEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, path);
         _gb.set_f(2, timeTag);
-        vm::call(0x69E90, _gb);
+        vm::call(GbAddr{0x69E90, 0x69E90}, _gb);
     }
     // void synchronizeSteeringWithCameraPath(bool yah)
     //   thunk 0x69FC0  (via none)
     inline void synchronizeSteeringWithCameraPath(bool yah) {
         vm::Block _gb;
         _gb.set_b(0, yah);
-        vm::call(0x69FC0, _gb);
+        vm::call(GbAddr{0x69FC0, 0x69FC0}, _gb);
     }
     // void synchronizeWheelSpeedWithCameraPath(int mode)
     //   thunk 0x69FE0  (via none)
     inline void synchronizeWheelSpeedWithCameraPath(int mode) {
         vm::Block _gb;
         _gb.set_i(0, mode);
-        vm::call(0x69FE0, _gb);
+        vm::call(GbAddr{0x69FE0, 0x69FE0}, _gb);
     }
     // void wakeUp()
     //   thunk 0x69860  (impl 0x67D30)
     inline void wakeUp(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x69860, _gb);
+        vm::call(GbAddr{0x69860, 0x69860}, _gb);
     }
     // void warpToCameraPathAtTime(float timeTag)
     //   thunk 0x6A060  (impl 0x687D0)
@@ -2066,7 +2068,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, timeTag);
-        vm::call(0x6A060, _gb);
+        vm::call(GbAddr{0x6A060, 0x6A060}, _gb);
     }
     // void warpToCameraPathNearPosition(vector wPos)
     //   thunk 0x6A000  (via call)
@@ -2074,7 +2076,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
-        vm::call(0x6A000, _gb);
+        vm::call(GbAddr{0x6A000, 0x6A000}, _gb);
     }
     // void weldChassisToSet(bool yah)
     //   thunk 0x69AA0  (impl 0x68070)
@@ -2082,7 +2084,7 @@ namespace CCarEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x69AA0, _gb);
+        vm::call(GbAddr{0x69AA0, 0x69AA0}, _gb);
     }
 } // namespace CCarEffects
 
@@ -2094,7 +2096,7 @@ namespace CCardCatalog {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, which);
-        vm::call(0x5B590, _gb);
+        vm::call(GbAddr{0x5B590, 0x5B590}, _gb);
     }
 } // namespace CCardCatalog
 
@@ -2106,7 +2108,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x85330, _gb);
+        vm::call(GbAddr{0x85330, 0x85330}, _gb);
     }
     // int canSeeActor(@CActor actorToSee)
     //   thunk 0x84F10  (via call)
@@ -2114,7 +2116,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, actorToSee);
-        vm::call(0x84F10, _gb);
+        vm::call(GbAddr{0x84F10, 0x84F10}, _gb);
         return _gb.get_i(0);
     }
     // void clearAITaskList()
@@ -2122,21 +2124,21 @@ namespace CCharacter {
     inline void clearAITaskList(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x85540, _gb);
+        vm::call(GbAddr{0x85540, 0x85540}, _gb);
     }
     // void clearCommand()
     //   thunk 0x85510  (impl 0x7FBA0)
     inline void clearCommand(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x85510, _gb);
+        vm::call(GbAddr{0x85510, 0x85510}, _gb);
     }
     // void clearFollowActor()
     //   thunk 0x853F0  (impl 0x7F9D0)
     inline void clearFollowActor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x853F0, _gb);
+        vm::call(GbAddr{0x853F0, 0x853F0}, _gb);
     }
     // bool debounce(ELogicalControl button)
     //   thunk 0x85170  (via call)
@@ -2144,7 +2146,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, button);
-        vm::call(0x85170, _gb);
+        vm::call(GbAddr{0x85170, 0x85170}, _gb);
         return _gb.get_b(0);
     }
     // void debugAi(int flag)
@@ -2152,7 +2154,7 @@ namespace CCharacter {
     inline void debugAi(int flag) {
         vm::Block _gb;
         _gb.set_i(0, flag);
-        vm::call(0x855D0, _gb);
+        vm::call(GbAddr{0x855D0, 0x855D0}, _gb);
     }
     // void faceActor(@CActor actorToFace)
     //   thunk 0x84F50  (impl 0x7CA10)
@@ -2160,7 +2162,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actorToFace);
-        vm::call(0x84F50, _gb);
+        vm::call(GbAddr{0x84F50, 0x84F50}, _gb);
     }
     // void freezeAI(bool flag)
     //   thunk 0x852A0  (impl 0x7F8E0)
@@ -2168,7 +2170,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x852A0, _gb);
+        vm::call(GbAddr{0x852A0, 0x852A0}, _gb);
     }
     // float getAnimationLength(string animationName)
     //   thunk 0x84B30  (via call)
@@ -2176,7 +2178,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, animationName);
-        vm::call(0x84B30, _gb);
+        vm::call(GbAddr{0x84B30, 0x84B30}, _gb);
         return _gb.get_f(0);
     }
     // float getHitPoints()
@@ -2184,7 +2186,7 @@ namespace CCharacter {
     inline float getHitPoints(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84D90, _gb);
+        vm::call(GbAddr{0x84D90, 0x84D90}, _gb);
         return _gb.get_f(0);
     }
     // float getHitPointsPct()
@@ -2192,7 +2194,7 @@ namespace CCharacter {
     inline float getHitPointsPct(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84E10, _gb);
+        vm::call(GbAddr{0x84E10, 0x84E10}, _gb);
         return _gb.get_f(0);
     }
     // float getMaxHitPoints()
@@ -2200,7 +2202,7 @@ namespace CCharacter {
     inline float getMaxHitPoints(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84DD0, _gb);
+        vm::call(GbAddr{0x84DD0, 0x84DD0}, _gb);
         return _gb.get_f(0);
     }
     // @CActor getSyncMasterPtr()
@@ -2208,7 +2210,7 @@ namespace CCharacter {
     inline void* getSyncMasterPtr(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x85700, _gb);
+        vm::call(GbAddr{0x85700, 0x85700}, _gb);
         return _gb.get_p(0);
     }
     // @CActor getSyncSlavePtr()
@@ -2216,7 +2218,7 @@ namespace CCharacter {
     inline void* getSyncSlavePtr(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x85740, _gb);
+        vm::call(GbAddr{0x85740, 0x85740}, _gb);
         return _gb.get_p(0);
     }
     // bool isDead()
@@ -2224,7 +2226,7 @@ namespace CCharacter {
     inline bool isDead(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84D20, _gb);
+        vm::call(GbAddr{0x84D20, 0x84D20}, _gb);
         return _gb.get_b(0);
     }
     // int isFacing(vector posToCheck, float tolerance)
@@ -2234,7 +2236,7 @@ namespace CCharacter {
         _gb.set_p(1, self);
         _gb.set_v(2, posToCheck);
         _gb.set_f(5, tolerance);
-        vm::call(0x84F80, _gb);
+        vm::call(GbAddr{0x84F80, 0x84F80}, _gb);
         return _gb.get_i(0);
     }
     // bool isPlayingBigHurtAni()
@@ -2242,7 +2244,7 @@ namespace CCharacter {
     inline bool isPlayingBigHurtAni(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x85030, _gb);
+        vm::call(GbAddr{0x85030, 0x85030}, _gb);
         return _gb.get_b(0);
     }
     // bool isPlayingTurnAni()
@@ -2250,7 +2252,7 @@ namespace CCharacter {
     inline bool isPlayingTurnAni(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84FF0, _gb);
+        vm::call(GbAddr{0x84FF0, 0x84FF0}, _gb);
         return _gb.get_b(0);
     }
     // bool isPossessed()
@@ -2258,7 +2260,7 @@ namespace CCharacter {
     inline bool isPossessed(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84CE0, _gb);
+        vm::call(GbAddr{0x84CE0, 0x84CE0}, _gb);
         return _gb.get_b(0);
     }
     // bool isPressed(ELogicalControl button)
@@ -2267,7 +2269,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, button);
-        vm::call(0x851B0, _gb);
+        vm::call(GbAddr{0x851B0, 0x851B0}, _gb);
         return _gb.get_b(0);
     }
     // bool isSoftBodyActive()
@@ -2275,7 +2277,7 @@ namespace CCharacter {
     inline bool isSoftBodyActive(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x84CA0, _gb);
+        vm::call(GbAddr{0x84CA0, 0x84CA0}, _gb);
         return _gb.get_b(0);
     }
     // bool isTalking()
@@ -2283,7 +2285,7 @@ namespace CCharacter {
     inline bool isTalking(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x848A0, _gb);
+        vm::call(GbAddr{0x848A0, 0x848A0}, _gb);
         return _gb.get_b(0);
     }
     // bool justPressed(ELogicalControl button)
@@ -2292,7 +2294,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, button);
-        vm::call(0x85230, _gb);
+        vm::call(GbAddr{0x85230, 0x85230}, _gb);
         return _gb.get_b(0);
     }
     // bool justReleased(ELogicalControl button)
@@ -2301,7 +2303,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, button);
-        vm::call(0x851F0, _gb);
+        vm::call(GbAddr{0x851F0, 0x851F0}, _gb);
         return _gb.get_b(0);
     }
     // void lookAt(@CActor target, float lookatPct = 1.0f, float transitionTime = 0.75f)
@@ -2312,7 +2314,7 @@ namespace CCharacter {
         _gb.set_p(1, target);
         _gb.set_f(2, lookatPct);
         _gb.set_f(3, transitionTime);
-        vm::call(0x850A0, _gb);
+        vm::call(GbAddr{0x850A0, 0x850A0}, _gb);
     }
     // void pauseMorph(bool shouldPause)
     //   thunk 0x84BF0  (impl 0x77700)
@@ -2320,7 +2322,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, shouldPause);
-        vm::call(0x84BF0, _gb);
+        vm::call(GbAddr{0x84BF0, 0x84BF0}, _gb);
     }
     // void pickup(@CActor object)
     //   thunk 0x85070  (impl 0x7D600)
@@ -2328,7 +2330,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, object);
-        vm::call(0x85070, _gb);
+        vm::call(GbAddr{0x85070, 0x85070}, _gb);
     }
     // int prepareToStartTalking(String dbEntryTag)
     //   thunk 0x84730  (via call)
@@ -2336,7 +2338,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, dbEntryTag);
-        vm::call(0x84730, _gb);
+        vm::call(GbAddr{0x84730, 0x84730}, _gb);
         return _gb.get_i(0);
     }
     // void promptPlayer()
@@ -2344,7 +2346,7 @@ namespace CCharacter {
     inline void promptPlayer(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x849A0, _gb);
+        vm::call(GbAddr{0x849A0, 0x849A0}, _gb);
     }
     // void queueChitChat(@CDialogDatabaseEntry tag)
     //   thunk 0x848E0  (impl 0x76360)
@@ -2352,7 +2354,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, tag);
-        vm::call(0x848E0, _gb);
+        vm::call(GbAddr{0x848E0, 0x848E0}, _gb);
     }
     // void queueWalkTo(@SScriptWalkInfo info)
     //   thunk 0x85360  (impl 0x7F980)
@@ -2360,21 +2362,21 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x85360, _gb);
+        vm::call(GbAddr{0x85360, 0x85360}, _gb);
     }
     // void resetChitChatQueue()
     //   thunk 0x84910  (impl 0x763C0)
     inline void resetChitChatQueue(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x84910, _gb);
+        vm::call(GbAddr{0x84910, 0x84910}, _gb);
     }
     // void restoreHitPointsToMax()
     //   thunk 0x84EB0  (impl 0x7B4C0)
     inline void restoreHitPointsToMax(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x84EB0, _gb);
+        vm::call(GbAddr{0x84EB0, 0x84EB0}, _gb);
     }
     // void setActorToControl(@CActor actorToControl)
     //   thunk 0x849D0  (via indirect)
@@ -2382,7 +2384,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actorToControl);
-        vm::call(0x849D0, _gb);
+        vm::call(GbAddr{0x849D0, 0x849D0}, _gb);
     }
     // void setAnimation(String animationName, bool useSkelFileExit = false)
     //   thunk 0x84AA0  (impl 0x77440)
@@ -2391,7 +2393,7 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_p(1, animationName);
         _gb.set_b(2, useSkelFileExit);
-        vm::call(0x84AA0, _gb);
+        vm::call(GbAddr{0x84AA0, 0x84AA0}, _gb);
     }
     // void setCombatComponentScriptOverrideMode(bool flag)
     //   thunk 0x855F0  (impl 0x7FC30)
@@ -2399,7 +2401,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x855F0, _gb);
+        vm::call(GbAddr{0x855F0, 0x855F0}, _gb);
     }
     // void setCommandFollowActor(@CActor actorToFollow, ECommandPosture posture, float xOffset, float zOffset, int run, int canAttack, int squad)
     //   thunk 0x85480  (via call)
@@ -2413,7 +2415,7 @@ namespace CCharacter {
         _gb.set_i(5, run);
         _gb.set_i(6, canAttack);
         _gb.set_i(7, squad);
-        vm::call(0x85480, _gb);
+        vm::call(GbAddr{0x85480, 0x85480}, _gb);
     }
     // void setCommandGoToPoint(@SScriptWalkInfo info, ECommandPosture posture)
     //   thunk 0x85450  (impl 0x7FA30)
@@ -2422,14 +2424,14 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_p(1, info);
         _gb.set_i(2, posture);
-        vm::call(0x85450, _gb);
+        vm::call(GbAddr{0x85450, 0x85450}, _gb);
     }
     // void setCommandIdle()
     //   thunk 0x85420  (impl 0x7F9F0)
     inline void setCommandIdle(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x85420, _gb);
+        vm::call(GbAddr{0x85420, 0x85420}, _gb);
     }
     // void setConversationDialog(@CDialogDatabaseEntry converserTag, @CDialogDatabaseEntry converseeTag)
     //   thunk 0x84940  (impl 0x76970)
@@ -2438,14 +2440,14 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_p(1, converserTag);
         _gb.set_p(2, converseeTag);
-        vm::call(0x84940, _gb);
+        vm::call(GbAddr{0x84940, 0x84940}, _gb);
     }
     // void setDefaultAnimation()
     //   thunk 0x84B00  (via indirect)
     inline void setDefaultAnimation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x84B00, _gb);
+        vm::call(GbAddr{0x84B00, 0x84B00}, _gb);
     }
     // void setEmotion(EEmotion emotion, float weight)
     //   thunk 0x84C20  (via none)
@@ -2454,7 +2456,7 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_i(1, emotion);
         _gb.set_f(2, weight);
-        vm::call(0x84C20, _gb);
+        vm::call(GbAddr{0x84C20, 0x84C20}, _gb);
     }
     // void setFleeMinHealthRatio(float ratio)
     //   thunk 0x854E0  (impl 0x7FB80)
@@ -2462,7 +2464,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, ratio);
-        vm::call(0x854E0, _gb);
+        vm::call(GbAddr{0x854E0, 0x854E0}, _gb);
     }
     // void setFleePointWildCard(string newName)
     //   thunk 0x855A0  (impl 0x7FC00)
@@ -2470,7 +2472,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, newName);
-        vm::call(0x855A0, _gb);
+        vm::call(GbAddr{0x855A0, 0x855A0}, _gb);
     }
     // void setFollowActor(@CActor actor)
     //   thunk 0x853C0  (impl 0x7F9B0)
@@ -2478,7 +2480,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
-        vm::call(0x853C0, _gb);
+        vm::call(GbAddr{0x853C0, 0x853C0}, _gb);
     }
     // void setFollowSplineInfo(@SScriptWalkInfo info, bool shouldWalk)
     //   thunk 0x85390  (impl 0x7F990)
@@ -2487,7 +2489,7 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_p(1, info);
         _gb.set_b(2, shouldWalk);
-        vm::call(0x85390, _gb);
+        vm::call(GbAddr{0x85390, 0x85390}, _gb);
     }
     // void setHitPoints(float newHitPoints)
     //   thunk 0x84E50  (impl 0x7B490)
@@ -2495,7 +2497,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newHitPoints);
-        vm::call(0x84E50, _gb);
+        vm::call(GbAddr{0x84E50, 0x84E50}, _gb);
     }
     // void setInvulnerableFlag(bool flag)
     //   thunk 0x84EE0  (impl 0x7B4E0)
@@ -2503,7 +2505,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x84EE0, _gb);
+        vm::call(GbAddr{0x84EE0, 0x84EE0}, _gb);
     }
     // void setMaxHitPoints(float newHitPoints)
     //   thunk 0x84E80  (impl 0x7B4B0)
@@ -2511,7 +2513,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newHitPoints);
-        vm::call(0x84E80, _gb);
+        vm::call(GbAddr{0x84E80, 0x84E80}, _gb);
     }
     // void setNewSpawnName(string prefix)
     //   thunk 0x85650  (impl 0x83530)
@@ -2519,7 +2521,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, prefix);
-        vm::call(0x85650, _gb);
+        vm::call(GbAddr{0x85650, 0x85650}, _gb);
     }
     // void setPatrolRoute(string route)
     //   thunk 0x85570  (impl 0x7FBE0)
@@ -2527,7 +2529,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, route);
-        vm::call(0x85570, _gb);
+        vm::call(GbAddr{0x85570, 0x85570}, _gb);
     }
     // void setRimLight(bool flag)
     //   thunk 0x84C40  (impl 0x77780)
@@ -2535,7 +2537,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x84C40, _gb);
+        vm::call(GbAddr{0x84C40, 0x84C40}, _gb);
     }
     // void setScriptAiControl(bool flag)
     //   thunk 0x852D0  (impl 0x7F910)
@@ -2543,7 +2545,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x852D0, _gb);
+        vm::call(GbAddr{0x852D0, 0x852D0}, _gb);
     }
     // void setScriptAnimationControl(bool flag)
     //   thunk 0x84A70  (impl 0x77420)
@@ -2551,7 +2553,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x84A70, _gb);
+        vm::call(GbAddr{0x84A70, 0x84A70}, _gb);
     }
     // void setSimEnable(int flag)
     //   thunk 0x84C70  (impl 0x89940)
@@ -2559,7 +2561,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, flag);
-        vm::call(0x84C70, _gb);
+        vm::call(GbAddr{0x84C70, 0x84C70}, _gb);
     }
     // void setVictim(@CActor victim)
     //   thunk 0x850E0  (impl 0x7EB40)
@@ -2567,21 +2569,21 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, victim);
-        vm::call(0x850E0, _gb);
+        vm::call(GbAddr{0x850E0, 0x850E0}, _gb);
     }
     // void setVictimDefault()
     //   thunk 0x85140  (impl 0x7EC50)
     inline void setVictimDefault(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x85140, _gb);
+        vm::call(GbAddr{0x85140, 0x85140}, _gb);
     }
     // void setVictimDisable()
     //   thunk 0x85110  (impl 0x7EC40)
     inline void setVictimDisable(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x85110, _gb);
+        vm::call(GbAddr{0x85110, 0x85110}, _gb);
     }
     // void setVictimUponSpawn(@CCharacter victim)
     //   thunk 0x85620  (impl 0x83480)
@@ -2589,7 +2591,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, victim);
-        vm::call(0x85620, _gb);
+        vm::call(GbAddr{0x85620, 0x85620}, _gb);
     }
     // void skipToAnimation(String animationName, bool useSkelFileExit = false)
     //   thunk 0x84AD0  (impl 0x774A0)
@@ -2598,7 +2600,7 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_p(1, animationName);
         _gb.set_b(2, useSkelFileExit);
-        vm::call(0x84AD0, _gb);
+        vm::call(GbAddr{0x84AD0, 0x84AD0}, _gb);
     }
     // bool startControllingActor(@CActor actorToControl)
     //   thunk 0x84A00  (via call)
@@ -2606,7 +2608,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, actorToControl);
-        vm::call(0x84A00, _gb);
+        vm::call(GbAddr{0x84A00, 0x84A00}, _gb);
         return _gb.get_b(0);
     }
     // void startMorph(int index, float duration, bool loop, bool holdFinalWeight)
@@ -2618,7 +2620,7 @@ namespace CCharacter {
         _gb.set_f(2, duration);
         _gb.set_b(3, loop);
         _gb.set_b(4, holdFinalWeight);
-        vm::call(0x84B70, _gb);
+        vm::call(GbAddr{0x84B70, 0x84B70}, _gb);
     }
     // int startPreparedTalking(String dbEntryTag, int handle)
     //   thunk 0x84770  (via call)
@@ -2627,7 +2629,7 @@ namespace CCharacter {
         _gb.set_p(1, self);
         _gb.set_p(2, dbEntryTag);
         _gb.set_i(3, handle);
-        vm::call(0x84770, _gb);
+        vm::call(GbAddr{0x84770, 0x84770}, _gb);
         return _gb.get_i(0);
     }
     // bool startSyncingAnimation(@CActor slave, String animationName)
@@ -2637,7 +2639,7 @@ namespace CCharacter {
         _gb.set_p(1, self);
         _gb.set_p(2, slave);
         _gb.set_p(3, animationName);
-        vm::call(0x85680, _gb);
+        vm::call(GbAddr{0x85680, 0x85680}, _gb);
         return _gb.get_b(0);
     }
     // float startTalking(String dbEntryTag)
@@ -2646,7 +2648,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, dbEntryTag);
-        vm::call(0x847C0, _gb);
+        vm::call(GbAddr{0x847C0, 0x847C0}, _gb);
         return _gb.get_f(0);
     }
     // float startTalkingNoSubtitle(String dbEntryTag)
@@ -2655,7 +2657,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, dbEntryTag);
-        vm::call(0x84800, _gb);
+        vm::call(GbAddr{0x84800, 0x84800}, _gb);
         return _gb.get_f(0);
     }
     // void stopControllingActor()
@@ -2663,7 +2665,7 @@ namespace CCharacter {
     inline void stopControllingActor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x84A40, _gb);
+        vm::call(GbAddr{0x84A40, 0x84A40}, _gb);
     }
     // void stopMorph(int index, bool clearMorph)
     //   thunk 0x84BC0  (impl 0x77690)
@@ -2672,14 +2674,14 @@ namespace CCharacter {
         _gb.set_p(0, self);
         _gb.set_i(1, index);
         _gb.set_b(2, clearMorph);
-        vm::call(0x84BC0, _gb);
+        vm::call(GbAddr{0x84BC0, 0x84BC0}, _gb);
     }
     // void stopSyncingAnimation()
     //   thunk 0x856D0  (impl 0x83A00)
     inline void stopSyncingAnimation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x856D0, _gb);
+        vm::call(GbAddr{0x856D0, 0x856D0}, _gb);
     }
     // void stopTalking(bool now)
     //   thunk 0x84870  (impl 0x75EF0)
@@ -2687,7 +2689,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, now);
-        vm::call(0x84870, _gb);
+        vm::call(GbAddr{0x84870, 0x84870}, _gb);
     }
     // void toggleAiCallouts(bool flag)
     //   thunk 0x84840  (impl 0x75EE0)
@@ -2695,7 +2697,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x84840, _gb);
+        vm::call(GbAddr{0x84840, 0x84840}, _gb);
     }
     // void toggleObstacleAvoidance(bool flag)
     //   thunk 0x85300  (impl 0x7F930)
@@ -2703,7 +2705,7 @@ namespace CCharacter {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x85300, _gb);
+        vm::call(GbAddr{0x85300, 0x85300}, _gb);
     }
 } // namespace CCharacter
 
@@ -2715,7 +2717,7 @@ namespace CCinematicSkeletonModel {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, animationName);
-        vm::call(0x8DF00, _gb);
+        vm::call(GbAddr{0x8DF00, 0x8DF00}, _gb);
     }
     // void skipToAnimation(String animationName)
     //   thunk 0x8DF30  (impl 0x8D8C0)
@@ -2723,14 +2725,14 @@ namespace CCinematicSkeletonModel {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, animationName);
-        vm::call(0x8DF30, _gb);
+        vm::call(GbAddr{0x8DF30, 0x8DF30}, _gb);
     }
     // void stopSync()
     //   thunk 0x8DFB0  (impl 0x8DA40)
     inline void stopSync(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x8DFB0, _gb);
+        vm::call(GbAddr{0x8DFB0, 0x8DFB0}, _gb);
     }
     // bool syncWith(@CCinematicSkeletonModel withWhom, string animationName)
     //   thunk 0x8DF60  (via call)
@@ -2739,7 +2741,7 @@ namespace CCinematicSkeletonModel {
         _gb.set_p(1, self);
         _gb.set_p(2, withWhom);
         _gb.set_p(3, animationName);
-        vm::call(0x8DF60, _gb);
+        vm::call(GbAddr{0x8DF60, 0x8DF60}, _gb);
         return _gb.get_b(0);
     }
 } // namespace CCinematicSkeletonModel
@@ -2752,7 +2754,7 @@ namespace CConbelt {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, speed);
-        vm::call(0x3CFAF0, _gb);
+        vm::call(GbAddr{0x3CFAF0, 0x3CF900}, _gb);
     }
 } // namespace CConbelt
 
@@ -2763,7 +2765,7 @@ namespace CCurtain {
     inline void letGo(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x4969D0, _gb);
+        vm::call(GbAddr{0x4969D0, 0x496660}, _gb);
     }
     // void setMaxWind(vector windVelocity)
     //   thunk 0x496A00  (via none)
@@ -2771,7 +2773,7 @@ namespace CCurtain {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, windVelocity);
-        vm::call(0x496A00, _gb);
+        vm::call(GbAddr{0x496A00, 0x496690}, _gb);
     }
     // void setMinWind(vector windVelocity)
     //   thunk 0x496A60  (via none)
@@ -2779,7 +2781,7 @@ namespace CCurtain {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, windVelocity);
-        vm::call(0x496A60, _gb);
+        vm::call(GbAddr{0x496A60, 0x4966F0}, _gb);
     }
     // void setWindTime(float value)
     //   thunk 0x496AC0  (via none)
@@ -2787,7 +2789,7 @@ namespace CCurtain {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x496AC0, _gb);
+        vm::call(GbAddr{0x496AC0, 0x496750}, _gb);
     }
 } // namespace CCurtain
 
@@ -2798,7 +2800,7 @@ namespace CDialogDatabaseEntry {
     inline float estimateDurationBasedOnText(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3D1E70, _gb);
+        vm::call(GbAddr{0x3D1E70, 0x3D1C80}, _gb);
         return _gb.get_f(0);
     }
     // float getDuration()
@@ -2806,7 +2808,7 @@ namespace CDialogDatabaseEntry {
     inline float getDuration(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3D1EE0, _gb);
+        vm::call(GbAddr{0x3D1EE0, 0x3D1CF0}, _gb);
         return _gb.get_f(0);
     }
 } // namespace CDialogDatabaseEntry
@@ -2818,7 +2820,7 @@ namespace CDoor {
     inline float getHitPoints(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x910D0, _gb);
+        vm::call(GbAddr{0x910D0, 0x910D0}, _gb);
         return _gb.get_f(0);
     }
     // void getHurt(vector pos, int damageAmount)
@@ -2828,7 +2830,7 @@ namespace CDoor {
         _gb.set_p(0, self);
         _gb.set_v(1, pos);
         _gb.set_i(4, damageAmount);
-        vm::call(0x91110, _gb);
+        vm::call(GbAddr{0x91110, 0x91110}, _gb);
     }
     // void setDoorBlocked(bool isBlocked)
     //   thunk 0x91170  (impl 0x91090)
@@ -2836,7 +2838,7 @@ namespace CDoor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, isBlocked);
-        vm::call(0x91170, _gb);
+        vm::call(GbAddr{0x91170, 0x91170}, _gb);
     }
     // void setDoorState(EDoorState doorState)
     //   thunk 0x910A0  (impl 0x90F80)
@@ -2844,7 +2846,7 @@ namespace CDoor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, doorState);
-        vm::call(0x910A0, _gb);
+        vm::call(GbAddr{0x910A0, 0x910A0}, _gb);
     }
 } // namespace CDoor
 
@@ -2856,7 +2858,7 @@ namespace CElevator {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, doorState);
-        vm::call(0x93B50, _gb);
+        vm::call(GbAddr{0x93B50, 0x93B50}, _gb);
     }
 } // namespace CElevator
 
@@ -2867,21 +2869,21 @@ namespace CEmitter {
     inline void kill(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x49A100, _gb);
+        vm::call(GbAddr{0x49A100, 0x499D90}, _gb);
     }
     // void release()
     //   thunk 0x49A130  (impl 0x49B100)
     inline void release(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x49A130, _gb);
+        vm::call(GbAddr{0x49A130, 0x499DC0}, _gb);
     }
     // void start()
     //   thunk 0x49A150  (via indirect)
     inline void start(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x49A150, _gb);
+        vm::call(GbAddr{0x49A150, 0x499DE0}, _gb);
     }
 } // namespace CEmitter
 
@@ -2892,7 +2894,7 @@ namespace CFixedJointActor {
     inline void breakJoint(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x492BC0, _gb);
+        vm::call(GbAddr{0x492BC0, 0x492850}, _gb);
     }
 } // namespace CFixedJointActor
 
@@ -2904,7 +2906,7 @@ namespace CFloater {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x9DD20, _gb);
+        vm::call(GbAddr{0x9DD20, 0x9DD20}, _gb);
     }
 } // namespace CFloater
 
@@ -2916,7 +2918,7 @@ namespace CFlyerMedium {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0xA5800, _gb);
+        vm::call(GbAddr{0xA5800, 0xA5800}, _gb);
     }
 } // namespace CFlyerMedium
 
@@ -2928,14 +2930,14 @@ namespace CFlyerSmall {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0xA9530, _gb);
+        vm::call(GbAddr{0xA9530, 0xA9530}, _gb);
     }
     // void suicide()
     //   thunk 0xA9500  (impl 0xA7AC0)
     inline void suicide(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xA9500, _gb);
+        vm::call(GbAddr{0xA9500, 0xA9500}, _gb);
     }
 } // namespace CFlyerSmall
 
@@ -2949,14 +2951,14 @@ namespace CGameView {
         _gb.set_v(1, dirMag);
         _gb.set_f(4, hitDuration);
         _gb.set_f(5, recoveryDuration);
-        vm::call(0x206070, _gb);
+        vm::call(GbAddr{0x206070, 0x205EA0}, _gb);
     }
     // void resetCamera()
     //   thunk 0x205FB0  (impl 0x1FE7A0)
     inline void resetCamera(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x205FB0, _gb);
+        vm::call(GbAddr{0x205FB0, 0x205DE0}, _gb);
     }
     // void setCameraModeFixed(@CCameraPathActor path, @CActor followTarget = NULL, float transitionTime = 0.0)
     //   thunk 0x206160  (impl 0x1FF790)
@@ -2966,7 +2968,7 @@ namespace CGameView {
         _gb.set_p(1, path);
         _gb.set_p(2, followTarget);
         _gb.set_f(3, transitionTime);
-        vm::call(0x206160, _gb);
+        vm::call(GbAddr{0x206160, 0x205F90}, _gb);
     }
     // void setCameraModeNormal(float transitionDistance = 0.0, float transitionTime = 0.0)
     //   thunk 0x2060E0  (impl 0x1FF5F0)
@@ -2975,7 +2977,7 @@ namespace CGameView {
         _gb.set_p(0, self);
         _gb.set_f(1, transitionDistance);
         _gb.set_f(2, transitionTime);
-        vm::call(0x2060E0, _gb);
+        vm::call(GbAddr{0x2060E0, 0x205F10}, _gb);
     }
     // void setCameraModeOrbit(@CActor followTarget, float radius, float rps, float targetHeightPct, float offsetHeight, float transitionTime = 0.0f, float orbitDuration = -1.0f)
     //   thunk 0x2061A0  (via call)
@@ -2989,7 +2991,7 @@ namespace CGameView {
         _gb.set_f(5, offsetHeight);
         _gb.set_f(6, transitionTime);
         _gb.set_f(7, orbitDuration);
-        vm::call(0x2061A0, _gb);
+        vm::call(GbAddr{0x2061A0, 0x205FD0}, _gb);
     }
     // void setCameraPathActor(@CCameraPathActor path, float transitionTime, float startTime, int allowQuickLook = 0)
     //   thunk 0x206110  (via call)
@@ -3000,7 +3002,7 @@ namespace CGameView {
         _gb.set_f(2, transitionTime);
         _gb.set_f(3, startTime);
         _gb.set_i(4, allowQuickLook);
-        vm::call(0x206110, _gb);
+        vm::call(GbAddr{0x206110, 0x205F40}, _gb);
     }
     // void setCinematControlOverride(bool flag)
     //   thunk 0x206210  (via none)
@@ -3008,7 +3010,7 @@ namespace CGameView {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x206210, _gb);
+        vm::call(GbAddr{0x206210, 0x206040}, _gb);
     }
     // void shakeCamera(float strength, float duration, float rampUpTime = 0.0, float rampDownTime = 0.0, float speed = 1.0)
     //   thunk 0x205FE0  (via call)
@@ -3020,7 +3022,7 @@ namespace CGameView {
         _gb.set_f(3, rampUpTime);
         _gb.set_f(4, rampDownTime);
         _gb.set_f(5, speed);
-        vm::call(0x205FE0, _gb);
+        vm::call(GbAddr{0x205FE0, 0x205E10}, _gb);
     }
     // void shakeCameraEx(@SShakeCameraInfo info)
     //   thunk 0x206040  (impl 0x1FF5A0)
@@ -3028,7 +3030,7 @@ namespace CGameView {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x206040, _gb);
+        vm::call(GbAddr{0x206040, 0x205E70}, _gb);
     }
 } // namespace CGameView
 
@@ -3039,7 +3041,7 @@ namespace CGhost {
     inline void assignSpline(void* spline) {
         vm::Block _gb;
         _gb.set_p(0, spline);
-        vm::call(0xBF6F0, _gb);
+        vm::call(GbAddr{0xBF6F0, 0xBF6F0}, _gb);
     }
     // void fillInCombatComponentScriptOverrideData(@SGhostCombatComponentInfo info)
     //   thunk 0xBF690  (impl 0xBD640)
@@ -3047,14 +3049,14 @@ namespace CGhost {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0xBF690, _gb);
+        vm::call(GbAddr{0xBF690, 0xBF690}, _gb);
     }
     // @CAiSplinePath getCurrentSpline()
     //   thunk 0xBF710  (via call)
     inline void* getCurrentSpline(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xBF710, _gb);
+        vm::call(GbAddr{0xBF710, 0xBF710}, _gb);
         return _gb.get_p(0);
     }
     // bool getPKEGameResult()
@@ -3062,7 +3064,7 @@ namespace CGhost {
     inline bool getPKEGameResult(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xBF890, _gb);
+        vm::call(GbAddr{0xBF890, 0xBF890}, _gb);
         return _gb.get_b(0);
     }
     // void setAcc(float newVal)
@@ -3071,21 +3073,21 @@ namespace CGhost {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newVal);
-        vm::call(0xBF750, _gb);
+        vm::call(GbAddr{0xBF750, 0xBF750}, _gb);
     }
     // void setCommandAmbush(@CActor ambushPoint)
     //   thunk 0xBF8D0  (via none)
     inline void setCommandAmbush(void* ambushPoint) {
         vm::Block _gb;
         _gb.set_p(0, ambushPoint);
-        vm::call(0xBF8D0, _gb);
+        vm::call(GbAddr{0xBF8D0, 0xBF8D0}, _gb);
     }
     // void setCommandGhostFlee(@SGhostFleeInfo info)
     //   thunk 0xBF8F0  (via none)
     inline void setCommandGhostFlee(void* info) {
         vm::Block _gb;
         _gb.set_p(0, info);
-        vm::call(0xBF8F0, _gb);
+        vm::call(GbAddr{0xBF8F0, 0xBF8F0}, _gb);
     }
     // void setCommandPossess(@CCharacter characterToPossess)
     //   thunk 0xBF940  (impl 0xBF5E0)
@@ -3093,7 +3095,7 @@ namespace CGhost {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, characterToPossess);
-        vm::call(0xBF940, _gb);
+        vm::call(GbAddr{0xBF940, 0xBF940}, _gb);
     }
     // void setFaceDirection(vector iDir)
     //   thunk 0xBF7B0  (via call)
@@ -3101,35 +3103,35 @@ namespace CGhost {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, iDir);
-        vm::call(0xBF7B0, _gb);
+        vm::call(GbAddr{0xBF7B0, 0xBF7B0}, _gb);
     }
     // void setScanAggressiveRange(float newVal)
     //   thunk 0xBF850  (via none)
     inline void setScanAggressiveRange(float newVal) {
         vm::Block _gb;
         _gb.set_f(0, newVal);
-        vm::call(0xBF850, _gb);
+        vm::call(GbAddr{0xBF850, 0xBF850}, _gb);
     }
     // void setScanAwareRange(float newVal)
     //   thunk 0xBF830  (via none)
     inline void setScanAwareRange(float newVal) {
         vm::Block _gb;
         _gb.set_f(0, newVal);
-        vm::call(0xBF830, _gb);
+        vm::call(GbAddr{0xBF830, 0xBF830}, _gb);
     }
     // void setScanAwareTime(float newVal)
     //   thunk 0xBF870  (via none)
     inline void setScanAwareTime(float newVal) {
         vm::Block _gb;
         _gb.set_f(0, newVal);
-        vm::call(0xBF870, _gb);
+        vm::call(GbAddr{0xBF870, 0xBF870}, _gb);
     }
     // void setScanSightRange(float newVal)
     //   thunk 0xBF810  (via none)
     inline void setScanSightRange(float newVal) {
         vm::Block _gb;
         _gb.set_f(0, newVal);
-        vm::call(0xBF810, _gb);
+        vm::call(GbAddr{0xBF810, 0xBF810}, _gb);
     }
     // void setSpeed(float newVal)
     //   thunk 0xBF780  (impl 0xBF490)
@@ -3137,14 +3139,14 @@ namespace CGhost {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newVal);
-        vm::call(0xBF780, _gb);
+        vm::call(GbAddr{0xBF780, 0xBF780}, _gb);
     }
     // bool wasTrapSuper()
     //   thunk 0xBF970  (via call)
     inline bool wasTrapSuper(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xBF970, _gb);
+        vm::call(GbAddr{0xBF970, 0xBF970}, _gb);
         return _gb.get_b(0);
     }
 } // namespace CGhost
@@ -3158,7 +3160,7 @@ namespace CGhostEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_f(2, spd);
-        vm::call(0xFABB0, _gb);
+        vm::call(GbAddr{0xFABB0, 0xFABB0}, _gb);
     }
     // void ActorForEject(@CActor a, vector iDir, float spd)
     //   thunk 0xFAB10  (via call)
@@ -3168,7 +3170,7 @@ namespace CGhostEffects {
         _gb.set_p(1, a);
         _gb.set_v(2, iDir);
         _gb.set_f(5, spd);
-        vm::call(0xFAB10, _gb);
+        vm::call(GbAddr{0xFAB10, 0xFAB10}, _gb);
     }
     // void ActorForFollowPath(@CActor a)
     //   thunk 0xFAAE0  (impl 0xF7370)
@@ -3176,7 +3178,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFAAE0, _gb);
+        vm::call(GbAddr{0xFAAE0, 0xFAAE0}, _gb);
     }
     // void ActorForLevitate(@CActor a)
     //   thunk 0xFAAB0  (impl 0xF6F10)
@@ -3184,7 +3186,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFAAB0, _gb);
+        vm::call(GbAddr{0xFAAB0, 0xFAAB0}, _gb);
     }
     // void ActorForRepulse(@CActor a, float spd)
     //   thunk 0xFAB80  (impl 0xF7450)
@@ -3193,7 +3195,7 @@ namespace CGhostEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_f(2, spd);
-        vm::call(0xFAB80, _gb);
+        vm::call(GbAddr{0xFAB80, 0xFAB80}, _gb);
     }
     // void ActorForSlam(@CActor a, float apogee)
     //   thunk 0xFABE0  (impl 0xF7690)
@@ -3202,7 +3204,7 @@ namespace CGhostEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_f(2, apogee);
-        vm::call(0xFABE0, _gb);
+        vm::call(GbAddr{0xFABE0, 0xFABE0}, _gb);
     }
     // void BoneSimActorForAttract(@CBoneSimActor a, int boneIndex, float spd)
     //   thunk 0xFAD20  (impl 0xF8230)
@@ -3212,7 +3214,7 @@ namespace CGhostEffects {
         _gb.set_p(1, a);
         _gb.set_i(2, boneIndex);
         _gb.set_f(3, spd);
-        vm::call(0xFAD20, _gb);
+        vm::call(GbAddr{0xFAD20, 0xFAD20}, _gb);
     }
     // void BoneSimActorForEject(@CBoneSimActor a, int boneIndex, vector iDir, float spd)
     //   thunk 0xFAC70  (via call)
@@ -3223,7 +3225,7 @@ namespace CGhostEffects {
         _gb.set_i(2, boneIndex);
         _gb.set_v(3, iDir);
         _gb.set_f(6, spd);
-        vm::call(0xFAC70, _gb);
+        vm::call(GbAddr{0xFAC70, 0xFAC70}, _gb);
     }
     // void BoneSimActorForFollowPath(@CBoneSimActor a, int boneIndex)
     //   thunk 0xFAC40  (impl 0xF7FF0)
@@ -3232,7 +3234,7 @@ namespace CGhostEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_i(2, boneIndex);
-        vm::call(0xFAC40, _gb);
+        vm::call(GbAddr{0xFAC40, 0xFAC40}, _gb);
     }
     // void BoneSimActorForLevitate(@CBoneSimActor a, int boneIndex)
     //   thunk 0xFAC10  (impl 0xF7D80)
@@ -3241,7 +3243,7 @@ namespace CGhostEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_i(2, boneIndex);
-        vm::call(0xFAC10, _gb);
+        vm::call(GbAddr{0xFAC10, 0xFAC10}, _gb);
     }
     // void BoneSimActorForRepulse(@CBoneSimActor a, int boneIndex, float spd)
     //   thunk 0xFACE0  (impl 0xF8110)
@@ -3251,7 +3253,7 @@ namespace CGhostEffects {
         _gb.set_p(1, a);
         _gb.set_i(2, boneIndex);
         _gb.set_f(3, spd);
-        vm::call(0xFACE0, _gb);
+        vm::call(GbAddr{0xFACE0, 0xFACE0}, _gb);
     }
     // void BoneSimActorForSlam(@CBoneSimActor a, int boneIndex, float apogee)
     //   thunk 0xFAD60  (impl 0xF8350)
@@ -3261,7 +3263,7 @@ namespace CGhostEffects {
         _gb.set_p(1, a);
         _gb.set_i(2, boneIndex);
         _gb.set_f(3, apogee);
-        vm::call(0xFAD60, _gb);
+        vm::call(GbAddr{0xFAD60, 0xFAD60}, _gb);
     }
     // void addActorToVortex(@CActor actor)
     //   thunk 0xFB4D0  (impl 0xFA2B0)
@@ -3269,7 +3271,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
-        vm::call(0xFB4D0, _gb);
+        vm::call(GbAddr{0xFB4D0, 0xFB4D0}, _gb);
     }
     // bool isAttract(@CActor a)
     //   thunk 0xFB0A0  (via call)
@@ -3277,7 +3279,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0xFB0A0, _gb);
+        vm::call(GbAddr{0xFB0A0, 0xFB0A0}, _gb);
         return _gb.get_b(0);
     }
     // bool isFollowPath(@CActor a)
@@ -3286,7 +3288,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0xFB160, _gb);
+        vm::call(GbAddr{0xFB160, 0xFB160}, _gb);
         return _gb.get_b(0);
     }
     // bool isIdle(@CActor a)
@@ -3295,7 +3297,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0xFB120, _gb);
+        vm::call(GbAddr{0xFB120, 0xFB120}, _gb);
         return _gb.get_b(0);
     }
     // bool isLevitate(@CActor a)
@@ -3304,7 +3306,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0xFB060, _gb);
+        vm::call(GbAddr{0xFB060, 0xFB060}, _gb);
         return _gb.get_b(0);
     }
     // bool isListFull()
@@ -3312,7 +3314,7 @@ namespace CGhostEffects {
     inline bool isListFull(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xFAE00, _gb);
+        vm::call(GbAddr{0xFAE00, 0xFAE00}, _gb);
         return _gb.get_b(0);
     }
     // bool isRepulse(@CActor a)
@@ -3321,7 +3323,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, a);
-        vm::call(0xFB0E0, _gb);
+        vm::call(GbAddr{0xFB0E0, 0xFB0E0}, _gb);
         return _gb.get_b(0);
     }
     // void meander(float distance)
@@ -3330,21 +3332,21 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, distance);
-        vm::call(0xFB560, _gb);
+        vm::call(GbAddr{0xFB560, 0xFB560}, _gb);
     }
     // void pathAllGo()
     //   thunk 0xFB290  (impl 0xF9BF0)
     inline void pathAllGo(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFB290, _gb);
+        vm::call(GbAddr{0xFB290, 0xFB290}, _gb);
     }
     // void pathAllStop()
     //   thunk 0xFB260  (impl 0xF9BB0)
     inline void pathAllStop(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFB260, _gb);
+        vm::call(GbAddr{0xFB260, 0xFB260}, _gb);
     }
     // void pathGo(@CActor a)
     //   thunk 0xFB230  (impl 0xF9B70)
@@ -3352,7 +3354,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFB230, _gb);
+        vm::call(GbAddr{0xFB230, 0xFB230}, _gb);
     }
     // void pathStop(@CActor a)
     //   thunk 0xFB200  (impl 0xF9B30)
@@ -3360,7 +3362,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFB200, _gb);
+        vm::call(GbAddr{0xFB200, 0xFB200}, _gb);
     }
     // void randomizeVortex(bool inPlace = false)
     //   thunk 0xFB320  (impl 0xFA110)
@@ -3368,14 +3370,14 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, inPlace);
-        vm::call(0xFB320, _gb);
+        vm::call(GbAddr{0xFB320, 0xFB320}, _gb);
     }
     // void reRandomize()
     //   thunk 0xFB530  (impl 0xFA510)
     inline void reRandomize(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFB530, _gb);
+        vm::call(GbAddr{0xFB530, 0xFB530}, _gb);
     }
     // void removeActorFromVortex(@CActor actor)
     //   thunk 0xFB500  (impl 0xFA490)
@@ -3383,7 +3385,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
-        vm::call(0xFB500, _gb);
+        vm::call(GbAddr{0xFB500, 0xFB500}, _gb);
     }
     // void setAllSpeed(float fps)
     //   thunk 0xFB1A0  (impl 0xF9A80)
@@ -3391,35 +3393,35 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, fps);
-        vm::call(0xFB1A0, _gb);
+        vm::call(GbAddr{0xFB1A0, 0xFB1A0}, _gb);
     }
     // void setAllToAttract()
     //   thunk 0xFAF10  (impl 0xF9730)
     inline void setAllToAttract(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFAF10, _gb);
+        vm::call(GbAddr{0xFAF10, 0xFAF10}, _gb);
     }
     // void setAllToIdle()
     //   thunk 0xFAE80  (impl 0xF9670)
     inline void setAllToIdle(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFAE80, _gb);
+        vm::call(GbAddr{0xFAE80, 0xFAE80}, _gb);
     }
     // void setAllToLevitate()
     //   thunk 0xFAEB0  (impl 0xF96B0)
     inline void setAllToLevitate(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFAEB0, _gb);
+        vm::call(GbAddr{0xFAEB0, 0xFAEB0}, _gb);
     }
     // void setAllToRepulse()
     //   thunk 0xFAEE0  (impl 0xF96F0)
     inline void setAllToRepulse(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFAEE0, _gb);
+        vm::call(GbAddr{0xFAEE0, 0xFAEE0}, _gb);
     }
     // void setSpeed(@CActor a, float fps)
     //   thunk 0xFB1D0  (impl 0xF9AD0)
@@ -3428,7 +3430,7 @@ namespace CGhostEffects {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_f(2, fps);
-        vm::call(0xFB1D0, _gb);
+        vm::call(GbAddr{0xFB1D0, 0xFB1D0}, _gb);
     }
     // void setToAttract(@CActor a)
     //   thunk 0xFB030  (impl 0xF98B0)
@@ -3436,7 +3438,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFB030, _gb);
+        vm::call(GbAddr{0xFB030, 0xFB030}, _gb);
     }
     // void setToFollowPath(@CActor a)
     //   thunk 0xFAFD0  (impl 0xF9830)
@@ -3444,7 +3446,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFAFD0, _gb);
+        vm::call(GbAddr{0xFAFD0, 0xFAFD0}, _gb);
     }
     // void setToIdle(@CActor a)
     //   thunk 0xFAF40  (impl 0xF9770)
@@ -3452,7 +3454,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFAF40, _gb);
+        vm::call(GbAddr{0xFAF40, 0xFAF40}, _gb);
     }
     // void setToLevitate(@CActor a)
     //   thunk 0xFAFA0  (impl 0xF97F0)
@@ -3460,7 +3462,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFAFA0, _gb);
+        vm::call(GbAddr{0xFAFA0, 0xFAFA0}, _gb);
     }
     // void setToRepulse(@CActor a)
     //   thunk 0xFB000  (impl 0xF9870)
@@ -3468,7 +3470,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFB000, _gb);
+        vm::call(GbAddr{0xFB000, 0xFB000}, _gb);
     }
     // void setToSlam(@CActor a)
     //   thunk 0xFAF70  (impl 0xF97B0)
@@ -3476,7 +3478,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xFAF70, _gb);
+        vm::call(GbAddr{0xFAF70, 0xFAF70}, _gb);
     }
     // void setVortexAltitudeRate(float feetPerSecond)
     //   thunk 0xFB380  (impl 0xFA240)
@@ -3484,7 +3486,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, feetPerSecond);
-        vm::call(0xFB380, _gb);
+        vm::call(GbAddr{0xFB380, 0xFB380}, _gb);
     }
     // void setVortexFollowActor(@CActor actor)
     //   thunk 0xFB4A0  (impl 0xFA2A0)
@@ -3492,7 +3494,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
-        vm::call(0xFB4A0, _gb);
+        vm::call(GbAddr{0xFB4A0, 0xFB4A0}, _gb);
     }
     // void setVortexHiAltitude(float hiAlt)
     //   thunk 0xFB3E0  (impl 0xFA260)
@@ -3500,7 +3502,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, hiAlt);
-        vm::call(0xFB3E0, _gb);
+        vm::call(GbAddr{0xFB3E0, 0xFB3E0}, _gb);
     }
     // void setVortexHiRadius(float hiRadius)
     //   thunk 0xFB440  (impl 0xFA280)
@@ -3508,7 +3510,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, hiRadius);
-        vm::call(0xFB440, _gb);
+        vm::call(GbAddr{0xFB440, 0xFB440}, _gb);
     }
     // void setVortexLoAltitude(float loAlt)
     //   thunk 0xFB3B0  (impl 0xFA250)
@@ -3516,7 +3518,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, loAlt);
-        vm::call(0xFB3B0, _gb);
+        vm::call(GbAddr{0xFB3B0, 0xFB3B0}, _gb);
     }
     // void setVortexLoRadius(float loRadius)
     //   thunk 0xFB410  (impl 0xFA270)
@@ -3524,7 +3526,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, loRadius);
-        vm::call(0xFB410, _gb);
+        vm::call(GbAddr{0xFB410, 0xFB410}, _gb);
     }
     // void setVortexRotationRate(float degreesPerSecond)
     //   thunk 0xFB350  (impl 0xFA220)
@@ -3532,7 +3534,7 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, degreesPerSecond);
-        vm::call(0xFB350, _gb);
+        vm::call(GbAddr{0xFB350, 0xFB350}, _gb);
     }
     // void setVortexSpacing(float spacing)
     //   thunk 0xFB470  (impl 0xFA290)
@@ -3540,14 +3542,14 @@ namespace CGhostEffects {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, spacing);
-        vm::call(0xFB470, _gb);
+        vm::call(GbAddr{0xFB470, 0xFB470}, _gb);
     }
     // int spaceRemaining()
     //   thunk 0xFAE40  (via call)
     inline int spaceRemaining(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xFAE40, _gb);
+        vm::call(GbAddr{0xFAE40, 0xFAE40}, _gb);
         return _gb.get_i(0);
     }
     // void startFollowPath()
@@ -3555,28 +3557,28 @@ namespace CGhostEffects {
     inline void startFollowPath(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFADD0, _gb);
+        vm::call(GbAddr{0xFADD0, 0xFADD0}, _gb);
     }
     // void startLevitation()
     //   thunk 0xFADA0  (impl 0xF8380)
     inline void startLevitation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFADA0, _gb);
+        vm::call(GbAddr{0xFADA0, 0xFADA0}, _gb);
     }
     // void startVortex()
     //   thunk 0xFB2C0  (impl 0xF9C30)
     inline void startVortex(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFB2C0, _gb);
+        vm::call(GbAddr{0xFB2C0, 0xFB2C0}, _gb);
     }
     // void stopVortex()
     //   thunk 0xFB2F0  (impl 0xFA060)
     inline void stopVortex(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xFB2F0, _gb);
+        vm::call(GbAddr{0xFB2F0, 0xFB2F0}, _gb);
     }
 } // namespace CGhostEffects
 
@@ -3587,7 +3589,7 @@ namespace CGhostbuster {
     inline bool advanceTutorial(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEE080, _gb);
+        vm::call(GbAddr{0xEE080, 0xEE080}, _gb);
         return _gb.get_b(0);
     }
     // void blockHeroMovement(bool flag)
@@ -3596,21 +3598,21 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xED660, _gb);
+        vm::call(GbAddr{0xED660, 0xED660}, _gb);
     }
     // void cacheRappel()
     //   thunk 0xED910  (impl 0xE1D70)
     inline void cacheRappel(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED910, _gb);
+        vm::call(GbAddr{0xED910, 0xED910}, _gb);
     }
     // bool canFireProtonTorpedo()
     //   thunk 0xEDE60  (via call)
     inline bool canFireProtonTorpedo(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDE60, _gb);
+        vm::call(GbAddr{0xEDE60, 0xEDE60}, _gb);
         return _gb.get_b(0);
     }
     // void commitSuicide()
@@ -3618,7 +3620,7 @@ namespace CGhostbuster {
     inline void commitSuicide(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED3B0, _gb);
+        vm::call(GbAddr{0xED3B0, 0xED3B0}, _gb);
     }
     // int debounceEvasionButton(ELogicalControl button)
     //   thunk 0xED8D0  (via call)
@@ -3626,7 +3628,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, button);
-        vm::call(0xED8D0, _gb);
+        vm::call(GbAddr{0xED8D0, 0xED8D0}, _gb);
         return _gb.get_i(0);
     }
     // void enableGiantBossMode(bool flag)
@@ -3635,7 +3637,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xED5D0, _gb);
+        vm::call(GbAddr{0xED5D0, 0xED5D0}, _gb);
     }
     // void enableInventoryItem(EInventoryItem which, bool flag)
     //   thunk 0xEDAC0  (impl 0xE4530)
@@ -3644,7 +3646,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_i(1, which);
         _gb.set_b(2, flag);
-        vm::call(0xEDAC0, _gb);
+        vm::call(GbAddr{0xEDAC0, 0xEDAC0}, _gb);
     }
     // void enableProtonTorpedo(bool flag)
     //   thunk 0xEDE30  (impl 0xE6250)
@@ -3652,14 +3654,14 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xEDE30, _gb);
+        vm::call(GbAddr{0xEDE30, 0xEDE30}, _gb);
     }
     // void enableTrapDummyMode()
     //   thunk 0xEDB80  (impl 0xE4A10)
     inline void enableTrapDummyMode(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEDB80, _gb);
+        vm::call(GbAddr{0xEDB80, 0xEDB80}, _gb);
     }
     // void fakeFireIceStream(bool flag)
     //   thunk 0xEDED0  (impl 0xE90E0)
@@ -3667,7 +3669,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xEDED0, _gb);
+        vm::call(GbAddr{0xEDED0, 0xEDED0}, _gb);
     }
     // void fakeFireProtonGun(bool flag)
     //   thunk 0xEDEA0  (impl 0xE9060)
@@ -3675,14 +3677,14 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xEDEA0, _gb);
+        vm::call(GbAddr{0xEDEA0, 0xEDEA0}, _gb);
     }
     // void fakeFireShotgun()
     //   thunk 0xEDF00  (impl 0xE9160)
     inline void fakeFireShotgun(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEDF00, _gb);
+        vm::call(GbAddr{0xEDF00, 0xEDF00}, _gb);
     }
     // void fakePossession(bool flag)
     //   thunk 0xEE0F0  (impl 0xEC1E0)
@@ -3690,14 +3692,14 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xEE0F0, _gb);
+        vm::call(GbAddr{0xEE0F0, 0xEE0F0}, _gb);
     }
     // void flinch()
     //   thunk 0xED540  (impl 0xD18B0)
     inline void flinch(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED540, _gb);
+        vm::call(GbAddr{0xED540, 0xED540}, _gb);
     }
     // void forceDeploySuperTrap(@CWayPoint waypoint)
     //   thunk 0xEDC10  (impl 0xE4CC0)
@@ -3705,7 +3707,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, waypoint);
-        vm::call(0xEDC10, _gb);
+        vm::call(GbAddr{0xEDC10, 0xEDC10}, _gb);
     }
     // void forceDeployTrap(Vector wPos)
     //   thunk 0xEDBB0  (via call)
@@ -3713,28 +3715,28 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
-        vm::call(0xEDBB0, _gb);
+        vm::call(GbAddr{0xEDBB0, 0xEDBB0}, _gb);
     }
     // void forceSnapProtonBeam()
     //   thunk 0xEDD00  (impl 0xE6100)
     inline void forceSnapProtonBeam(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEDD00, _gb);
+        vm::call(GbAddr{0xEDD00, 0xEDD00}, _gb);
     }
     // void gatherAllDeployedInventoryItems()
     //   thunk 0xEDB50  (impl 0xE4770)
     inline void gatherAllDeployedInventoryItems(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEDB50, _gb);
+        vm::call(GbAddr{0xEDB50, 0xEDB50}, _gb);
     }
     // @CGhostTrap getDeployedTrapPtr()
     //   thunk 0xEDC70  (via call)
     inline void* getDeployedTrapPtr(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDC70, _gb);
+        vm::call(GbAddr{0xEDC70, 0xEDC70}, _gb);
         return _gb.get_p(0);
     }
     // float getEvasionSprintPct()
@@ -3742,7 +3744,7 @@ namespace CGhostbuster {
     inline float getEvasionSprintPct(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xED860, _gb);
+        vm::call(GbAddr{0xED860, 0xED860}, _gb);
         return _gb.get_f(0);
     }
     // EFlashlightMode getFlashlightMode()
@@ -3750,7 +3752,7 @@ namespace CGhostbuster {
     inline int getFlashlightMode(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDA00, _gb);
+        vm::call(GbAddr{0xEDA00, 0xEDA00}, _gb);
         return _gb.get_i(0);
     }
     // EJumpDirection getJumpDirection()
@@ -3758,7 +3760,7 @@ namespace CGhostbuster {
     inline int getJumpDirection(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xED7F0, _gb);
+        vm::call(GbAddr{0xED7F0, 0xED7F0}, _gb);
         return _gb.get_i(0);
     }
     // void hideHack()
@@ -3766,14 +3768,14 @@ namespace CGhostbuster {
     inline void hideHack(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEE2D0, _gb);
+        vm::call(GbAddr{0xEE2D0, 0xEE2D0}, _gb);
     }
     // bool isHealthy()
     //   thunk 0xED3E0  (via call)
     inline bool isHealthy(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xED3E0, _gb);
+        vm::call(GbAddr{0xED3E0, 0xED3E0}, _gb);
         return _gb.get_b(0);
     }
     // bool isPackAboutToOverheat()
@@ -3781,7 +3783,7 @@ namespace CGhostbuster {
     inline bool isPackAboutToOverheat(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDF70, _gb);
+        vm::call(GbAddr{0xEDF70, 0xEDF70}, _gb);
         return _gb.get_b(0);
     }
     // bool isPackOverheated()
@@ -3789,7 +3791,7 @@ namespace CGhostbuster {
     inline bool isPackOverheated(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDF30, _gb);
+        vm::call(GbAddr{0xEDF30, 0xEDF30}, _gb);
         return _gb.get_b(0);
     }
     // bool isProtonBeamActive()
@@ -3797,7 +3799,7 @@ namespace CGhostbuster {
     inline bool isProtonBeamActive(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDD30, _gb);
+        vm::call(GbAddr{0xEDD30, 0xEDD30}, _gb);
         return _gb.get_b(0);
     }
     // bool isProtonBeamInBurstMode()
@@ -3805,7 +3807,7 @@ namespace CGhostbuster {
     inline bool isProtonBeamInBurstMode(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDD70, _gb);
+        vm::call(GbAddr{0xEDD70, 0xEDD70}, _gb);
         return _gb.get_b(0);
     }
     // bool isProtonBeamInContainMode()
@@ -3813,7 +3815,7 @@ namespace CGhostbuster {
     inline bool isProtonBeamInContainMode(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDDB0, _gb);
+        vm::call(GbAddr{0xEDDB0, 0xEDDB0}, _gb);
         return _gb.get_b(0);
     }
     // bool isProtonBeamInFreezeMode()
@@ -3821,7 +3823,7 @@ namespace CGhostbuster {
     inline bool isProtonBeamInFreezeMode(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEDDF0, _gb);
+        vm::call(GbAddr{0xEDDF0, 0xEDDF0}, _gb);
         return _gb.get_b(0);
     }
     // bool isTrapDeployed()
@@ -3829,7 +3831,7 @@ namespace CGhostbuster {
     inline bool isTrapDeployed(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xED7B0, _gb);
+        vm::call(GbAddr{0xED7B0, 0xED7B0}, _gb);
         return _gb.get_b(0);
     }
     // void killTutorial()
@@ -3837,7 +3839,7 @@ namespace CGhostbuster {
     inline void killTutorial(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEE0C0, _gb);
+        vm::call(GbAddr{0xEE0C0, 0xEE0C0}, _gb);
     }
     // void knockBack(vector wSourcePos, float impulse)
     //   thunk 0xEE300  (via call)
@@ -3846,7 +3848,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_v(1, wSourcePos);
         _gb.set_f(4, impulse);
-        vm::call(0xEE300, _gb);
+        vm::call(GbAddr{0xEE300, 0xEE300}, _gb);
     }
     // void mountProtonPack(bool flag)
     //   thunk 0xEDB20  (impl 0xE4710)
@@ -3854,7 +3856,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xEDB20, _gb);
+        vm::call(GbAddr{0xEDB20, 0xEDB20}, _gb);
     }
     // void pretendToDrive(@CCarEffects car, bool driversSeatFlag = true, bool putTrapOnRoofFlag = false)
     //   thunk 0xEE010  (impl 0xEAC40)
@@ -3864,7 +3866,7 @@ namespace CGhostbuster {
         _gb.set_p(1, car);
         _gb.set_b(2, driversSeatFlag);
         _gb.set_b(3, putTrapOnRoofFlag);
-        vm::call(0xEE010, _gb);
+        vm::call(GbAddr{0xEE010, 0xEE010}, _gb);
     }
     // bool readyInventoryItem(EInventoryItem itemToSwitchTo)
     //   thunk 0xEDA40  (via call)
@@ -3872,7 +3874,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, itemToSwitchTo);
-        vm::call(0xEDA40, _gb);
+        vm::call(GbAddr{0xEDA40, 0xEDA40}, _gb);
         return _gb.get_b(0);
     }
     // void removeSlimeDecals()
@@ -3880,14 +3882,14 @@ namespace CGhostbuster {
     inline void removeSlimeDecals(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED510, _gb);
+        vm::call(GbAddr{0xED510, 0xED510}, _gb);
     }
     // bool requestDeployTrap()
     //   thunk 0xEE150  (via call)
     inline bool requestDeployTrap(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0xEE150, _gb);
+        vm::call(GbAddr{0xEE150, 0xEE150}, _gb);
         return _gb.get_b(0);
     }
     // void requestTorpedo()
@@ -3895,14 +3897,14 @@ namespace CGhostbuster {
     inline void requestTorpedo(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEE120, _gb);
+        vm::call(GbAddr{0xEE120, 0xEE120}, _gb);
     }
     // void reviveSquadmates()
     //   thunk 0xED420  (impl 0xD0E00)
     inline void reviveSquadmates(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED420, _gb);
+        vm::call(GbAddr{0xED420, 0xED420}, _gb);
     }
     // void setAINodeActivationSource(@CActor a, float radius)
     //   thunk 0xEDFB0  (impl 0xEA940)
@@ -3911,7 +3913,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_p(1, a);
         _gb.set_f(2, radius);
-        vm::call(0xEDFB0, _gb);
+        vm::call(GbAddr{0xEDFB0, 0xEDFB0}, _gb);
     }
     // void setActorToFollow(@CActor a)
     //   thunk 0xEDFE0  (impl 0xEA960)
@@ -3919,7 +3921,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, a);
-        vm::call(0xEDFE0, _gb);
+        vm::call(GbAddr{0xEDFE0, 0xEDFE0}, _gb);
     }
     // void setBlockCaptureStreamButton(bool flag)
     //   thunk 0xED6C0  (impl 0xDD060)
@@ -3927,7 +3929,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xED6C0, _gb);
+        vm::call(GbAddr{0xED6C0, 0xED6C0}, _gb);
     }
     // void setBlockMeterButton(bool flag)
     //   thunk 0xED690  (impl 0xDD050)
@@ -3935,7 +3937,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xED690, _gb);
+        vm::call(GbAddr{0xED690, 0xED690}, _gb);
     }
     // void setBlockSlamButton(bool flag)
     //   thunk 0xED6F0  (impl 0xDD070)
@@ -3943,7 +3945,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xED6F0, _gb);
+        vm::call(GbAddr{0xED6F0, 0xED6F0}, _gb);
     }
     // void setBlockWeaponEquipButton(bool flag)
     //   thunk 0xED720  (impl 0xDD080)
@@ -3951,7 +3953,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xED720, _gb);
+        vm::call(GbAddr{0xED720, 0xED720}, _gb);
     }
     // void setCommandContain(@CActor containActor)
     //   thunk 0xEE190  (impl 0xEC5E0)
@@ -3959,14 +3961,14 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, containActor);
-        vm::call(0xEE190, _gb);
+        vm::call(GbAddr{0xEE190, 0xEE190}, _gb);
     }
     // void setCommandCrossBeam()
     //   thunk 0xEE1F0  (impl 0xEC640)
     inline void setCommandCrossBeam(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEE1F0, _gb);
+        vm::call(GbAddr{0xEE1F0, 0xEE1F0}, _gb);
     }
     // void setCommandTetherObject(vector wDest, vector wStart, vector wEnd)
     //   thunk 0xEE220  (via call)
@@ -3976,14 +3978,14 @@ namespace CGhostbuster {
         _gb.set_v(1, wDest);
         _gb.set_v(4, wStart);
         _gb.set_v(7, wEnd);
-        vm::call(0xEE220, _gb);
+        vm::call(GbAddr{0xEE220, 0xEE220}, _gb);
     }
     // void setContainmentViewerAvailable()
     //   thunk 0xEDCB0  (via none)
     inline void setContainmentViewerAvailable(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xEDCB0, _gb);
+        vm::call(GbAddr{0xEDCB0, 0xEDCB0}, _gb);
     }
     // void setElevator(@CElevator elevator)
     //   thunk 0xEE1C0  (impl 0xEC620)
@@ -3991,7 +3993,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, elevator);
-        vm::call(0xEE1C0, _gb);
+        vm::call(GbAddr{0xEE1C0, 0xEE1C0}, _gb);
     }
     // void setEvasionModeEnable(bool enable)
     //   thunk 0xED830  (impl 0xE1890)
@@ -3999,7 +4001,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0xED830, _gb);
+        vm::call(GbAddr{0xED830, 0xED830}, _gb);
     }
     // void setFacialExpression(EGhostbusterFacialExpression newExpression)
     //   thunk 0xED350  (impl 0xCD370)
@@ -4007,7 +4009,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, newExpression);
-        vm::call(0xED350, _gb);
+        vm::call(GbAddr{0xED350, 0xED350}, _gb);
     }
     // void setFlashlightMode(EFlashlightMode newMode)
     //   thunk 0xED9D0  (impl 0xE3C10)
@@ -4015,7 +4017,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, newMode);
-        vm::call(0xED9D0, _gb);
+        vm::call(GbAddr{0xED9D0, 0xED9D0}, _gb);
     }
     // void setGoggleLocation(EGoggles location)
     //   thunk 0xED570  (impl 0xD50E0)
@@ -4023,7 +4025,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, location);
-        vm::call(0xED570, _gb);
+        vm::call(GbAddr{0xED570, 0xED570}, _gb);
     }
     // void setHauntedModeEnable(bool enable)
     //   thunk 0xED9A0  (impl 0xE2260)
@@ -4031,7 +4033,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0xED9A0, _gb);
+        vm::call(GbAddr{0xED9A0, 0xED9A0}, _gb);
     }
     // void setNothingEquipped(bool flag)
     //   thunk 0xEDAF0  (impl 0xE45A0)
@@ -4039,7 +4041,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0xEDAF0, _gb);
+        vm::call(GbAddr{0xEDAF0, 0xEDAF0}, _gb);
     }
     // void setPKEMeterAmbientNoiseLevel(float pct)
     //   thunk 0xEDC40  (impl 0xE4CD0)
@@ -4047,7 +4049,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pct);
-        vm::call(0xEDC40, _gb);
+        vm::call(GbAddr{0xEDC40, 0xEDC40}, _gb);
     }
     // void setRappelModeEnable(bool enable)
     //   thunk 0xED940  (impl 0xE1F70)
@@ -4055,7 +4057,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0xED940, _gb);
+        vm::call(GbAddr{0xED940, 0xED940}, _gb);
     }
     // void slamGoggleLocation(EGoggles location)
     //   thunk 0xED5A0  (impl 0xD51D0)
@@ -4063,7 +4065,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, location);
-        vm::call(0xED5A0, _gb);
+        vm::call(GbAddr{0xED5A0, 0xED5A0}, _gb);
     }
     // bool slamInventoryItem(EInventoryItem itemToSwitchTo)
     //   thunk 0xEDA80  (via call)
@@ -4071,7 +4073,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, itemToSwitchTo);
-        vm::call(0xEDA80, _gb);
+        vm::call(GbAddr{0xEDA80, 0xEDA80}, _gb);
         return _gb.get_b(0);
     }
     // void slamWeaponFlags(int secretFlagCode)
@@ -4080,7 +4082,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, secretFlagCode);
-        vm::call(0xEDCD0, _gb);
+        vm::call(GbAddr{0xEDCD0, 0xEDCD0}, _gb);
     }
     // void slimeMe(bool fromFront, float decalDuration)
     //   thunk 0xED4B0  (impl 0xD0F50)
@@ -4089,7 +4091,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_b(1, fromFront);
         _gb.set_f(2, decalDuration);
-        vm::call(0xED4B0, _gb);
+        vm::call(GbAddr{0xED4B0, 0xED4B0}, _gb);
     }
     // void slimeMeKnockdown(@SDamageInfo info, float decalDuration)
     //   thunk 0xED4E0  (impl 0xD1490)
@@ -4098,7 +4100,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_p(1, info);
         _gb.set_f(2, decalDuration);
-        vm::call(0xED4E0, _gb);
+        vm::call(GbAddr{0xED4E0, 0xED4E0}, _gb);
     }
     // void startEvasionSequence(@SEvasionInfo info)
     //   thunk 0xED8A0  (impl 0xE1950)
@@ -4106,21 +4108,21 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0xED8A0, _gb);
+        vm::call(GbAddr{0xED8A0, 0xED8A0}, _gb);
     }
     // void startFakePackOverheat()
     //   thunk 0xED750  (impl 0xDD090)
     inline void startFakePackOverheat(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED750, _gb);
+        vm::call(GbAddr{0xED750, 0xED750}, _gb);
     }
     // void startRappelSwing()
     //   thunk 0xED970  (impl 0xE21E0)
     inline void startRappelSwing(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED970, _gb);
+        vm::call(GbAddr{0xED970, 0xED970}, _gb);
     }
     // void startTutorial(bool pauseGame, bool letGunRemainActive = false)
     //   thunk 0xEE050  (impl 0xEBCC0)
@@ -4129,7 +4131,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_b(1, pauseGame);
         _gb.set_b(2, letGunRemainActive);
-        vm::call(0xEE050, _gb);
+        vm::call(GbAddr{0xEE050, 0xEE050}, _gb);
     }
     // void toggleHuntMode(bool enable)
     //   thunk 0xED480  (impl 0xD0F30)
@@ -4137,7 +4139,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0xED480, _gb);
+        vm::call(GbAddr{0xED480, 0xED480}, _gb);
     }
     // void toggleReviveMode(bool enable)
     //   thunk 0xED450  (impl 0xD0EE0)
@@ -4145,7 +4147,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0xED450, _gb);
+        vm::call(GbAddr{0xED450, 0xED450}, _gb);
     }
     // void transferHeroshipTo(@CGhostbuster whom)
     //   thunk 0xED600  (impl 0xD81A0)
@@ -4153,7 +4155,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, whom);
-        vm::call(0xED600, _gb);
+        vm::call(GbAddr{0xED600, 0xED600}, _gb);
     }
     // void transferRayshipTo(@CGhostbuster whom)
     //   thunk 0xED630  (impl 0xD8290)
@@ -4161,7 +4163,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, whom);
-        vm::call(0xED630, _gb);
+        vm::call(GbAddr{0xED630, 0xED630}, _gb);
     }
     // void vibrateController(float strength, float vibeTime)
     //   thunk 0xED780  (impl 0xDD0B0)
@@ -4170,7 +4172,7 @@ namespace CGhostbuster {
         _gb.set_p(0, self);
         _gb.set_f(1, strength);
         _gb.set_f(2, vibeTime);
-        vm::call(0xED780, _gb);
+        vm::call(GbAddr{0xED780, 0xED780}, _gb);
     }
     // void warpToActorSeamless(@CActor destActor)
     //   thunk 0xED380  (impl 0xCDA20)
@@ -4178,7 +4180,7 @@ namespace CGhostbuster {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, destActor);
-        vm::call(0xED380, _gb);
+        vm::call(GbAddr{0xED380, 0xED380}, _gb);
     }
 } // namespace CGhostbuster
 
@@ -4189,7 +4191,7 @@ namespace CGlass {
     inline bool isBroken(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x49B930, _gb);
+        vm::call(GbAddr{0x49B930, 0x49B5C0}, _gb);
         return _gb.get_b(0);
     }
     // void shatter(Vector wShatterPos)
@@ -4198,7 +4200,7 @@ namespace CGlass {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, wShatterPos);
-        vm::call(0x49B8D0, _gb);
+        vm::call(GbAddr{0x49B8D0, 0x49B560}, _gb);
     }
 } // namespace CGlass
 
@@ -4210,7 +4212,7 @@ namespace CGolemBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, destActor);
-        vm::call(0x104860, _gb);
+        vm::call(GbAddr{0x104860, 0x104860}, _gb);
     }
 } // namespace CGolemBase
 
@@ -4222,7 +4224,7 @@ namespace CGrabbable {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, duration);
-        vm::call(0x107BA0, _gb);
+        vm::call(GbAddr{0x107BA0, 0x107BA0}, _gb);
     }
 } // namespace CGrabbable
 
@@ -4234,21 +4236,21 @@ namespace CGravityShift {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, period);
-        vm::call(0x108A90, _gb);
+        vm::call(GbAddr{0x108A90, 0x108A90}, _gb);
     }
     // void startShift()
     //   thunk 0x108A30  (impl 0x108240)
     inline void startShift(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x108A30, _gb);
+        vm::call(GbAddr{0x108A30, 0x108A30}, _gb);
     }
     // void stopShift()
     //   thunk 0x108A60  (impl 0x108980)
     inline void stopShift(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x108A60, _gb);
+        vm::call(GbAddr{0x108A60, 0x108A60}, _gb);
     }
 } // namespace CGravityShift
 
@@ -4260,14 +4262,14 @@ namespace CHingeActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, iHingeAxis);
-        vm::call(0x4906D0, _gb);
+        vm::call(GbAddr{0x4906D0, 0x490360}, _gb);
     }
     // bool atMaximumRotation()
     //   thunk 0x490730  (via call)
     inline bool atMaximumRotation(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x490730, _gb);
+        vm::call(GbAddr{0x490730, 0x4903C0}, _gb);
         return _gb.get_b(0);
     }
     // bool atMinimumRotation()
@@ -4275,7 +4277,7 @@ namespace CHingeActor {
     inline bool atMinimumRotation(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x4907C0, _gb);
+        vm::call(GbAddr{0x4907C0, 0x490450}, _gb);
         return _gb.get_b(0);
     }
     // void breakJoint()
@@ -4283,14 +4285,14 @@ namespace CHingeActor {
     inline void breakJoint(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x490850, _gb);
+        vm::call(GbAddr{0x490850, 0x4904E0}, _gb);
     }
     // float getAngle()
     //   thunk 0x4908D0  (via call)
     inline float getAngle(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x4908D0, _gb);
+        vm::call(GbAddr{0x4908D0, 0x490560}, _gb);
         return _gb.get_f(0);
     }
     // float getAngleRate()
@@ -4298,7 +4300,7 @@ namespace CHingeActor {
     inline float getAngleRate(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x490870, _gb);
+        vm::call(GbAddr{0x490870, 0x490500}, _gb);
         return _gb.get_f(0);
     }
     // void setJointFriction(float value)
@@ -4307,7 +4309,7 @@ namespace CHingeActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x490930, _gb);
+        vm::call(GbAddr{0x490930, 0x4905C0}, _gb);
     }
     // void setMaximumRotation(float angleInDegrees)
     //   thunk 0x490990  (impl 0x395D70)
@@ -4315,7 +4317,7 @@ namespace CHingeActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, angleInDegrees);
-        vm::call(0x490990, _gb);
+        vm::call(GbAddr{0x490990, 0x490620}, _gb);
     }
     // void setMinimumRotation(float angleInDegrees)
     //   thunk 0x4909D0  (impl 0x395D70)
@@ -4323,7 +4325,7 @@ namespace CHingeActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, angleInDegrees);
-        vm::call(0x4909D0, _gb);
+        vm::call(GbAddr{0x4909D0, 0x490660}, _gb);
     }
 } // namespace CHingeActor
 
@@ -4335,7 +4337,7 @@ namespace CHuman {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x10F1E0, _gb);
+        vm::call(GbAddr{0x10F1E0, 0x10F1E0}, _gb);
     }
     // void gesture(EGestureChannel gestureChannel, string animationName)
     //   thunk 0x10F210  (impl 0x10C170)
@@ -4344,7 +4346,7 @@ namespace CHuman {
         _gb.set_p(0, self);
         _gb.set_i(1, gestureChannel);
         _gb.set_p(2, animationName);
-        vm::call(0x10F210, _gb);
+        vm::call(GbAddr{0x10F210, 0x10F210}, _gb);
     }
     // void gestureStop(EGestureChannel gestureChannel)
     //   thunk 0x10F240  (impl 0x10C230)
@@ -4352,7 +4354,7 @@ namespace CHuman {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, gestureChannel);
-        vm::call(0x10F240, _gb);
+        vm::call(GbAddr{0x10F240, 0x10F240}, _gb);
     }
     // bool isEquipped(EInventoryItem which)
     //   thunk 0x10F270  (via call)
@@ -4360,7 +4362,7 @@ namespace CHuman {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, which);
-        vm::call(0x10F270, _gb);
+        vm::call(GbAddr{0x10F270, 0x10F270}, _gb);
         return _gb.get_b(0);
     }
     // void queueTalkingAnimation(string animationName)
@@ -4369,14 +4371,14 @@ namespace CHuman {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, animationName);
-        vm::call(0x10F310, _gb);
+        vm::call(GbAddr{0x10F310, 0x10F310}, _gb);
     }
     // void resetPhysicsAfterSitting()
     //   thunk 0x10F2E0  (impl 0x10D040)
     inline void resetPhysicsAfterSitting(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x10F2E0, _gb);
+        vm::call(GbAddr{0x10F2E0, 0x10F2E0}, _gb);
     }
     // void setCommandFlee(@CActor fleePoint)
     //   thunk 0x10F2B0  (impl 0x10CF50)
@@ -4384,7 +4386,7 @@ namespace CHuman {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, fleePoint);
-        vm::call(0x10F2B0, _gb);
+        vm::call(GbAddr{0x10F2B0, 0x10F2B0}, _gb);
     }
 } // namespace CHuman
 
@@ -4395,7 +4397,7 @@ namespace CLevitate {
     inline void reRandomize(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x112390, _gb);
+        vm::call(GbAddr{0x112390, 0x112390}, _gb);
     }
     // void setSpeed(float fps = 2.0f)
     //   thunk 0x112360  (impl 0x111FA0)
@@ -4403,7 +4405,7 @@ namespace CLevitate {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, fps);
-        vm::call(0x112360, _gb);
+        vm::call(GbAddr{0x112360, 0x112360}, _gb);
     }
     // void startLevitation(bool noDelays = false)
     //   thunk 0x112300  (impl 0x1113C0)
@@ -4411,21 +4413,21 @@ namespace CLevitate {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, noDelays);
-        vm::call(0x112300, _gb);
+        vm::call(GbAddr{0x112300, 0x112300}, _gb);
     }
     // void startProcessing()
     //   thunk 0x1122D0  (via indirect)
     inline void startProcessing(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x1122D0, _gb);
+        vm::call(GbAddr{0x1122D0, 0x1122D0}, _gb);
     }
     // void stopLevitation()
     //   thunk 0x112330  (impl 0x111F20)
     inline void stopLevitation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x112330, _gb);
+        vm::call(GbAddr{0x112330, 0x112330}, _gb);
     }
 } // namespace CLevitate
 
@@ -4436,7 +4438,7 @@ namespace CLibrarian {
     inline void removeLayer(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x1176E0, _gb);
+        vm::call(GbAddr{0x1176E0, 0x1176E0}, _gb);
     }
 } // namespace CLibrarian
 
@@ -4448,7 +4450,7 @@ namespace CLiteBulb {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x4A0DD0, _gb);
+        vm::call(GbAddr{0x4A0DD0, 0x4A0A60}, _gb);
     }
     // void activateFlicker(bool flag)
     //   thunk 0x4A0DA0  (via none)
@@ -4456,7 +4458,7 @@ namespace CLiteBulb {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x4A0DA0, _gb);
+        vm::call(GbAddr{0x4A0DA0, 0x4A0A30}, _gb);
     }
 } // namespace CLiteBulb
 
@@ -4467,7 +4469,7 @@ namespace CMarshmallowGoo {
     inline bool isInFlight(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x11AE90, _gb);
+        vm::call(GbAddr{0x11AE90, 0x11AE90}, _gb);
         return _gb.get_b(0);
     }
     // void launchAtTarget(vector target, float flightTime)
@@ -4477,7 +4479,7 @@ namespace CMarshmallowGoo {
         _gb.set_p(0, self);
         _gb.set_v(1, target);
         _gb.set_f(4, flightTime);
-        vm::call(0x11AE30, _gb);
+        vm::call(GbAddr{0x11AE30, 0x11AE30}, _gb);
     }
 } // namespace CMarshmallowGoo
 
@@ -4491,7 +4493,7 @@ namespace CMaterialSystem {
         _gb.set_p(1, name);
         _gb.set_i(2, transformSlot);
         _gb.set_p(3, wave);
-        vm::call(0x2D8160, _gb);
+        vm::call(GbAddr{0x2D8160, 0x2D7F70}, _gb);
     }
     // void registerVariable2D(string name, @SMaterialVariable var)
     //   thunk 0x2D8180  (impl 0x2F6BE0)
@@ -4500,7 +4502,7 @@ namespace CMaterialSystem {
         _gb.set_p(0, self);
         _gb.set_p(1, name);
         _gb.set_p(2, var);
-        vm::call(0x2D8180, _gb);
+        vm::call(GbAddr{0x2D8180, 0x2D7F90}, _gb);
     }
     // void registerVariable3D(string name, @SMaterialVariable var)
     //   thunk 0x2D81E0  (impl 0x2F6BE0)
@@ -4509,7 +4511,7 @@ namespace CMaterialSystem {
         _gb.set_p(0, self);
         _gb.set_p(1, name);
         _gb.set_p(2, var);
-        vm::call(0x2D81E0, _gb);
+        vm::call(GbAddr{0x2D81E0, 0x2D7FF0}, _gb);
     }
     // void registerVariable4D(string name, @SMaterialVariable var)
     //   thunk 0x2D8240  (impl 0x2F6BE0)
@@ -4518,7 +4520,7 @@ namespace CMaterialSystem {
         _gb.set_p(0, self);
         _gb.set_p(1, name);
         _gb.set_p(2, var);
-        vm::call(0x2D8240, _gb);
+        vm::call(GbAddr{0x2D8240, 0x2D8050}, _gb);
     }
     // void registerVariableScalar(string name, @SMaterialVariable var)
     //   thunk 0x2D82A0  (impl 0x2F6BE0)
@@ -4527,7 +4529,7 @@ namespace CMaterialSystem {
         _gb.set_p(0, self);
         _gb.set_p(1, name);
         _gb.set_p(2, var);
-        vm::call(0x2D82A0, _gb);
+        vm::call(GbAddr{0x2D82A0, 0x2D80B0}, _gb);
     }
     // void setMaterialAnimation(string name, E2DTransformControllerSlot transformSlot, @SWaveformControl wave)
     //   thunk 0x2D8300  (via none)
@@ -4537,7 +4539,7 @@ namespace CMaterialSystem {
         _gb.set_p(1, name);
         _gb.set_i(2, transformSlot);
         _gb.set_p(3, wave);
-        vm::call(0x2D8300, _gb);
+        vm::call(GbAddr{0x2D8300, 0x2D8110}, _gb);
     }
     // void setVariable2D(@SMaterialVariable var, float x, float y)
     //   thunk 0x2D8320  (impl 0x2E1760)
@@ -4547,7 +4549,7 @@ namespace CMaterialSystem {
         _gb.set_p(1, var);
         _gb.set_f(2, x);
         _gb.set_f(3, y);
-        vm::call(0x2D8320, _gb);
+        vm::call(GbAddr{0x2D8320, 0x2D8130}, _gb);
     }
     // void setVariable3D(@SMaterialVariable var, float x, float y, float z)
     //   thunk 0x2D8350  (via call)
@@ -4558,7 +4560,7 @@ namespace CMaterialSystem {
         _gb.set_f(2, x);
         _gb.set_f(3, y);
         _gb.set_f(4, z);
-        vm::call(0x2D8350, _gb);
+        vm::call(GbAddr{0x2D8350, 0x2D8160}, _gb);
     }
     // void setVariable4D(@SMaterialVariable var, float x, float y, float z, float w)
     //   thunk 0x2D83A0  (via call)
@@ -4570,7 +4572,7 @@ namespace CMaterialSystem {
         _gb.set_f(3, y);
         _gb.set_f(4, z);
         _gb.set_f(5, w);
-        vm::call(0x2D83A0, _gb);
+        vm::call(GbAddr{0x2D83A0, 0x2D81B0}, _gb);
     }
     // void setVariableScalar(@SMaterialVariable var, float value)
     //   thunk 0x2D83F0  (impl 0x2E1980)
@@ -4579,7 +4581,7 @@ namespace CMaterialSystem {
         _gb.set_p(0, self);
         _gb.set_p(1, var);
         _gb.set_f(2, value);
-        vm::call(0x2D83F0, _gb);
+        vm::call(GbAddr{0x2D83F0, 0x2D8200}, _gb);
     }
 } // namespace CMaterialSystem
 
@@ -4591,7 +4593,7 @@ namespace CMediumPeople {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, child);
-        vm::call(0x1242E0, _gb);
+        vm::call(GbAddr{0x1242E0, 0x1242E0}, _gb);
     }
     // void findVantagePoint(float pct)
     //   thunk 0x1241F0  (impl 0x11DE60)
@@ -4599,7 +4601,7 @@ namespace CMediumPeople {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pct);
-        vm::call(0x1241F0, _gb);
+        vm::call(GbAddr{0x1241F0, 0x1241F0}, _gb);
     }
     // void findVantagePointBarrier(float pct)
     //   thunk 0x124220  (impl 0x11E2B0)
@@ -4607,7 +4609,7 @@ namespace CMediumPeople {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pct);
-        vm::call(0x124220, _gb);
+        vm::call(GbAddr{0x124220, 0x124220}, _gb);
     }
     // void flee(float pctFlee, float pctRun)
     //   thunk 0x124280  (impl 0x11E8C0)
@@ -4616,7 +4618,7 @@ namespace CMediumPeople {
         _gb.set_p(0, self);
         _gb.set_f(1, pctFlee);
         _gb.set_f(2, pctRun);
-        vm::call(0x124280, _gb);
+        vm::call(GbAddr{0x124280, 0x124280}, _gb);
     }
     // void setFollowerHeight(float h)
     //   thunk 0x124310  (impl 0x11ECE0)
@@ -4624,7 +4626,7 @@ namespace CMediumPeople {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, h);
-        vm::call(0x124310, _gb);
+        vm::call(GbAddr{0x124310, 0x124310}, _gb);
     }
     // void startGawking(float pct)
     //   thunk 0x1242B0  (impl 0x11EB20)
@@ -4632,14 +4634,14 @@ namespace CMediumPeople {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pct);
-        vm::call(0x1242B0, _gb);
+        vm::call(GbAddr{0x1242B0, 0x1242B0}, _gb);
     }
     // void stopGawking()
     //   thunk 0x124250  (impl 0x11E800)
     inline void stopGawking(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x124250, _gb);
+        vm::call(GbAddr{0x124250, 0x124250}, _gb);
     }
     // void walkBackAndForth(float pct)
     //   thunk 0x1241C0  (impl 0x11DDA0)
@@ -4647,7 +4649,7 @@ namespace CMediumPeople {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pct);
-        vm::call(0x1241C0, _gb);
+        vm::call(GbAddr{0x1241C0, 0x1241C0}, _gb);
     }
 } // namespace CMediumPeople
 
@@ -4658,7 +4660,7 @@ namespace CMinionGenerator {
     inline bool isBurnt(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x125ED0, _gb);
+        vm::call(GbAddr{0x125ED0, 0x125ED0}, _gb);
         return _gb.get_b(0);
     }
 } // namespace CMinionGenerator
@@ -4670,7 +4672,7 @@ namespace CNPC {
     inline bool isRescued(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x12F350, _gb);
+        vm::call(GbAddr{0x12F350, 0x12F350}, _gb);
         return _gb.get_b(0);
     }
     // void rescued()
@@ -4678,7 +4680,7 @@ namespace CNPC {
     inline void rescued(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x12F330, _gb);
+        vm::call(GbAddr{0x12F330, 0x12F330}, _gb);
     }
     // void setCowerMode(bool flag)
     //   thunk 0x12F3F0  (impl 0x12F2D0)
@@ -4686,7 +4688,7 @@ namespace CNPC {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x12F3F0, _gb);
+        vm::call(GbAddr{0x12F3F0, 0x12F3F0}, _gb);
     }
     // void setFleeMode(bool flag)
     //   thunk 0x12F3C0  (impl 0x12EF20)
@@ -4694,7 +4696,7 @@ namespace CNPC {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x12F3C0, _gb);
+        vm::call(GbAddr{0x12F3C0, 0x12F3C0}, _gb);
     }
     // void setPanicMode(bool flag)
     //   thunk 0x12F390  (impl 0x12EF00)
@@ -4702,7 +4704,7 @@ namespace CNPC {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x12F390, _gb);
+        vm::call(GbAddr{0x12F390, 0x12F390}, _gb);
     }
 } // namespace CNPC
 
@@ -4715,7 +4717,7 @@ namespace CNavMesh {
         _gb.set_p(0, self);
         _gb.set_p(1, partName);
         _gb.set_b(2, enable);
-        vm::call(0x43EE90, _gb);
+        vm::call(GbAddr{0x43EE90, 0x43ECA0}, _gb);
     }
     // bool isPartEnabled(String partName)
     //   thunk 0x43EEC0  (via call)
@@ -4723,7 +4725,7 @@ namespace CNavMesh {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, partName);
-        vm::call(0x43EEC0, _gb);
+        vm::call(GbAddr{0x43EEC0, 0x43ECD0}, _gb);
         return _gb.get_b(0);
     }
     // void setPartTerrainType(String partName, @STerrainTypeInfo info)
@@ -4733,7 +4735,7 @@ namespace CNavMesh {
         _gb.set_p(0, self);
         _gb.set_p(1, partName);
         _gb.set_p(2, info);
-        vm::call(0x43EF50, _gb);
+        vm::call(GbAddr{0x43EF50, 0x43ED60}, _gb);
     }
 } // namespace CNavMesh
 
@@ -4745,7 +4747,7 @@ namespace CNightmare {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x12B9C0, _gb);
+        vm::call(GbAddr{0x12B9C0, 0x12B9C0}, _gb);
     }
 } // namespace CNightmare
 
@@ -4756,7 +4758,7 @@ namespace COrreryBoss {
     inline void releaseTheBeast(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x132960, _gb);
+        vm::call(GbAddr{0x132960, 0x132960}, _gb);
     }
 } // namespace COrreryBoss
 
@@ -4767,7 +4769,7 @@ namespace CPathPoint {
     inline void raiseContextCallout(void* actor) {
         vm::Block _gb;
         _gb.set_p(0, actor);
-        vm::call(0x133F00, _gb);
+        vm::call(GbAddr{0x133F00, 0x133F00}, _gb);
     }
 } // namespace CPathPoint
 
@@ -4779,7 +4781,7 @@ namespace CPedestrian {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newFleeDist);
-        vm::call(0x134510, _gb);
+        vm::call(GbAddr{0x134510, 0x134510}, _gb);
     }
 } // namespace CPedestrian
 
@@ -4790,14 +4792,14 @@ namespace CPendulum {
     inline void start(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x135560, _gb);
+        vm::call(GbAddr{0x135560, 0x135560}, _gb);
     }
     // void stop()
     //   thunk 0x135590  (impl 0x135540)
     inline void stop(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x135590, _gb);
+        vm::call(GbAddr{0x135590, 0x135590}, _gb);
     }
 } // namespace CPendulum
 
@@ -4809,7 +4811,7 @@ namespace CPhysicsObject {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, velocity);
-        vm::call(0x13A3F0, _gb);
+        vm::call(GbAddr{0x13A3F0, 0x13A3F0}, _gb);
     }
     // void addVelocityAtPoint(vector velocity, vector wImpactPos)
     //   thunk 0x13A450  (via call)
@@ -4818,7 +4820,7 @@ namespace CPhysicsObject {
         _gb.set_p(0, self);
         _gb.set_v(1, velocity);
         _gb.set_v(4, wImpactPos);
-        vm::call(0x13A450, _gb);
+        vm::call(GbAddr{0x13A450, 0x13A450}, _gb);
     }
     // void addWobble(float duration)
     //   thunk 0x13A570  (via indirect)
@@ -4826,7 +4828,7 @@ namespace CPhysicsObject {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, duration);
-        vm::call(0x13A570, _gb);
+        vm::call(GbAddr{0x13A570, 0x13A570}, _gb);
     }
     // void launchAtTarget(vector target, float flightTime)
     //   thunk 0x13A4D0  (via indirect)
@@ -4835,7 +4837,7 @@ namespace CPhysicsObject {
         _gb.set_p(0, self);
         _gb.set_v(1, target);
         _gb.set_f(4, flightTime);
-        vm::call(0x13A4D0, _gb);
+        vm::call(GbAddr{0x13A4D0, 0x13A4D0}, _gb);
     }
     // void setAIObstacle(bool isObstacle)
     //   thunk 0x13A5A0  (via indirect)
@@ -4843,7 +4845,7 @@ namespace CPhysicsObject {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, isObstacle);
-        vm::call(0x13A5A0, _gb);
+        vm::call(GbAddr{0x13A5A0, 0x13A5A0}, _gb);
     }
     // void setSnareEnable(bool enable)
     //   thunk 0x13A540  (via indirect)
@@ -4851,7 +4853,7 @@ namespace CPhysicsObject {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0x13A540, _gb);
+        vm::call(GbAddr{0x13A540, 0x13A540}, _gb);
     }
 } // namespace CPhysicsObject
 
@@ -4862,7 +4864,7 @@ namespace CPhysicsObjectBase {
     inline float getHitPoints(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x360520, _gb);
+        vm::call(GbAddr{0x360520, 0x360330}, _gb);
         return _gb.get_f(0);
     }
     // float getHitPointsPct()
@@ -4870,7 +4872,7 @@ namespace CPhysicsObjectBase {
     inline float getHitPointsPct(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3604E0, _gb);
+        vm::call(GbAddr{0x3604E0, 0x3602F0}, _gb);
         return _gb.get_f(0);
     }
     // void lockInPlace(bool lock)
@@ -4879,14 +4881,14 @@ namespace CPhysicsObjectBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, lock);
-        vm::call(0x360550, _gb);
+        vm::call(GbAddr{0x360550, 0x360360}, _gb);
     }
     // void removeAllJoints()
     //   thunk 0x3605B0  (via indirect)
     inline void removeAllJoints(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3605B0, _gb);
+        vm::call(GbAddr{0x3605B0, 0x3603C0}, _gb);
     }
     // void removeJoint(@Joint joint)
     //   thunk 0x3605E0  (via indirect)
@@ -4894,14 +4896,14 @@ namespace CPhysicsObjectBase {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, joint);
-        vm::call(0x3605E0, _gb);
+        vm::call(GbAddr{0x3605E0, 0x3603F0}, _gb);
     }
     // void wakeUp()
     //   thunk 0x360610  (impl 0x3674D0)
     inline void wakeUp(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x360610, _gb);
+        vm::call(GbAddr{0x360610, 0x360420}, _gb);
     }
 } // namespace CPhysicsObjectBase
 
@@ -4914,7 +4916,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_b(1, linear);
         _gb.set_b(2, angular);
-        vm::call(0x13FC70, _gb);
+        vm::call(GbAddr{0x13FC70, 0x13FC70}, _gb);
     }
     // void enforceRotationRate(bool yah)
     //   thunk 0x13FE80  (impl 0x13EF30)
@@ -4922,7 +4924,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x13FE80, _gb);
+        vm::call(GbAddr{0x13FE80, 0x13FE80}, _gb);
     }
     // void enforceSpeed(bool yah)
     //   thunk 0x13FE50  (impl 0x13EF20)
@@ -4930,14 +4932,14 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x13FE50, _gb);
+        vm::call(GbAddr{0x13FE50, 0x13FE50}, _gb);
     }
     // vector getAMotorPosition()
     //   thunk 0x13FD40  (via call)
     inline Vector3 getAMotorPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x13FD40, _gb);
+        vm::call(GbAddr{0x13FD40, 0x13FD40}, _gb);
         return _gb.get_v(0);
     }
     // vector getCompletionOrientationError()
@@ -4945,7 +4947,7 @@ namespace CPhysmo {
     inline Vector3 getCompletionOrientationError(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x13FFF0, _gb);
+        vm::call(GbAddr{0x13FFF0, 0x13FFF0}, _gb);
         return _gb.get_v(0);
     }
     // vector getCompletionPositionError()
@@ -4953,7 +4955,7 @@ namespace CPhysmo {
     inline Vector3 getCompletionPositionError(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x13FFA0, _gb);
+        vm::call(GbAddr{0x13FFA0, 0x13FFA0}, _gb);
         return _gb.get_v(0);
     }
     // vector getLMotorPosition()
@@ -4961,7 +4963,7 @@ namespace CPhysmo {
     inline Vector3 getLMotorPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x13FCF0, _gb);
+        vm::call(GbAddr{0x13FCF0, 0x13FCF0}, _gb);
         return _gb.get_v(0);
     }
     // vector getTetherAcceleration()
@@ -4969,7 +4971,7 @@ namespace CPhysmo {
     inline Vector3 getTetherAcceleration(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x1401F0, _gb);
+        vm::call(GbAddr{0x1401F0, 0x1401F0}, _gb);
         return _gb.get_v(0);
     }
     // void massCenterBasedNavigation()
@@ -4977,14 +4979,14 @@ namespace CPhysmo {
     inline void massCenterBasedNavigation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x13FE20, _gb);
+        vm::call(GbAddr{0x13FE20, 0x13FE20}, _gb);
     }
     // void modelOriginBasedNavigation()
     //   thunk 0x13FDF0  (impl 0x13EEE0)
     inline void modelOriginBasedNavigation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x13FDF0, _gb);
+        vm::call(GbAddr{0x13FDF0, 0x13FDF0}, _gb);
     }
     // void moveFromPosition(vector wPos, float spd)
     //   thunk 0x13FB40  (via call)
@@ -4993,7 +4995,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
         _gb.set_f(4, spd);
-        vm::call(0x13FB40, _gb);
+        vm::call(GbAddr{0x13FB40, 0x13FB40}, _gb);
     }
     // void moveToActor(@CActor actor, float spd, bool stop = true, bool gitErDone = false)
     //   thunk 0x13FCA0  (via call)
@@ -5004,7 +5006,7 @@ namespace CPhysmo {
         _gb.set_f(2, spd);
         _gb.set_b(3, stop);
         _gb.set_b(4, gitErDone);
-        vm::call(0x13FCA0, _gb);
+        vm::call(GbAddr{0x13FCA0, 0x13FCA0}, _gb);
     }
     // void moveToOrientation(vector wAng, float spd = 360.0f, bool stop = true)
     //   thunk 0x13FBA0  (via call)
@@ -5014,7 +5016,7 @@ namespace CPhysmo {
         _gb.set_v(1, wAng);
         _gb.set_f(4, spd);
         _gb.set_b(5, stop);
-        vm::call(0x13FBA0, _gb);
+        vm::call(GbAddr{0x13FBA0, 0x13FBA0}, _gb);
     }
     // void moveToPosition(vector wPos, float spd, bool stop = true, bool gitErDone = false)
     //   thunk 0x13FAD0  (via call)
@@ -5025,7 +5027,7 @@ namespace CPhysmo {
         _gb.set_f(4, spd);
         _gb.set_b(5, stop);
         _gb.set_b(6, gitErDone);
-        vm::call(0x13FAD0, _gb);
+        vm::call(GbAddr{0x13FAD0, 0x13FAD0}, _gb);
     }
     // void notifyCompletionWhenNearActor(@CActor actor, float nearEnuf)
     //   thunk 0x13FF70  (impl 0x13EFC0)
@@ -5034,7 +5036,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_p(1, actor);
         _gb.set_f(2, nearEnuf);
-        vm::call(0x13FF70, _gb);
+        vm::call(GbAddr{0x13FF70, 0x13FF70}, _gb);
     }
     // void notifyCompletionWhenNearOrientation(vector wAng, float nearEnuf)
     //   thunk 0x13FF10  (via call)
@@ -5043,7 +5045,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_v(1, wAng);
         _gb.set_f(4, nearEnuf);
-        vm::call(0x13FF10, _gb);
+        vm::call(GbAddr{0x13FF10, 0x13FF10}, _gb);
     }
     // void notifyCompletionWhenNearPosition(vector wPos, float nearEnuf)
     //   thunk 0x13FEB0  (via call)
@@ -5052,7 +5054,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
         _gb.set_f(4, nearEnuf);
-        vm::call(0x13FEB0, _gb);
+        vm::call(GbAddr{0x13FEB0, 0x13FEB0}, _gb);
     }
     // void resetMotorParameters(bool linear = true, bool angular = true)
     //   thunk 0x13F5A0  (impl 0x13D930)
@@ -5061,7 +5063,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_b(1, linear);
         _gb.set_b(2, angular);
-        vm::call(0x13F5A0, _gb);
+        vm::call(GbAddr{0x13F5A0, 0x13F5A0}, _gb);
     }
     // void setAMotorHiStop(vector hiStop)
     //   thunk 0x13F8B0  (via call)
@@ -5069,7 +5071,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, hiStop);
-        vm::call(0x13F8B0, _gb);
+        vm::call(GbAddr{0x13F8B0, 0x13F8B0}, _gb);
     }
     // void setAMotorHiStops(float p, float h, float b)
     //   thunk 0x13FA10  (impl 0x13E490)
@@ -5079,7 +5081,7 @@ namespace CPhysmo {
         _gb.set_f(1, p);
         _gb.set_f(2, h);
         _gb.set_f(3, b);
-        vm::call(0x13FA10, _gb);
+        vm::call(GbAddr{0x13FA10, 0x13FA10}, _gb);
     }
     // void setAMotorLoStop(vector loStop)
     //   thunk 0x13F850  (via call)
@@ -5087,7 +5089,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, loStop);
-        vm::call(0x13F850, _gb);
+        vm::call(GbAddr{0x13F850, 0x13F850}, _gb);
     }
     // void setAMotorLoStops(float p, float h, float b)
     //   thunk 0x13F9D0  (impl 0x13E3A0)
@@ -5097,7 +5099,7 @@ namespace CPhysmo {
         _gb.set_f(1, p);
         _gb.set_f(2, h);
         _gb.set_f(3, b);
-        vm::call(0x13F9D0, _gb);
+        vm::call(GbAddr{0x13F9D0, 0x13F9D0}, _gb);
     }
     // void setAMotorRate(vector rate)
     //   thunk 0x13F970  (via call)
@@ -5105,7 +5107,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, rate);
-        vm::call(0x13F970, _gb);
+        vm::call(GbAddr{0x13F970, 0x13F970}, _gb);
     }
     // void setAMotorRates(float p, float h, float b)
     //   thunk 0x13FA90  (impl 0x13E5E0)
@@ -5115,14 +5117,14 @@ namespace CPhysmo {
         _gb.set_f(1, p);
         _gb.set_f(2, h);
         _gb.set_f(3, b);
-        vm::call(0x13FA90, _gb);
+        vm::call(GbAddr{0x13FA90, 0x13FA90}, _gb);
     }
     // void setAMotorStopsToCurrentPosition()
     //   thunk 0x13FDC0  (impl 0x13EE40)
     inline void setAMotorStopsToCurrentPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x13FDC0, _gb);
+        vm::call(GbAddr{0x13FDC0, 0x13FDC0}, _gb);
     }
     // void setAMotorTorque(vector torque)
     //   thunk 0x13F910  (via call)
@@ -5130,7 +5132,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, torque);
-        vm::call(0x13F910, _gb);
+        vm::call(GbAddr{0x13F910, 0x13F910}, _gb);
     }
     // void setAMotorTorques(float p, float h, float b)
     //   thunk 0x13FA50  (impl 0x13E550)
@@ -5140,7 +5142,7 @@ namespace CPhysmo {
         _gb.set_f(1, p);
         _gb.set_f(2, h);
         _gb.set_f(3, b);
-        vm::call(0x13FA50, _gb);
+        vm::call(GbAddr{0x13FA50, 0x13FA50}, _gb);
     }
     // void setBreakWhenSnareForceIsExceeded(bool yah, float snareforce = 100.0f)
     //   thunk 0x1401C0  (impl 0x13F4A0)
@@ -5149,7 +5151,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
         _gb.set_f(2, snareforce);
-        vm::call(0x1401C0, _gb);
+        vm::call(GbAddr{0x1401C0, 0x1401C0}, _gb);
     }
     // void setCameraPath(@CCameraPathActor path, float timeTag=0.0)
     //   thunk 0x140040  (impl 0x13F060)
@@ -5158,7 +5160,7 @@ namespace CPhysmo {
         _gb.set_p(0, self);
         _gb.set_p(1, path);
         _gb.set_f(2, timeTag);
-        vm::call(0x140040, _gb);
+        vm::call(GbAddr{0x140040, 0x140040}, _gb);
     }
     // void setCameraPathForce(float force)
     //   thunk 0x140070  (impl 0x13F2D0)
@@ -5166,7 +5168,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, force);
-        vm::call(0x140070, _gb);
+        vm::call(GbAddr{0x140070, 0x140070}, _gb);
     }
     // void setCameraPathSpeed(float speed)
     //   thunk 0x1400A0  (impl 0x13F2F0)
@@ -5174,7 +5176,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, speed);
-        vm::call(0x1400A0, _gb);
+        vm::call(GbAddr{0x1400A0, 0x1400A0}, _gb);
     }
     // void setGhostbusterCanRide(bool yah)
     //   thunk 0x140190  (impl 0x13F490)
@@ -5182,7 +5184,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yah);
-        vm::call(0x140190, _gb);
+        vm::call(GbAddr{0x140190, 0x140190}, _gb);
     }
     // void setLMotorForce(vector force)
     //   thunk 0x13F690  (via call)
@@ -5190,7 +5192,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, force);
-        vm::call(0x13F690, _gb);
+        vm::call(GbAddr{0x13F690, 0x13F690}, _gb);
     }
     // void setLMotorForces(float x, float y, float z)
     //   thunk 0x13F7D0  (impl 0x13E000)
@@ -5200,7 +5202,7 @@ namespace CPhysmo {
         _gb.set_f(1, x);
         _gb.set_f(2, y);
         _gb.set_f(3, z);
-        vm::call(0x13F7D0, _gb);
+        vm::call(GbAddr{0x13F7D0, 0x13F7D0}, _gb);
     }
     // void setLMotorHiStop(vector hiStop)
     //   thunk 0x13F630  (via call)
@@ -5208,7 +5210,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, hiStop);
-        vm::call(0x13F630, _gb);
+        vm::call(GbAddr{0x13F630, 0x13F630}, _gb);
     }
     // void setLMotorHiStops(float x, float y, float z)
     //   thunk 0x13F790  (impl 0x13DF50)
@@ -5218,7 +5220,7 @@ namespace CPhysmo {
         _gb.set_f(1, x);
         _gb.set_f(2, y);
         _gb.set_f(3, z);
-        vm::call(0x13F790, _gb);
+        vm::call(GbAddr{0x13F790, 0x13F790}, _gb);
     }
     // void setLMotorLoStop(vector loStop)
     //   thunk 0x13F5D0  (via call)
@@ -5226,7 +5228,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, loStop);
-        vm::call(0x13F5D0, _gb);
+        vm::call(GbAddr{0x13F5D0, 0x13F5D0}, _gb);
     }
     // void setLMotorLoStops(float x, float y, float z)
     //   thunk 0x13F750  (impl 0x13DE80)
@@ -5236,7 +5238,7 @@ namespace CPhysmo {
         _gb.set_f(1, x);
         _gb.set_f(2, y);
         _gb.set_f(3, z);
-        vm::call(0x13F750, _gb);
+        vm::call(GbAddr{0x13F750, 0x13F750}, _gb);
     }
     // void setLMotorRate(vector rate)
     //   thunk 0x13F6F0  (via call)
@@ -5244,7 +5246,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, rate);
-        vm::call(0x13F6F0, _gb);
+        vm::call(GbAddr{0x13F6F0, 0x13F6F0}, _gb);
     }
     // void setLMotorRates(float x, float y, float z)
     //   thunk 0x13F810  (impl 0x13E090)
@@ -5254,14 +5256,14 @@ namespace CPhysmo {
         _gb.set_f(1, x);
         _gb.set_f(2, y);
         _gb.set_f(3, z);
-        vm::call(0x13F810, _gb);
+        vm::call(GbAddr{0x13F810, 0x13F810}, _gb);
     }
     // void setLMotorStopsToCurrentPosition()
     //   thunk 0x13FD90  (impl 0x13EDA0)
     inline void setLMotorStopsToCurrentPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x13FD90, _gb);
+        vm::call(GbAddr{0x13FD90, 0x13FD90}, _gb);
     }
     // void setTetherable(bool yes = true)
     //   thunk 0x140240  (impl 0x13F580)
@@ -5269,7 +5271,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, yes);
-        vm::call(0x140240, _gb);
+        vm::call(GbAddr{0x140240, 0x140240}, _gb);
     }
     // void tiltTo(vector iAxis)
     //   thunk 0x13FC10  (via call)
@@ -5277,7 +5279,7 @@ namespace CPhysmo {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, iAxis);
-        vm::call(0x13FC10, _gb);
+        vm::call(GbAddr{0x13FC10, 0x13FC10}, _gb);
     }
 } // namespace CPhysmo
 
@@ -5290,7 +5292,7 @@ namespace CPlatform {
         _gb.set_p(1, self);
         _gb.set_p(2, namePattern);
         _gb.set_b(3, flag);
-        vm::call(0x3E19C0, _gb);
+        vm::call(GbAddr{0x3E19C0, 0x3E17D0}, _gb);
         return _gb.get_i(0);
     }
     // float getMovementRate()
@@ -5298,7 +5300,7 @@ namespace CPlatform {
     inline float getMovementRate(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3E1A10, _gb);
+        vm::call(GbAddr{0x3E1A10, 0x3E1820}, _gb);
         return _gb.get_f(0);
     }
     // float getParameter()
@@ -5306,7 +5308,7 @@ namespace CPlatform {
     inline float getParameter(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3E1A40, _gb);
+        vm::call(GbAddr{0x3E1A40, 0x3E1850}, _gb);
         return _gb.get_f(0);
     }
     // float getPathTotalTime()
@@ -5314,7 +5316,7 @@ namespace CPlatform {
     inline float getPathTotalTime(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3E1A70, _gb);
+        vm::call(GbAddr{0x3E1A70, 0x3E1880}, _gb);
         return _gb.get_f(0);
     }
     // void moveToEnd()
@@ -5322,7 +5324,7 @@ namespace CPlatform {
     inline void moveToEnd(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3E1AF0, _gb);
+        vm::call(GbAddr{0x3E1AF0, 0x3E1900}, _gb);
     }
     // void moveToKey(int keyIndex, float movementRate)
     //   thunk 0x3E1B10  (impl 0x3E4AE0)
@@ -5331,7 +5333,7 @@ namespace CPlatform {
         _gb.set_p(0, self);
         _gb.set_i(1, keyIndex);
         _gb.set_f(2, movementRate);
-        vm::call(0x3E1B10, _gb);
+        vm::call(GbAddr{0x3E1B10, 0x3E1920}, _gb);
     }
     // void moveToNextKey(float movementRate)
     //   thunk 0x3E1B90  (impl 0x3E3A10)
@@ -5339,7 +5341,7 @@ namespace CPlatform {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, movementRate);
-        vm::call(0x3E1B90, _gb);
+        vm::call(GbAddr{0x3E1B90, 0x3E19A0}, _gb);
     }
     // void moveToPrevKey(float movementRate)
     //   thunk 0x3E1BC0  (impl 0x3E3AC0)
@@ -5347,14 +5349,14 @@ namespace CPlatform {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, movementRate);
-        vm::call(0x3E1BC0, _gb);
+        vm::call(GbAddr{0x3E1BC0, 0x3E19D0}, _gb);
     }
     // void moveToStart()
     //   thunk 0x3E1BF0  (impl 0x3E4AE0)
     inline void moveToStart(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3E1BF0, _gb);
+        vm::call(GbAddr{0x3E1BF0, 0x3E1A00}, _gb);
     }
     // void setMovementRate(float movementRate)
     //   thunk 0x3E1C20  (via none)
@@ -5362,7 +5364,7 @@ namespace CPlatform {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, movementRate);
-        vm::call(0x3E1C20, _gb);
+        vm::call(GbAddr{0x3E1C20, 0x3E1A30}, _gb);
     }
     // void setParameter(float param)
     //   thunk 0x3E1C50  (impl 0x3E3BD0)
@@ -5370,7 +5372,7 @@ namespace CPlatform {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, param);
-        vm::call(0x3E1C50, _gb);
+        vm::call(GbAddr{0x3E1C50, 0x3E1A60}, _gb);
     }
     // void startMoving(float goalParam, float movementRate)
     //   thunk 0x3E1C90  (impl 0x3E4AE0)
@@ -5379,14 +5381,14 @@ namespace CPlatform {
         _gb.set_p(0, self);
         _gb.set_f(1, goalParam);
         _gb.set_f(2, movementRate);
-        vm::call(0x3E1C90, _gb);
+        vm::call(GbAddr{0x3E1C90, 0x3E1AA0}, _gb);
     }
     // void stopMoving()
     //   thunk 0x3E1CC0  (impl 0x3E4C50)
     inline void stopMoving(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3E1CC0, _gb);
+        vm::call(GbAddr{0x3E1CC0, 0x3E1AD0}, _gb);
     }
 } // namespace CPlatform
 
@@ -5398,14 +5400,14 @@ namespace CPortalLight {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x2E3600, _gb);
+        vm::call(GbAddr{0x2E3600, 0x2E3410}, _gb);
     }
     // vector getColor()
     //   thunk 0x2E3630  (via none)
     inline Vector3 getColor(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x2E3630, _gb);
+        vm::call(GbAddr{0x2E3630, 0x2E3440}, _gb);
         return _gb.get_v(0);
     }
     // float getIntensity()
@@ -5413,7 +5415,7 @@ namespace CPortalLight {
     inline float getIntensity(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2E3690, _gb);
+        vm::call(GbAddr{0x2E3690, 0x2E34A0}, _gb);
         return _gb.get_f(0);
     }
     // bool isEnabled()
@@ -5421,7 +5423,7 @@ namespace CPortalLight {
     inline bool isEnabled(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2E36B0, _gb);
+        vm::call(GbAddr{0x2E36B0, 0x2E34C0}, _gb);
         return _gb.get_b(0);
     }
     // void setColor(float r, float g, float b)
@@ -5432,7 +5434,7 @@ namespace CPortalLight {
         _gb.set_f(1, r);
         _gb.set_f(2, g);
         _gb.set_f(3, b);
-        vm::call(0x2E36E0, _gb);
+        vm::call(GbAddr{0x2E36E0, 0x2E34F0}, _gb);
     }
     // void setIntensity(float intensity)
     //   thunk 0x2E3710  (via none)
@@ -5440,7 +5442,7 @@ namespace CPortalLight {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, intensity);
-        vm::call(0x2E3710, _gb);
+        vm::call(GbAddr{0x2E3710, 0x2E3520}, _gb);
     }
 } // namespace CPortalLight
 
@@ -5452,7 +5454,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x41A330, _gb);
+        vm::call(GbAddr{0x41A330, 0x41A140}, _gb);
     }
     // void enableHDR(bool flag)
     //   thunk 0x41A360  (via none)
@@ -5460,14 +5462,14 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x41A360, _gb);
+        vm::call(GbAddr{0x41A360, 0x41A170}, _gb);
     }
     // void reset()
     //   thunk 0x41A390  (impl 0x41D300)
     inline void reset(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x41A390, _gb);
+        vm::call(GbAddr{0x41A390, 0x41A1A0}, _gb);
     }
     // void setBloomIntensity(float intensity)
     //   thunk 0x41A3B0  (via none)
@@ -5475,7 +5477,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, intensity);
-        vm::call(0x41A3B0, _gb);
+        vm::call(GbAddr{0x41A3B0, 0x41A1C0}, _gb);
     }
     // void setBlueMax(float value)
     //   thunk 0x41A3F0  (via none)
@@ -5483,7 +5485,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A3F0, _gb);
+        vm::call(GbAddr{0x41A3F0, 0x41A200}, _gb);
     }
     // void setBlueMin(float value)
     //   thunk 0x41A430  (via none)
@@ -5491,7 +5493,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A430, _gb);
+        vm::call(GbAddr{0x41A430, 0x41A240}, _gb);
     }
     // void setBlueScale(float value)
     //   thunk 0x41A470  (via none)
@@ -5499,7 +5501,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A470, _gb);
+        vm::call(GbAddr{0x41A470, 0x41A280}, _gb);
     }
     // void setBrightThreshold(float threshold)
     //   thunk 0x41A4B0  (via none)
@@ -5507,7 +5509,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, threshold);
-        vm::call(0x41A4B0, _gb);
+        vm::call(GbAddr{0x41A4B0, 0x41A2C0}, _gb);
     }
     // void setBrightness(float brightness)
     //   thunk 0x41A500  (via none)
@@ -5515,7 +5517,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, brightness);
-        vm::call(0x41A500, _gb);
+        vm::call(GbAddr{0x41A500, 0x41A310}, _gb);
     }
     // void setContrast(float contrast)
     //   thunk 0x41A560  (impl 0x41A5A4)
@@ -5523,7 +5525,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, contrast);
-        vm::call(0x41A560, _gb);
+        vm::call(GbAddr{0x41A560, 0x41A370}, _gb);
     }
     // void setDOFPlanes(@SDOFPlanes info)
     //   thunk 0x41A5C0  (via none)
@@ -5531,7 +5533,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x41A5C0, _gb);
+        vm::call(GbAddr{0x41A5C0, 0x41A3D0}, _gb);
     }
     // void setDOFSettings_Gen2(int startDistance, int step, int opacity)
     //   thunk 0x41A640  (via none)
@@ -5541,7 +5543,7 @@ namespace CPostProcessFx {
         _gb.set_i(1, startDistance);
         _gb.set_i(2, step);
         _gb.set_i(3, opacity);
-        vm::call(0x41A640, _gb);
+        vm::call(GbAddr{0x41A640, 0x41A450}, _gb);
     }
     // void setEmissive(float v)
     //   thunk 0x41A6D0  (via none)
@@ -5549,7 +5551,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, v);
-        vm::call(0x41A6D0, _gb);
+        vm::call(GbAddr{0x41A6D0, 0x41A4E0}, _gb);
     }
     // void setExposure(float exp)
     //   thunk 0x41A710  (via none)
@@ -5557,7 +5559,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, exp);
-        vm::call(0x41A710, _gb);
+        vm::call(GbAddr{0x41A710, 0x41A520}, _gb);
     }
     // void setGrainEnable(bool value)
     //   thunk 0x41A750  (via none)
@@ -5565,7 +5567,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, value);
-        vm::call(0x41A750, _gb);
+        vm::call(GbAddr{0x41A750, 0x41A560}, _gb);
     }
     // void setGrainSize(float value)
     //   thunk 0x41A790  (via none)
@@ -5573,7 +5575,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A790, _gb);
+        vm::call(GbAddr{0x41A790, 0x41A5A0}, _gb);
     }
     // void setGrainValue(float value)
     //   thunk 0x41A7D0  (via none)
@@ -5581,7 +5583,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A7D0, _gb);
+        vm::call(GbAddr{0x41A7D0, 0x41A5E0}, _gb);
     }
     // void setGreenMax(float value)
     //   thunk 0x41A810  (via none)
@@ -5589,7 +5591,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A810, _gb);
+        vm::call(GbAddr{0x41A810, 0x41A620}, _gb);
     }
     // void setGreenMin(float value)
     //   thunk 0x41A850  (via none)
@@ -5597,7 +5599,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A850, _gb);
+        vm::call(GbAddr{0x41A850, 0x41A660}, _gb);
     }
     // void setGreenScale(float value)
     //   thunk 0x41A890  (via none)
@@ -5605,7 +5607,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A890, _gb);
+        vm::call(GbAddr{0x41A890, 0x41A6A0}, _gb);
     }
     // void setRedMax(float value)
     //   thunk 0x41A8D0  (via none)
@@ -5613,7 +5615,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A8D0, _gb);
+        vm::call(GbAddr{0x41A8D0, 0x41A6E0}, _gb);
     }
     // void setRedMin(float value)
     //   thunk 0x41A910  (via none)
@@ -5621,7 +5623,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A910, _gb);
+        vm::call(GbAddr{0x41A910, 0x41A720}, _gb);
     }
     // void setRedScale(float value)
     //   thunk 0x41A950  (via none)
@@ -5629,7 +5631,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, value);
-        vm::call(0x41A950, _gb);
+        vm::call(GbAddr{0x41A950, 0x41A760}, _gb);
     }
     // void setSaturation(float v)
     //   thunk 0x41A990  (via none)
@@ -5637,7 +5639,7 @@ namespace CPostProcessFx {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, v);
-        vm::call(0x41A990, _gb);
+        vm::call(GbAddr{0x41A990, 0x41A7A0}, _gb);
     }
 } // namespace CPostProcessFx
 
@@ -5649,7 +5651,7 @@ namespace CRailRider {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, spline);
-        vm::call(0x14C9C0, _gb);
+        vm::call(GbAddr{0x14C9C0, 0x14C9C0}, _gb);
     }
 } // namespace CRailRider
 
@@ -5660,7 +5662,7 @@ namespace CRailcar {
     inline void DisableSteering(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x14B810, _gb);
+        vm::call(GbAddr{0x14B810, 0x14B810}, _gb);
     }
     // void SetCameraPathActor(@CCameraPathActor path)
     //   thunk 0x14B7E0  (impl 0x14B740)
@@ -5668,28 +5670,28 @@ namespace CRailcar {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, path);
-        vm::call(0x14B7E0, _gb);
+        vm::call(GbAddr{0x14B7E0, 0x14B7E0}, _gb);
     }
     // void SteerFree()
     //   thunk 0x14B930  (impl 0x14B7A0)
     inline void SteerFree(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x14B930, _gb);
+        vm::call(GbAddr{0x14B930, 0x14B930}, _gb);
     }
     // void SteerToCameraPathPosition()
     //   thunk 0x14B870  (impl 0x14B770)
     inline void SteerToCameraPathPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x14B870, _gb);
+        vm::call(GbAddr{0x14B870, 0x14B870}, _gb);
     }
     // void SteerToCameraPathPositionAndOrientation()
     //   thunk 0x14B8A0  (impl 0x14B780)
     inline void SteerToCameraPathPositionAndOrientation(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x14B8A0, _gb);
+        vm::call(GbAddr{0x14B8A0, 0x14B8A0}, _gb);
     }
     // void SteerToPosition(vector pos)
     //   thunk 0x14B8D0  (via call)
@@ -5697,21 +5699,21 @@ namespace CRailcar {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, pos);
-        vm::call(0x14B8D0, _gb);
+        vm::call(GbAddr{0x14B8D0, 0x14B8D0}, _gb);
     }
     // void Synchronize()
     //   thunk 0x14B840  (impl 0x14B760)
     inline void Synchronize(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x14B840, _gb);
+        vm::call(GbAddr{0x14B840, 0x14B840}, _gb);
     }
     // int getDamageStage()
     //   thunk 0x14B990  (via call)
     inline int getDamageStage(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x14B990, _gb);
+        vm::call(GbAddr{0x14B990, 0x14B990}, _gb);
         return _gb.get_i(0);
     }
     // void setDamageStage(int stage)
@@ -5720,7 +5722,7 @@ namespace CRailcar {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, stage);
-        vm::call(0x14B960, _gb);
+        vm::call(GbAddr{0x14B960, 0x14B960}, _gb);
     }
 } // namespace CRailcar
 
@@ -5733,7 +5735,7 @@ namespace CRoom {
         _gb.set_p(1, self);
         _gb.set_p(2, partName);
         _gb.set_b(3, flag);
-        vm::call(0x2E3750, _gb);
+        vm::call(GbAddr{0x2E3750, 0x2E3560}, _gb);
         return _gb.get_i(0);
     }
     // string getName()
@@ -5741,7 +5743,7 @@ namespace CRoom {
     inline const char* getName(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2E3790, _gb);
+        vm::call(GbAddr{0x2E3790, 0x2E35A0}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
 } // namespace CRoom
@@ -5754,7 +5756,7 @@ namespace CScuttler {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x155AC0, _gb);
+        vm::call(GbAddr{0x155AC0, 0x155AC0}, _gb);
     }
     // void setSplinePathActor(@CSplinePath sPath, float startT)
     //   thunk 0x155AF0  (impl 0x155A70)
@@ -5763,7 +5765,7 @@ namespace CScuttler {
         _gb.set_p(0, self);
         _gb.set_p(1, sPath);
         _gb.set_f(2, startT);
-        vm::call(0x155AF0, _gb);
+        vm::call(GbAddr{0x155AF0, 0x155AF0}, _gb);
     }
 } // namespace CScuttler
 
@@ -5774,7 +5776,7 @@ namespace CSign {
     inline const char* getMessage(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x4A3140, _gb);
+        vm::call(GbAddr{0x4A3140, 0x4A2DD0}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // void setMessage(string text)
@@ -5783,7 +5785,7 @@ namespace CSign {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, text);
-        vm::call(0x4A31C0, _gb);
+        vm::call(GbAddr{0x4A31C0, 0x4A2E50}, _gb);
     }
 } // namespace CSign
 
@@ -5797,7 +5799,7 @@ namespace CSkyBox {
         _gb.set_f(1, attack);
         _gb.set_f(2, sustain);
         _gb.set_f(3, decay);
-        vm::call(0x47C630, _gb);
+        vm::call(GbAddr{0x47C630, 0x47C2C0}, _gb);
     }
     // void showLayer(int layer, bool show)
     //   thunk 0x47C680  (via none)
@@ -5806,7 +5808,7 @@ namespace CSkyBox {
         _gb.set_p(0, self);
         _gb.set_i(1, layer);
         _gb.set_b(2, show);
-        vm::call(0x47C680, _gb);
+        vm::call(GbAddr{0x47C680, 0x47C310}, _gb);
     }
 } // namespace CSkyBox
 
@@ -5817,7 +5819,7 @@ namespace CSliderActor {
     inline bool atMaximumPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x493250, _gb);
+        vm::call(GbAddr{0x493250, 0x492EE0}, _gb);
         return _gb.get_b(0);
     }
     // bool atMinimumPosition()
@@ -5825,7 +5827,7 @@ namespace CSliderActor {
     inline bool atMinimumPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x4932E0, _gb);
+        vm::call(GbAddr{0x4932E0, 0x492F70}, _gb);
         return _gb.get_b(0);
     }
     // void breakJoint()
@@ -5833,14 +5835,14 @@ namespace CSliderActor {
     inline void breakJoint(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x493370, _gb);
+        vm::call(GbAddr{0x493370, 0x493000}, _gb);
     }
     // float getPosition()
     //   thunk 0x493390  (via call)
     inline float getPosition(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x493390, _gb);
+        vm::call(GbAddr{0x493390, 0x493020}, _gb);
         return _gb.get_f(0);
     }
     // void setMaximumPosition(float pos)
@@ -5849,7 +5851,7 @@ namespace CSliderActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pos);
-        vm::call(0x4933F0, _gb);
+        vm::call(GbAddr{0x4933F0, 0x493080}, _gb);
     }
     // void setMinimumPosition(float pos)
     //   thunk 0x493430  (impl 0x3962E0)
@@ -5857,7 +5859,7 @@ namespace CSliderActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, pos);
-        vm::call(0x493430, _gb);
+        vm::call(GbAddr{0x493430, 0x4930C0}, _gb);
     }
 } // namespace CSliderActor
 
@@ -5868,7 +5870,7 @@ namespace CSlimer {
     inline void disableDefenseMode(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x15C0D0, _gb);
+        vm::call(GbAddr{0x15C0D0, 0x15C0D0}, _gb);
     }
     // void setCommandSlimeAttack(@SSlimeAttackInfo info)
     //   thunk 0x15C100  (impl 0x15BE90)
@@ -5876,7 +5878,7 @@ namespace CSlimer {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, info);
-        vm::call(0x15C100, _gb);
+        vm::call(GbAddr{0x15C100, 0x15C100}, _gb);
     }
     // void setCommandSpecialHide(@CActor hidePoint, float dist)
     //   thunk 0x15C130  (impl 0x15BF00)
@@ -5885,7 +5887,7 @@ namespace CSlimer {
         _gb.set_p(0, self);
         _gb.set_p(1, hidePoint);
         _gb.set_f(2, dist);
-        vm::call(0x15C130, _gb);
+        vm::call(GbAddr{0x15C130, 0x15C130}, _gb);
     }
     // void setInHallway(bool flag)
     //   thunk 0x15C0A0  (impl 0x15BE50)
@@ -5893,7 +5895,7 @@ namespace CSlimer {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
-        vm::call(0x15C0A0, _gb);
+        vm::call(GbAddr{0x15C0A0, 0x15C0A0}, _gb);
     }
 } // namespace CSlimer
 
@@ -5905,7 +5907,7 @@ namespace CSpawn {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, info);
-        vm::call(0x15E130, _gb);
+        vm::call(GbAddr{0x15E130, 0x15E130}, _gb);
         return _gb.get_p(0);
     }
 } // namespace CSpawn
@@ -5917,7 +5919,7 @@ namespace CSpawnTrigger {
     inline void activate(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x15FC20, _gb);
+        vm::call(GbAddr{0x15FC20, 0x15FC20}, _gb);
     }
     // void setMaxNumberOfEnemies(int newVal)
     //   thunk 0x15FCB0  (impl 0x15FBD0)
@@ -5925,7 +5927,7 @@ namespace CSpawnTrigger {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, newVal);
-        vm::call(0x15FCB0, _gb);
+        vm::call(GbAddr{0x15FCB0, 0x15FCB0}, _gb);
     }
     // void setNumberOfEnemies(int newVal)
     //   thunk 0x15FC80  (impl 0x15FBC0)
@@ -5933,14 +5935,14 @@ namespace CSpawnTrigger {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, newVal);
-        vm::call(0x15FC80, _gb);
+        vm::call(GbAddr{0x15FC80, 0x15FC80}, _gb);
     }
     // void unspawnAllEnemies()
     //   thunk 0x15FC50  (impl 0x15FAA0)
     inline void unspawnAllEnemies(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x15FC50, _gb);
+        vm::call(GbAddr{0x15FC50, 0x15FC50}, _gb);
     }
 } // namespace CSpawnTrigger
 
@@ -5951,7 +5953,7 @@ namespace CSpiderWitch {
     inline void fall(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x163410, _gb);
+        vm::call(GbAddr{0x163410, 0x163410}, _gb);
     }
     // void feed(@CWayPoint wp)
     //   thunk 0x1633E0  (impl 0x1631D0)
@@ -5959,14 +5961,14 @@ namespace CSpiderWitch {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, wp);
-        vm::call(0x1633E0, _gb);
+        vm::call(GbAddr{0x1633E0, 0x1633E0}, _gb);
     }
     // void setTeleportDelay(float delay)
     //   thunk 0x1633C0  (via none)
     inline void setTeleportDelay(float delay) {
         vm::Block _gb;
         _gb.set_f(0, delay);
-        vm::call(0x1633C0, _gb);
+        vm::call(GbAddr{0x1633C0, 0x1633C0}, _gb);
     }
 } // namespace CSpiderWitch
 
@@ -5978,14 +5980,14 @@ namespace CSpinner {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_b(1, enable);
-        vm::call(0x4A41E0, _gb);
+        vm::call(GbAddr{0x4A41E0, 0x4A3E70}, _gb);
     }
     // vector getAxisOfRotation()
     //   thunk 0x4A4210  (via none)
     inline Vector3 getAxisOfRotation(void* self) {
         vm::Block _gb;
         _gb.set_p(3, self);
-        vm::call(0x4A4210, _gb);
+        vm::call(GbAddr{0x4A4210, 0x4A3EA0}, _gb);
         return _gb.get_v(0);
     }
     // float getRPM()
@@ -5993,7 +5995,7 @@ namespace CSpinner {
     inline float getRPM(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x4A4250, _gb);
+        vm::call(GbAddr{0x4A4250, 0x4A3EE0}, _gb);
         return _gb.get_f(0);
     }
     // void setAxisOfRotation(vector axis)
@@ -6002,7 +6004,7 @@ namespace CSpinner {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_v(1, axis);
-        vm::call(0x4A4280, _gb);
+        vm::call(GbAddr{0x4A4280, 0x4A3F10}, _gb);
     }
     // void setRPM(float rpm)
     //   thunk 0x4A42C0  (via none)
@@ -6010,7 +6012,7 @@ namespace CSpinner {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, rpm);
-        vm::call(0x4A42C0, _gb);
+        vm::call(GbAddr{0x4A42C0, 0x4A3F50}, _gb);
     }
 } // namespace CSpinner
 
@@ -6022,7 +6024,7 @@ namespace CSplinePath {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_v(2, wSearchPos);
-        vm::call(0x3482A0, _gb);
+        vm::call(GbAddr{0x3482A0, 0x3480B0}, _gb);
         return _gb.get_f(0);
     }
     // int findKeyByName(string keyName)
@@ -6031,7 +6033,7 @@ namespace CSplinePath {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, keyName);
-        vm::call(0x3485D0, _gb);
+        vm::call(GbAddr{0x3485D0, 0x3483E0}, _gb);
         return _gb.get_i(0);
     }
     // int findKeyByNameGraceful(string keyName)
@@ -6040,7 +6042,7 @@ namespace CSplinePath {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, keyName);
-        vm::call(0x348560, _gb);
+        vm::call(GbAddr{0x348560, 0x348370}, _gb);
         return _gb.get_i(0);
     }
     // string getKeyName(int key)
@@ -6049,7 +6051,7 @@ namespace CSplinePath {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, key);
-        vm::call(0x348610, _gb);
+        vm::call(GbAddr{0x348610, 0x348420}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // Vector getKeyOrient(int keyIndex)
@@ -6058,7 +6060,7 @@ namespace CSplinePath {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_i(4, keyIndex);
-        vm::call(0x348310, _gb);
+        vm::call(GbAddr{0x348310, 0x348120}, _gb);
         return _gb.get_v(0);
     }
     // Vector getKeyPos(int keyIndex)
@@ -6067,7 +6069,7 @@ namespace CSplinePath {
         vm::Block _gb;
         _gb.set_p(3, self);
         _gb.set_i(4, keyIndex);
-        vm::call(0x3483A0, _gb);
+        vm::call(GbAddr{0x3483A0, 0x3481B0}, _gb);
         return _gb.get_v(0);
     }
     // float getTotalTime()
@@ -6075,7 +6077,7 @@ namespace CSplinePath {
     inline float getTotalTime(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x3486C0, _gb);
+        vm::call(GbAddr{0x3486C0, 0x3484D0}, _gb);
         return _gb.get_f(0);
     }
     // void warpKey(int whichKey, Vector newPos, Vector newOrient)
@@ -6086,7 +6088,7 @@ namespace CSplinePath {
         _gb.set_i(1, whichKey);
         _gb.set_v(2, newPos);
         _gb.set_v(5, newOrient);
-        vm::call(0x3484D0, _gb);
+        vm::call(GbAddr{0x3484D0, 0x3482E0}, _gb);
     }
     // void warpKeyToActor(int whichKey, @CActor destActor)
     //   thunk 0x348740  (impl 0x34EA20)
@@ -6095,7 +6097,7 @@ namespace CSplinePath {
         _gb.set_p(0, self);
         _gb.set_i(1, whichKey);
         _gb.set_p(2, destActor);
-        vm::call(0x348740, _gb);
+        vm::call(GbAddr{0x348740, 0x348550}, _gb);
     }
 } // namespace CSplinePath
 
@@ -6106,42 +6108,42 @@ namespace CStayPuftBoss {
     inline void beginDoubleHandAttack(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171C30, _gb);
+        vm::call(GbAddr{0x171C30, 0x171C30}, _gb);
     }
     // void beginGrabAttack()
     //   thunk 0x171BC0  (impl 0x170A40)
     inline void beginGrabAttack(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171BC0, _gb);
+        vm::call(GbAddr{0x171BC0, 0x171BC0}, _gb);
     }
     // void deflateHead()
     //   thunk 0x171E20  (impl 0x170BB0)
     inline void deflateHead(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171E20, _gb);
+        vm::call(GbAddr{0x171E20, 0x171E20}, _gb);
     }
     // void endDoubleHandAttack()
     //   thunk 0x171C60  (impl 0x170AE0)
     inline void endDoubleHandAttack(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171C60, _gb);
+        vm::call(GbAddr{0x171C60, 0x171C60}, _gb);
     }
     // void extinguishHead()
     //   thunk 0x171D60  (impl 0x170B30)
     inline void extinguishHead(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171D60, _gb);
+        vm::call(GbAddr{0x171D60, 0x171D60}, _gb);
     }
     // int getCurrentStage()
     //   thunk 0x171B80  (via call)
     inline int getCurrentStage(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x171B80, _gb);
+        vm::call(GbAddr{0x171B80, 0x171B80}, _gb);
         return _gb.get_i(0);
     }
     // bool getDoubleHandAttackResult()
@@ -6149,7 +6151,7 @@ namespace CStayPuftBoss {
     inline bool getDoubleHandAttackResult(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x171C90, _gb);
+        vm::call(GbAddr{0x171C90, 0x171C90}, _gb);
         return _gb.get_b(0);
     }
     // bool getGrabAttackResult()
@@ -6157,7 +6159,7 @@ namespace CStayPuftBoss {
     inline bool getGrabAttackResult(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x171BF0, _gb);
+        vm::call(GbAddr{0x171BF0, 0x171BF0}, _gb);
         return _gb.get_b(0);
     }
     // @CActor getThrowActor()
@@ -6165,7 +6167,7 @@ namespace CStayPuftBoss {
     inline void* getThrowActor(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x171B40, _gb);
+        vm::call(GbAddr{0x171B40, 0x171B40}, _gb);
         return _gb.get_p(0);
     }
     // void igniteHead()
@@ -6173,28 +6175,28 @@ namespace CStayPuftBoss {
     inline void igniteHead(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171D30, _gb);
+        vm::call(GbAddr{0x171D30, 0x171D30}, _gb);
     }
     // void igniteLeftHand()
     //   thunk 0x171D00  (impl 0x170B10)
     inline void igniteLeftHand(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171D00, _gb);
+        vm::call(GbAddr{0x171D00, 0x171D00}, _gb);
     }
     // void igniteRightHand()
     //   thunk 0x171CD0  (impl 0x170B00)
     inline void igniteRightHand(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171CD0, _gb);
+        vm::call(GbAddr{0x171CD0, 0x171CD0}, _gb);
     }
     // void inflateHead()
     //   thunk 0x171DF0  (impl 0x170B90)
     inline void inflateHead(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171DF0, _gb);
+        vm::call(GbAddr{0x171DF0, 0x171DF0}, _gb);
     }
     // void pickupCar(@CCarEffects car)
     //   thunk 0x172030  (impl 0x171470)
@@ -6202,7 +6204,7 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, car);
-        vm::call(0x172030, _gb);
+        vm::call(GbAddr{0x172030, 0x172030}, _gb);
     }
     // void requestFacialExpression(EFacialExpression newExpression)
     //   thunk 0x171EB0  (impl 0x170C60)
@@ -6210,14 +6212,14 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, newExpression);
-        vm::call(0x171EB0, _gb);
+        vm::call(GbAddr{0x171EB0, 0x171EB0}, _gb);
     }
     // void requestRoar()
     //   thunk 0x171E80  (impl 0x170C10)
     inline void requestRoar(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x171E80, _gb);
+        vm::call(GbAddr{0x171E80, 0x171E80}, _gb);
     }
     // void setDamageState(int state)
     //   thunk 0x171EE0  (impl 0x170D30)
@@ -6225,7 +6227,7 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_i(1, state);
-        vm::call(0x171EE0, _gb);
+        vm::call(GbAddr{0x171EE0, 0x171EE0}, _gb);
     }
     // void setHeadScale(float scale)
     //   thunk 0x171E50  (impl 0x170BD0)
@@ -6233,7 +6235,7 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, scale);
-        vm::call(0x171E50, _gb);
+        vm::call(GbAddr{0x171E50, 0x171E50}, _gb);
     }
     // void startDamageFade(float time)
     //   thunk 0x171DC0  (impl 0x170B60)
@@ -6241,7 +6243,7 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, time);
-        vm::call(0x171DC0, _gb);
+        vm::call(GbAddr{0x171DC0, 0x171DC0}, _gb);
     }
     // void throwCar(@CActor targetActor, @CCarEffects car, float err)
     //   thunk 0x171F70  (impl 0x170FC0)
@@ -6251,7 +6253,7 @@ namespace CStayPuftBoss {
         _gb.set_p(1, targetActor);
         _gb.set_p(2, car);
         _gb.set_f(3, err);
-        vm::call(0x171F70, _gb);
+        vm::call(GbAddr{0x171F70, 0x171F70}, _gb);
     }
     // void throwCarFast(@CActor targetActor, @CCarEffects car, float err)
     //   thunk 0x171FB0  (impl 0x1711D0)
@@ -6261,7 +6263,7 @@ namespace CStayPuftBoss {
         _gb.set_p(1, targetActor);
         _gb.set_p(2, car);
         _gb.set_f(3, err);
-        vm::call(0x171FB0, _gb);
+        vm::call(GbAddr{0x171FB0, 0x171FB0}, _gb);
     }
     // void throwCarStreet(@CActor targetActor, @CCarEffects car, float err)
     //   thunk 0x171FF0  (impl 0x1713E0)
@@ -6271,7 +6273,7 @@ namespace CStayPuftBoss {
         _gb.set_p(1, targetActor);
         _gb.set_p(2, car);
         _gb.set_f(3, err);
-        vm::call(0x171FF0, _gb);
+        vm::call(GbAddr{0x171FF0, 0x171FF0}, _gb);
     }
     // void throwDebris(@CActor targetActor)
     //   thunk 0x171F10  (impl 0x170DA0)
@@ -6279,7 +6281,7 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, targetActor);
-        vm::call(0x171F10, _gb);
+        vm::call(GbAddr{0x171F10, 0x171F10}, _gb);
     }
     // void throwDebrisStreet(@CActor targetActor)
     //   thunk 0x171F40  (impl 0x170F80)
@@ -6287,7 +6289,7 @@ namespace CStayPuftBoss {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, targetActor);
-        vm::call(0x171F40, _gb);
+        vm::call(GbAddr{0x171F40, 0x171F40}, _gb);
     }
     // void throwPhysicsObject(@CActor tActor, @CPhysicsObject po)
     //   thunk 0x172060  (impl 0x1714C0)
@@ -6296,7 +6298,7 @@ namespace CStayPuftBoss {
         _gb.set_p(0, self);
         _gb.set_p(1, tActor);
         _gb.set_p(2, po);
-        vm::call(0x172060, _gb);
+        vm::call(GbAddr{0x172060, 0x172060}, _gb);
     }
 } // namespace CStayPuftBoss
 
@@ -6307,7 +6309,7 @@ namespace CStayPuftMinion {
     inline bool canBeAFlamer(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x1674D0, _gb);
+        vm::call(GbAddr{0x1674D0, 0x1674D0}, _gb);
         return _gb.get_b(0);
     }
     // float getFlamingMiniMaxTime()
@@ -6315,7 +6317,7 @@ namespace CStayPuftMinion {
     inline float getFlamingMiniMaxTime(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x167450, _gb);
+        vm::call(GbAddr{0x167450, 0x167450}, _gb);
         return _gb.get_f(0);
     }
     // float getFlamingMiniMinTime()
@@ -6323,7 +6325,7 @@ namespace CStayPuftMinion {
     inline float getFlamingMiniMinTime(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x167490, _gb);
+        vm::call(GbAddr{0x167490, 0x167490}, _gb);
         return _gb.get_f(0);
     }
     // void launchAtTarget(Vector wPos, float tol)
@@ -6333,7 +6335,7 @@ namespace CStayPuftMinion {
         _gb.set_p(0, self);
         _gb.set_v(1, wPos);
         _gb.set_f(4, tol);
-        vm::call(0x1673C0, _gb);
+        vm::call(GbAddr{0x1673C0, 0x1673C0}, _gb);
     }
     // void setElevator(@CElevator elevator)
     //   thunk 0x167390  (impl 0x167110)
@@ -6341,14 +6343,14 @@ namespace CStayPuftMinion {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, elevator);
-        vm::call(0x167390, _gb);
+        vm::call(GbAddr{0x167390, 0x167390}, _gb);
     }
     // void setFlamer()
     //   thunk 0x167420  (impl 0x167340)
     inline void setFlamer(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x167420, _gb);
+        vm::call(GbAddr{0x167420, 0x167420}, _gb);
     }
 } // namespace CStayPuftMinion
 
@@ -6359,7 +6361,7 @@ namespace CTarget {
     inline void reset(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x175540, _gb);
+        vm::call(GbAddr{0x175540, 0x175540}, _gb);
     }
     // void setARGB(int a, int r, int g, int b)
     //   thunk 0x175560  (via call)
@@ -6370,7 +6372,7 @@ namespace CTarget {
         _gb.set_i(2, r);
         _gb.set_i(3, g);
         _gb.set_i(4, b);
-        vm::call(0x175560, _gb);
+        vm::call(GbAddr{0x175560, 0x175560}, _gb);
     }
 } // namespace CTarget
 
@@ -6382,7 +6384,7 @@ namespace CTrigger {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, actorToTest);
-        vm::call(0x4A5BF0, _gb);
+        vm::call(GbAddr{0x4A5BF0, 0x4A5880}, _gb);
         return _gb.get_b(0);
     }
     // void deleteAllActorsInside(String classes)
@@ -6391,7 +6393,7 @@ namespace CTrigger {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, classes);
-        vm::call(0x4A5C90, _gb);
+        vm::call(GbAddr{0x4A5C90, 0x4A5920}, _gb);
     }
     // void enableActorsInsideMe(String classes)
     //   thunk 0x4A5CF0  (impl 0x4A67F0)
@@ -6399,7 +6401,7 @@ namespace CTrigger {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_p(1, classes);
-        vm::call(0x4A5CF0, _gb);
+        vm::call(GbAddr{0x4A5CF0, 0x4A5980}, _gb);
     }
     // void enableActorsInsideMeNameFilter(String classes, String actorNameFilter)
     //   thunk 0x4A5CC0  (impl 0x4A6880)
@@ -6408,7 +6410,7 @@ namespace CTrigger {
         _gb.set_p(0, self);
         _gb.set_p(1, classes);
         _gb.set_p(2, actorNameFilter);
-        vm::call(0x4A5CC0, _gb);
+        vm::call(GbAddr{0x4A5CC0, 0x4A5950}, _gb);
     }
     // void setMaxHitPoints(float newMaxHitPoints)
     //   thunk 0x4A5C50  (via none)
@@ -6416,7 +6418,7 @@ namespace CTrigger {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, newMaxHitPoints);
-        vm::call(0x4A5C50, _gb);
+        vm::call(GbAddr{0x4A5C50, 0x4A58E0}, _gb);
     }
 } // namespace CTrigger
 
@@ -6427,7 +6429,7 @@ namespace CTrinket {
     inline bool hasBeenPickedUp(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x179550, _gb);
+        vm::call(GbAddr{0x179550, 0x179550}, _gb);
         return _gb.get_b(0);
     }
 } // namespace CTrinket
@@ -6441,7 +6443,7 @@ namespace CTurret {
         _gb.set_p(0, self);
         _gb.set_b(1, flag);
         _gb.set_p(2, t);
-        vm::call(0x17B930, _gb);
+        vm::call(GbAddr{0x17B930, 0x17B930}, _gb);
     }
 } // namespace CTurret
 
@@ -6452,7 +6454,7 @@ namespace CUniversalJointActor {
     inline void breakJoint(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x491FF0, _gb);
+        vm::call(GbAddr{0x491FF0, 0x491C80}, _gb);
     }
 } // namespace CUniversalJointActor
 
@@ -6463,7 +6465,7 @@ namespace CVolFog {
     inline void dissipateFog(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x47FC20, _gb);
+        vm::call(GbAddr{0x47FC20, 0x47F8B0}, _gb);
     }
 } // namespace CVolFog
 
@@ -6475,7 +6477,7 @@ namespace CVolLite {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, duration);
-        vm::call(0x3CA6D0, _gb);
+        vm::call(GbAddr{0x3CA6D0, 0x3CA4E0}, _gb);
     }
     // void fadeOut(float duration)
     //   thunk 0x3CA720  (via none)
@@ -6483,7 +6485,7 @@ namespace CVolLite {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, duration);
-        vm::call(0x3CA720, _gb);
+        vm::call(GbAddr{0x3CA720, 0x3CA530}, _gb);
     }
     // void stirDust(float rampUpTime, float sustainTime, float rampDownTime)
     //   thunk 0x3CA770  (via none)
@@ -6493,7 +6495,7 @@ namespace CVolLite {
         _gb.set_f(1, rampUpTime);
         _gb.set_f(2, sustainTime);
         _gb.set_f(3, rampDownTime);
-        vm::call(0x3CA770, _gb);
+        vm::call(GbAddr{0x3CA770, 0x3CA580}, _gb);
     }
 } // namespace CVolLite
 
@@ -6505,7 +6507,7 @@ namespace CWindActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, angle);
-        vm::call(0x4A8230, _gb);
+        vm::call(GbAddr{0x4A8230, 0x4A7EC0}, _gb);
     }
     // void setMagnitudeMax(float mag)
     //   thunk 0x4A8270  (impl 0x4A8860)
@@ -6513,7 +6515,7 @@ namespace CWindActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, mag);
-        vm::call(0x4A8270, _gb);
+        vm::call(GbAddr{0x4A8270, 0x4A7F00}, _gb);
     }
     // void setMagnitudeMin(float mag)
     //   thunk 0x4A82B0  (impl 0x4A8860)
@@ -6521,7 +6523,7 @@ namespace CWindActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, mag);
-        vm::call(0x4A82B0, _gb);
+        vm::call(GbAddr{0x4A82B0, 0x4A7F40}, _gb);
     }
     // void setPitch(float angle)
     //   thunk 0x4A82F0  (impl 0x4A8860)
@@ -6529,7 +6531,7 @@ namespace CWindActor {
         vm::Block _gb;
         _gb.set_p(0, self);
         _gb.set_f(1, angle);
-        vm::call(0x4A82F0, _gb);
+        vm::call(GbAddr{0x4A82F0, 0x4A7F80}, _gb);
     }
 } // namespace CWindActor
 
@@ -6540,7 +6542,7 @@ namespace Global {
     inline void GTFO(const char* msg) {
         vm::Block _gb;
         _gb.set_p(0, msg);
-        vm::call(0x48F550, _gb);
+        vm::call(GbAddr{0x48F550, 0x48F1E0}, _gb);
     }
     // void addLight(vector pos, float radius, vector rgb, float intensity, float duration, float rampUp = 0.0, float rampDown = 0.0)
     //   thunk 0x1F8210  (via call)
@@ -6553,7 +6555,7 @@ namespace Global {
         _gb.set_f(8, duration);
         _gb.set_f(9, rampUp);
         _gb.set_f(10, rampDown);
-        vm::call(0x1F8210, _gb);
+        vm::call(GbAddr{0x1F8210, 0x1F8150}, _gb);
     }
     // void addSfxControllerSpeakerInfo(@SSfxInfo info, EControllerSpeaker s)
     //   thunk 0x411E50  (via none)
@@ -6561,48 +6563,48 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, info);
         _gb.set_i(1, s);
-        vm::call(0x411E50, _gb);
+        vm::call(GbAddr{0x411E50, 0x411C60}, _gb);
     }
     // void allowEnemyAttack(bool flag)
     //   thunk 0x2D8420  (via indirect)
     inline void allowEnemyAttack(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x2D8420, _gb);
+        vm::call(GbAddr{0x2D8420, 0x2D8230}, _gb);
     }
     // void allowHeroControls(bool flag)
     //   thunk 0x2D8440  (via indirect)
     inline void allowHeroControls(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x2D8440, _gb);
+        vm::call(GbAddr{0x2D8440, 0x2D8250}, _gb);
     }
     // void allowHeroDamage(bool flag)
     //   thunk 0x2D8460  (via indirect)
     inline void allowHeroDamage(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x2D8460, _gb);
+        vm::call(GbAddr{0x2D8460, 0x2D8270}, _gb);
     }
     // void animation()
     //   thunk 0x1F7FB0  (impl 0x1EC2D0)
     inline void animation() {
         vm::Block _gb;
-        vm::call(0x1F7FB0, _gb);
+        vm::call(GbAddr{0x1F7FB0, 0x1F7EF0}, _gb);
     }
     // void awardAchievement(int achievementId)
     //   thunk 0x1F80B0  (impl 0x1EC4D0)
     inline void awardAchievement(int achievementId) {
         vm::Block _gb;
         _gb.set_i(0, achievementId);
-        vm::call(0x1F80B0, _gb);
+        vm::call(GbAddr{0x1F80B0, 0x1F7FF0}, _gb);
     }
     // void beginCinemat(string name)
     //   thunk 0x2D8480  (via call)
     inline void beginCinemat(const char* name) {
         vm::Block _gb;
         _gb.set_p(0, name);
-        vm::call(0x2D8480, _gb);
+        vm::call(GbAddr{0x2D8480, 0x2D8290}, _gb);
     }
     // void buttonPrompt(EButtonAction buttonAction, float duration)
     //   thunk 0x254790  (impl 0x2494D0)
@@ -6610,21 +6612,21 @@ namespace Global {
         vm::Block _gb;
         _gb.set_i(0, buttonAction);
         _gb.set_f(1, duration);
-        vm::call(0x254790, _gb);
+        vm::call(GbAddr{0x254790, 0x2545B0}, _gb);
     }
     // void cacheEffect(string effectName)
     //   thunk 0x35A380  (via call)
     inline void cacheEffect(const char* effectName) {
         vm::Block _gb;
         _gb.set_p(0, effectName);
-        vm::call(0x35A380, _gb);
+        vm::call(GbAddr{0x35A380, 0x35A190}, _gb);
     }
     // bool cacheSfx(string name)
     //   thunk 0x411E70  (via call)
     inline bool cacheSfx(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x411E70, _gb);
+        vm::call(GbAddr{0x411E70, 0x411C80}, _gb);
         return _gb.get_b(0);
     }
     // int cacheSfxEventGroup(string name)
@@ -6632,7 +6634,7 @@ namespace Global {
     inline int cacheSfxEventGroup(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x411E60, _gb);
+        vm::call(GbAddr{0x411E60, 0x411C70}, _gb);
         return _gb.get_i(0);
     }
     // void cacheSkeletalAnimation(string animationName)
@@ -6640,21 +6642,21 @@ namespace Global {
     inline void cacheSkeletalAnimation(const char* animationName) {
         vm::Block _gb;
         _gb.set_p(0, animationName);
-        vm::call(0x2D84D0, _gb);
+        vm::call(GbAddr{0x2D84D0, 0x2D82E0}, _gb);
     }
     // void cacheSkeletalAnimationByName(string animationName)
     //   thunk 0x2D84C0  (impl 0x2D9AF0)
     inline void cacheSkeletalAnimationByName(const char* animationName) {
         vm::Block _gb;
         _gb.set_p(0, animationName);
-        vm::call(0x2D84C0, _gb);
+        vm::call(GbAddr{0x2D84C0, 0x2D82D0}, _gb);
     }
     // void cacheStreamingCinemat(string cinematName)
     //   thunk 0x476520  (via call)
     inline void cacheStreamingCinemat(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(0, cinematName);
-        vm::call(0x476520, _gb);
+        vm::call(GbAddr{0x476520, 0x4761B0}, _gb);
     }
     // void cacheStreamingCinematAndAudio(string cinematName, string audioFileName)
     //   thunk 0x476510  (impl 0x477500)
@@ -6662,7 +6664,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, cinematName);
         _gb.set_p(1, audioFileName);
-        vm::call(0x476510, _gb);
+        vm::call(GbAddr{0x476510, 0x4761A0}, _gb);
     }
     // vector calcLaunchVelocityPitch(vector launchPos, vector targetPos, float minElev, float maxElev)
     //   thunk 0x48F330  (impl 0x48F403)
@@ -6672,7 +6674,7 @@ namespace Global {
         _gb.set_v(6, targetPos);
         _gb.set_f(9, minElev);
         _gb.set_f(10, maxElev);
-        vm::call(0x48F330, _gb);
+        vm::call(GbAddr{0x48F330, 0x48EFC0}, _gb);
         return _gb.get_v(0);
     }
     // vector calcLaunchVelocityTime(vector launchPos, vector targetPos, float flightTime)
@@ -6682,21 +6684,21 @@ namespace Global {
         _gb.set_v(3, launchPos);
         _gb.set_v(6, targetPos);
         _gb.set_f(9, flightTime);
-        vm::call(0x48F420, _gb);
+        vm::call(GbAddr{0x48F420, 0x48F0B0}, _gb);
         return _gb.get_v(0);
     }
     // void cancelWalkToOnAllCharacters()
     //   thunk 0x1F81B0  (impl 0x1EC8D0)
     inline void cancelWalkToOnAllCharacters() {
         vm::Block _gb;
-        vm::call(0x1F81B0, _gb);
+        vm::call(GbAddr{0x1F81B0, 0x1F80F0}, _gb);
     }
     // float ceil(float in)
     //   thunk 0x48F560  (via call)
     inline float ceil(float in) {
         vm::Block _gb;
         _gb.set_f(1, in);
-        vm::call(0x48F560, _gb);
+        vm::call(GbAddr{0x48F560, 0x48F1F0}, _gb);
         return _gb.get_f(0);
     }
     // void chainToLevel(String levelName, String lvlCheckpoint = "")
@@ -6705,32 +6707,32 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, levelName);
         _gb.set_p(1, lvlCheckpoint);
-        vm::call(0x1F8190, _gb);
+        vm::call(GbAddr{0x1F8190, 0x1F80D0}, _gb);
     }
     // void channels()
     //   thunk 0x1F7FD0  (impl 0x1EC350)
     inline void channels() {
         vm::Block _gb;
-        vm::call(0x1F7FD0, _gb);
+        vm::call(GbAddr{0x1F7FD0, 0x1F7F10}, _gb);
     }
     // void cinemat()
     //   thunk 0x1F7FC0  (impl 0x1EC310)
     inline void cinemat() {
         vm::Block _gb;
-        vm::call(0x1F7FC0, _gb);
+        vm::call(GbAddr{0x1F7FC0, 0x1F7F00}, _gb);
     }
     // void clearDebug()
     //   thunk 0x1F7FE0  (impl 0x1EC390)
     inline void clearDebug() {
         vm::Block _gb;
-        vm::call(0x1F7FE0, _gb);
+        vm::call(GbAddr{0x1F7FE0, 0x1F7F20}, _gb);
     }
     // float cos(float in)
     //   thunk 0x48F590  (via call)
     inline float cos(float in) {
         vm::Block _gb;
         _gb.set_f(1, in);
-        vm::call(0x48F590, _gb);
+        vm::call(GbAddr{0x48F590, 0x48F220}, _gb);
         return _gb.get_f(0);
     }
     // @CActor createActorOfType(string className, vector wPos)
@@ -6739,7 +6741,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(1, className);
         _gb.set_v(2, wPos);
-        vm::call(0x2BD6E0, _gb);
+        vm::call(GbAddr{0x2BD6E0, 0x2BD4F0}, _gb);
         return _gb.get_p(0);
     }
     // void createExplosion(vector pos, float radius, float damageStrength, float speed = 999.0)
@@ -6750,7 +6752,7 @@ namespace Global {
         _gb.set_f(3, radius);
         _gb.set_f(4, damageStrength);
         _gb.set_f(5, speed);
-        vm::call(0x1EB660, _gb);
+        vm::call(GbAddr{0x1EB660, 0x1EB660}, _gb);
     }
     // void createInvisibleExplosion(vector pos, float radius, float damageToNPC)
     //   thunk 0x1EB6B0  (via call)
@@ -6759,7 +6761,7 @@ namespace Global {
         _gb.set_v(0, pos);
         _gb.set_f(3, radius);
         _gb.set_f(4, damageToNPC);
-        vm::call(0x1EB6B0, _gb);
+        vm::call(GbAddr{0x1EB6B0, 0x1EB6B0}, _gb);
     }
     // vector crossProduct(vector a, vector b)
     //   thunk 0x48F4E0  (via none)
@@ -6767,7 +6769,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_v(3, a);
         _gb.set_v(6, b);
-        vm::call(0x48F4E0, _gb);
+        vm::call(GbAddr{0x48F4E0, 0x48F170}, _gb);
         return _gb.get_v(0);
     }
     // void cueStreamingCinemat(string cinematName, float initialCursorPos = 0.0)
@@ -6776,42 +6778,42 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, cinematName);
         _gb.set_f(1, initialCursorPos);
-        vm::call(0x4765C0, _gb);
+        vm::call(GbAddr{0x4765C0, 0x476250}, _gb);
     }
     // void customVolLiteHotel(@CVolLite which)
     //   thunk 0x1F84C0  (impl 0x1ECF20)
     inline void customVolLiteHotel(void* which) {
         vm::Block _gb;
         _gb.set_p(0, which);
-        vm::call(0x1F84C0, _gb);
+        vm::call(GbAddr{0x1F84C0, 0x1F8400}, _gb);
     }
     // void customVolLiteSewerSkylight(@CVolLite which)
     //   thunk 0x1F84D0  (impl 0x1ECFA0)
     inline void customVolLiteSewerSkylight(void* which) {
         vm::Block _gb;
         _gb.set_p(0, which);
-        vm::call(0x1F84D0, _gb);
+        vm::call(GbAddr{0x1F84D0, 0x1F8410}, _gb);
     }
     // float dbNarrative(@CDialogDatabaseEntry dbEntry)
     //   thunk 0x1F83E0  (via call)
     inline float dbNarrative(void* dbEntry) {
         vm::Block _gb;
         _gb.set_p(1, dbEntry);
-        vm::call(0x1F83E0, _gb);
+        vm::call(GbAddr{0x1F83E0, 0x1F8320}, _gb);
         return _gb.get_f(0);
     }
     // void dbNarrativeStop()
     //   thunk 0x1F8410  (impl 0x1ECED0)
     inline void dbNarrativeStop() {
         vm::Block _gb;
-        vm::call(0x1F8410, _gb);
+        vm::call(GbAddr{0x1F8410, 0x1F8350}, _gb);
     }
     // void debugPrint(String msg)
     //   thunk 0x48F5C0  (via none)
     inline void debugPrint(const char* msg) {
         vm::Block _gb;
         _gb.set_p(0, msg);
-        vm::call(0x48F5C0, _gb);
+        vm::call(GbAddr{0x48F5C0, 0x48F250}, _gb);
     }
     // void defineCheckpoint(string functionName, string checkpointName)
     //   thunk 0x1F81D0  (impl 0x1ECA20)
@@ -6819,14 +6821,14 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, functionName);
         _gb.set_p(1, checkpointName);
-        vm::call(0x1F81D0, _gb);
+        vm::call(GbAddr{0x1F81D0, 0x1F8110}, _gb);
     }
     // Vector deltaToOrient(Vector delta)
     //   thunk 0x48F5D0  (via call)
     inline Vector3 deltaToOrient(Vector3 delta) {
         vm::Block _gb;
         _gb.set_v(3, delta);
-        vm::call(0x48F5D0, _gb);
+        vm::call(GbAddr{0x48F5D0, 0x48F260}, _gb);
         return _gb.get_v(0);
     }
     // void display(string text, float duration = -1.0, int slot = 0)
@@ -6836,19 +6838,19 @@ namespace Global {
         _gb.set_p(0, text);
         _gb.set_f(1, duration);
         _gb.set_i(2, slot);
-        vm::call(0x1F7FF0, _gb);
+        vm::call(GbAddr{0x1F7FF0, 0x1F7F30}, _gb);
     }
     // void displayDemoSplashScreen()
     //   thunk 0x1F8330  (impl 0x1ECD30)
     inline void displayDemoSplashScreen() {
         vm::Block _gb;
-        vm::call(0x1F8330, _gb);
+        vm::call(GbAddr{0x1F8330, 0x1F8270}, _gb);
     }
     // void displayGhostViewer()
     //   thunk 0x1F8360  (impl 0x1ECD90)
     inline void displayGhostViewer() {
         vm::Block _gb;
-        vm::call(0x1F8360, _gb);
+        vm::call(GbAddr{0x1F8360, 0x1F82A0}, _gb);
     }
     // void displayMessage(EHudMessage messageId, String text, float duration = -1.0f)
     //   thunk 0x254770  (impl 0x2494A0)
@@ -6857,7 +6859,7 @@ namespace Global {
         _gb.set_i(0, messageId);
         _gb.set_p(1, text);
         _gb.set_f(2, duration);
-        vm::call(0x254770, _gb);
+        vm::call(GbAddr{0x254770, 0x254590}, _gb);
     }
     // void displaySplashScreen(string textureName, float duration, bool stretch = false, bool clear = true)
     //   thunk 0x1F8340  (impl 0x1ECD50)
@@ -6867,7 +6869,7 @@ namespace Global {
         _gb.set_f(1, duration);
         _gb.set_b(2, stretch);
         _gb.set_b(3, clear);
-        vm::call(0x1F8340, _gb);
+        vm::call(GbAddr{0x1F8340, 0x1F8280}, _gb);
     }
     // float distance(Vector p1, Vector p2)
     //   thunk 0x48F630  (via call)
@@ -6875,7 +6877,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_v(1, p1);
         _gb.set_v(4, p2);
-        vm::call(0x48F630, _gb);
+        vm::call(GbAddr{0x48F630, 0x48F2C0}, _gb);
         return _gb.get_f(0);
     }
     // float dotProduct(vector a, vector b)
@@ -6884,7 +6886,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_v(1, a);
         _gb.set_v(4, b);
-        vm::call(0x48F8F0, _gb);
+        vm::call(GbAddr{0x48F8F0, 0x48F580}, _gb);
         return _gb.get_f(0);
     }
     // void drinkFromFountain(int fountainIdx)
@@ -6892,7 +6894,7 @@ namespace Global {
     inline void drinkFromFountain(int fountainIdx) {
         vm::Block _gb;
         _gb.set_i(0, fountainIdx);
-        vm::call(0x1F8140, _gb);
+        vm::call(GbAddr{0x1F8140, 0x1F8080}, _gb);
     }
     // void enableActorsInLevelSection(string levelSection, bool flag)
     //   thunk 0x2D85C0  (impl 0x2DA4A0)
@@ -6900,41 +6902,41 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, levelSection);
         _gb.set_b(1, flag);
-        vm::call(0x2D85C0, _gb);
+        vm::call(GbAddr{0x2D85C0, 0x2D83D0}, _gb);
     }
     // void enableAllLights(bool flag)
     //   thunk 0x2E3810  (via none)
     inline void enableAllLights(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x2E3810, _gb);
+        vm::call(GbAddr{0x2E3810, 0x2E3620}, _gb);
     }
     // void enableHUD(int flag)
     //   thunk 0x1F8150  (impl 0x1EC7F0)
     inline void enableHUD(int flag) {
         vm::Block _gb;
         _gb.set_i(0, flag);
-        vm::call(0x1F8150, _gb);
+        vm::call(GbAddr{0x1F8150, 0x1F8090}, _gb);
     }
     // void endCinemat(string name)
     //   thunk 0x2D85E0  (via call)
     inline void endCinemat(const char* name) {
         vm::Block _gb;
         _gb.set_p(0, name);
-        vm::call(0x2D85E0, _gb);
+        vm::call(GbAddr{0x2D85E0, 0x2D83F0}, _gb);
     }
     // void endGame()
     //   thunk 0x1F80C0  (impl 0x1EC500)
     inline void endGame() {
         vm::Block _gb;
-        vm::call(0x1F80C0, _gb);
+        vm::call(GbAddr{0x1F80C0, 0x1F8000}, _gb);
     }
     // float fAbs(float value)
     //   thunk 0x48F680  (via none)
     inline float fAbs(float value) {
         vm::Block _gb;
         _gb.set_f(1, value);
-        vm::call(0x48F680, _gb);
+        vm::call(GbAddr{0x48F680, 0x48F310}, _gb);
         return _gb.get_f(0);
     }
     // float fRand(float min, float max)
@@ -6943,7 +6945,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_f(1, min);
         _gb.set_f(2, max);
-        vm::call(0x48F6A0, _gb);
+        vm::call(GbAddr{0x48F6A0, 0x48F330}, _gb);
         return _gb.get_f(0);
     }
     // void fade(float opacity, float r, float g, float b, float duration)
@@ -6955,14 +6957,14 @@ namespace Global {
         _gb.set_f(2, g);
         _gb.set_f(3, b);
         _gb.set_f(4, duration);
-        vm::call(0x1F82F0, _gb);
+        vm::call(GbAddr{0x1F82F0, 0x1F8230}, _gb);
     }
     // @CActor findActorByName(string actorName)
     //   thunk 0x2D8620  (via call)
     inline void* findActorByName(const char* actorName) {
         vm::Block _gb;
         _gb.set_p(1, actorName);
-        vm::call(0x2D8620, _gb);
+        vm::call(GbAddr{0x2D8620, 0x2D8430}, _gb);
         return _gb.get_p(0);
     }
     // @CActorGroup findActorGroupByName(string groupName)
@@ -6970,7 +6972,7 @@ namespace Global {
     inline void* findActorGroupByName(const char* groupName) {
         vm::Block _gb;
         _gb.set_p(1, groupName);
-        vm::call(0x2D8650, _gb);
+        vm::call(GbAddr{0x2D8650, 0x2D8460}, _gb);
         return _gb.get_p(0);
     }
     // int findActorsByWildcard(@CActorGroup groupName, string wildcard)
@@ -6979,7 +6981,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(1, groupName);
         _gb.set_p(2, wildcard);
-        vm::call(0x2D86A0, _gb);
+        vm::call(GbAddr{0x2D86A0, 0x2D84B0}, _gb);
         return _gb.get_i(0);
     }
     // @CBreaker findBreakerByName(string name)
@@ -6987,7 +6989,7 @@ namespace Global {
     inline void* findBreakerByName(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x2E3860, _gb);
+        vm::call(GbAddr{0x2E3860, 0x2E3670}, _gb);
         return _gb.get_p(0);
     }
     // @CDialogDatabaseEntry findDBEntry(String tag)
@@ -6995,7 +6997,7 @@ namespace Global {
     inline void* findDBEntry(const char* tag) {
         vm::Block _gb;
         _gb.set_p(1, tag);
-        vm::call(0x48F920, _gb);
+        vm::call(GbAddr{0x48F920, 0x48F5B0}, _gb);
         return _gb.get_p(0);
     }
     // @CPortalLight findLightByName(string name)
@@ -7003,7 +7005,7 @@ namespace Global {
     inline void* findLightByName(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x2E38B0, _gb);
+        vm::call(GbAddr{0x2E38B0, 0x2E36C0}, _gb);
         return _gb.get_p(0);
     }
     // @CRoom findRoomByName(string name)
@@ -7011,7 +7013,7 @@ namespace Global {
     inline void* findRoomByName(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x2E3900, _gb);
+        vm::call(GbAddr{0x2E3900, 0x2E3710}, _gb);
         return _gb.get_p(0);
     }
     // @CRoom findRoomForPoint(vector wPos)
@@ -7019,7 +7021,7 @@ namespace Global {
     inline void* findRoomForPoint(Vector3 wPos) {
         vm::Block _gb;
         _gb.set_v(1, wPos);
-        vm::call(0x2E3950, _gb);
+        vm::call(GbAddr{0x2E3950, 0x2E3760}, _gb);
         return _gb.get_p(0);
     }
     // float floor(float in)
@@ -7027,7 +7029,7 @@ namespace Global {
     inline float floor(float in) {
         vm::Block _gb;
         _gb.set_f(1, in);
-        vm::call(0x48F6F0, _gb);
+        vm::call(GbAddr{0x48F6F0, 0x48F380}, _gb);
         return _gb.get_f(0);
     }
     // string formatFloat(float floatVal, int decimalDigits)
@@ -7036,35 +7038,35 @@ namespace Global {
         vm::Block _gb;
         _gb.set_f(1, floatVal);
         _gb.set_i(2, decimalDigits);
-        vm::call(0x48F9A0, _gb);
+        vm::call(GbAddr{0x48F9A0, 0x48F630}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // string getBuildDescription()
     //   thunk 0x1F8430  (via call)
     inline const char* getBuildDescription() {
         vm::Block _gb;
-        vm::call(0x1F8430, _gb);
+        vm::call(GbAddr{0x1F8430, 0x1F8370}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // float getLevelDamage()
     //   thunk 0x1F80F0  (via call)
     inline float getLevelDamage() {
         vm::Block _gb;
-        vm::call(0x1F80F0, _gb);
+        vm::call(GbAddr{0x1F80F0, 0x1F8030}, _gb);
         return _gb.get_f(0);
     }
     // int getNextAttackId()
     //   thunk 0x1FD3F0  (via call)
     inline int getNextAttackId() {
         vm::Block _gb;
-        vm::call(0x1FD3F0, _gb);
+        vm::call(GbAddr{0x1FD3F0, 0x1FD220}, _gb);
         return _gb.get_i(0);
     }
     // EGameControl getPlayerControllerType()
     //   thunk 0x2D8570  (via indirect)
     inline int getPlayerControllerType() {
         vm::Block _gb;
-        vm::call(0x2D8570, _gb);
+        vm::call(GbAddr{0x2D8570, 0x2D8380}, _gb);
         return _gb.get_i(0);
     }
     // float getStat(int statIdx)
@@ -7072,7 +7074,7 @@ namespace Global {
     inline float getStat(int statIdx) {
         vm::Block _gb;
         _gb.set_i(1, statIdx);
-        vm::call(0x1F8110, _gb);
+        vm::call(GbAddr{0x1F8110, 0x1F8050}, _gb);
         return _gb.get_f(0);
     }
     // int iRand(int min, int max)
@@ -7081,14 +7083,14 @@ namespace Global {
         vm::Block _gb;
         _gb.set_i(1, min);
         _gb.set_i(2, max);
-        vm::call(0x48F720, _gb);
+        vm::call(GbAddr{0x48F720, 0x48F3B0}, _gb);
         return _gb.get_i(0);
     }
     // void idle()
     //   thunk 0x48F740  (via none)
     inline void idle() {
         vm::Block _gb;
-        vm::call(0x48F740, _gb);
+        vm::call(GbAddr{0x48F740, 0x48F3D0}, _gb);
     }
     // void insertTweakVarBool(string label, @bool variablePtr)
     //   thunk 0x2D86D0  (impl 0x31D780)
@@ -7096,7 +7098,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, label);
         _gb.set_p(1, variablePtr);
-        vm::call(0x2D86D0, _gb);
+        vm::call(GbAddr{0x2D86D0, 0x2D84E0}, _gb);
     }
     // void insertTweakVarFloat(string label, @float variablePtr, float minVal, float maxVal, float increment)
     //   thunk 0x2D86F0  (via call)
@@ -7107,7 +7109,7 @@ namespace Global {
         _gb.set_f(2, minVal);
         _gb.set_f(3, maxVal);
         _gb.set_f(4, increment);
-        vm::call(0x2D86F0, _gb);
+        vm::call(GbAddr{0x2D86F0, 0x2D8500}, _gb);
     }
     // void insertTweakVarInt(string label, @int variablePtr, int minVal, int maxVal, int increment)
     //   thunk 0x2D8740  (via call)
@@ -7118,27 +7120,27 @@ namespace Global {
         _gb.set_i(2, minVal);
         _gb.set_i(3, maxVal);
         _gb.set_i(4, increment);
-        vm::call(0x2D8740, _gb);
+        vm::call(GbAddr{0x2D8740, 0x2D8550}, _gb);
     }
     // bool isDemoBuild()
     //   thunk 0x2D8780  (via none)
     inline bool isDemoBuild() {
         vm::Block _gb;
-        vm::call(0x2D8780, _gb);
+        vm::call(GbAddr{0x2D8780, 0x2D8590}, _gb);
         return _gb.get_b(0);
     }
     // bool isLibrarianScanned()
     //   thunk 0x1F83A0  (via call)
     inline bool isLibrarianScanned() {
         vm::Block _gb;
-        vm::call(0x1F83A0, _gb);
+        vm::call(GbAddr{0x1F83A0, 0x1F82E0}, _gb);
         return _gb.get_b(0);
     }
     // bool isRunningOnGen3Platform()
     //   thunk 0x2D8790  (via none)
     inline bool isRunningOnGen3Platform() {
         vm::Block _gb;
-        vm::call(0x2D8790, _gb);
+        vm::call(GbAddr{0x2D8790, 0x2D85A0}, _gb);
         return _gb.get_b(0);
     }
     // bool isSfxActive(int handle)
@@ -7146,14 +7148,14 @@ namespace Global {
     inline bool isSfxActive(int handle) {
         vm::Block _gb;
         _gb.set_i(1, handle);
-        vm::call(0x411EC0, _gb);
+        vm::call(GbAddr{0x411EC0, 0x411CD0}, _gb);
         return _gb.get_b(0);
     }
     // bool isSixAxisEnabled()
     //   thunk 0x1F84A0  (via call)
     inline bool isSixAxisEnabled() {
         vm::Block _gb;
-        vm::call(0x1F84A0, _gb);
+        vm::call(GbAddr{0x1F84A0, 0x1F83E0}, _gb);
         return _gb.get_b(0);
     }
     // bool isStreamingCinematPlaying(string cinematName)
@@ -7161,7 +7163,7 @@ namespace Global {
     inline bool isStreamingCinematPlaying(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(1, cinematName);
-        vm::call(0x4765D0, _gb);
+        vm::call(GbAddr{0x4765D0, 0x476260}, _gb);
         return _gb.get_b(0);
     }
     // bool isThreadActive(int threadHandle)
@@ -7169,7 +7171,7 @@ namespace Global {
     inline bool isThreadActive(int threadHandle) {
         vm::Block _gb;
         _gb.set_i(1, threadHandle);
-        vm::call(0x48FA00, _gb);
+        vm::call(GbAddr{0x48FA00, 0x48F690}, _gb);
         return _gb.get_b(0);
     }
     // void killEffect(int handle)
@@ -7177,21 +7179,21 @@ namespace Global {
     inline void killEffect(int handle) {
         vm::Block _gb;
         _gb.set_i(0, handle);
-        vm::call(0x35A3E0, _gb);
+        vm::call(GbAddr{0x35A3E0, 0x35A1F0}, _gb);
     }
     // void killSfx(int handle)
     //   thunk 0x411F10  (via call)
     inline void killSfx(int handle) {
         vm::Block _gb;
         _gb.set_i(0, handle);
-        vm::call(0x411F10, _gb);
+        vm::call(GbAddr{0x411F10, 0x411D20}, _gb);
     }
     // bool killThreadByHandle(int threadHandle)
     //   thunk 0x48FA90  (via call)
     inline bool killThreadByHandle(int threadHandle) {
         vm::Block _gb;
         _gb.set_i(1, threadHandle);
-        vm::call(0x48FA90, _gb);
+        vm::call(GbAddr{0x48FA90, 0x48F720}, _gb);
         return _gb.get_b(0);
     }
     // void letterbox(bool flag)
@@ -7199,7 +7201,7 @@ namespace Global {
     inline void letterbox(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x2D87A0, _gb);
+        vm::call(GbAddr{0x2D87A0, 0x2D85B0}, _gb);
     }
     // float limit(float min, float value, float max)
     //   thunk 0x48F770  (via none)
@@ -7208,7 +7210,7 @@ namespace Global {
         _gb.set_f(1, min);
         _gb.set_f(2, value);
         _gb.set_f(3, max);
-        vm::call(0x48F770, _gb);
+        vm::call(GbAddr{0x48F770, 0x48F400}, _gb);
         return _gb.get_f(0);
     }
     // void loadCheckpoint(string checkpointName)
@@ -7216,27 +7218,27 @@ namespace Global {
     inline void loadCheckpoint(const char* checkpointName) {
         vm::Block _gb;
         _gb.set_p(0, checkpointName);
-        vm::call(0x1F81F0, _gb);
+        vm::call(GbAddr{0x1F81F0, 0x1F8130}, _gb);
     }
     // void loadMixSnapshot(string name)
     //   thunk 0x411F50  (impl 0x414170)
     inline void loadMixSnapshot(const char* name) {
         vm::Block _gb;
         _gb.set_p(0, name);
-        vm::call(0x411F50, _gb);
+        vm::call(GbAddr{0x411F50, 0x411D60}, _gb);
     }
     // void notifyNewEquipmentAvailable()
     //   thunk 0x1F83D0  (impl 0x1ECE90)
     inline void notifyNewEquipmentAvailable() {
         vm::Block _gb;
-        vm::call(0x1F83D0, _gb);
+        vm::call(GbAddr{0x1F83D0, 0x1F8310}, _gb);
     }
     // Vector orientToDelta(Vector orient)
     //   thunk 0x48F790  (via call)
     inline Vector3 orientToDelta(Vector3 orient) {
         vm::Block _gb;
         _gb.set_v(3, orient);
-        vm::call(0x48F790, _gb);
+        vm::call(GbAddr{0x48F790, 0x48F420}, _gb);
         return _gb.get_v(0);
     }
     // void pauseEditor(string msg)
@@ -7244,7 +7246,7 @@ namespace Global {
     inline void pauseEditor(const char* msg) {
         vm::Block _gb;
         _gb.set_p(0, msg);
-        vm::call(0x2D87D0, _gb);
+        vm::call(GbAddr{0x2D87D0, 0x2D85E0}, _gb);
     }
     // void pauseSfx(int handle, bool flag)
     //   thunk 0x411F60  (via call)
@@ -7252,21 +7254,21 @@ namespace Global {
         vm::Block _gb;
         _gb.set_i(0, handle);
         _gb.set_b(1, flag);
-        vm::call(0x411F60, _gb);
+        vm::call(GbAddr{0x411F60, 0x411D70}, _gb);
     }
     // void playStreamingCinemat(string cinematName)
     //   thunk 0x476600  (impl 0x478930)
     inline void playStreamingCinemat(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(0, cinematName);
-        vm::call(0x476600, _gb);
+        vm::call(GbAddr{0x476600, 0x476290}, _gb);
     }
     // bool playerHasArtifact(int artifact)
     //   thunk 0x1F80D0  (via call)
     inline bool playerHasArtifact(int artifact) {
         vm::Block _gb;
         _gb.set_i(1, artifact);
-        vm::call(0x1F80D0, _gb);
+        vm::call(GbAddr{0x1F80D0, 0x1F8010}, _gb);
         return _gb.get_b(0);
     }
     // void queueVideo(string name)
@@ -7274,13 +7276,13 @@ namespace Global {
     inline void queueVideo(const char* name) {
         vm::Block _gb;
         _gb.set_p(0, name);
-        vm::call(0x2D87E0, _gb);
+        vm::call(GbAddr{0x2D87E0, 0x2D85F0}, _gb);
     }
     // void quitLevel()
     //   thunk 0x1F8170  (impl 0x1EC830)
     inline void quitLevel() {
         vm::Block _gb;
-        vm::call(0x1F8170, _gb);
+        vm::call(GbAddr{0x1F8170, 0x1F80B0}, _gb);
     }
     // void rampTimeFactor(float timeFactor, float rampTime)
     //   thunk 0x3B0390  (impl 0x3B11C0)
@@ -7288,14 +7290,14 @@ namespace Global {
         vm::Block _gb;
         _gb.set_f(0, timeFactor);
         _gb.set_f(1, rampTime);
-        vm::call(0x3B0390, _gb);
+        vm::call(GbAddr{0x3B0390, 0x3B01A0}, _gb);
     }
     // bool randBool(float odds)
     //   thunk 0x48F7F0  (via none)
     inline bool randBool(float odds) {
         vm::Block _gb;
         _gb.set_f(1, odds);
-        vm::call(0x48F7F0, _gb);
+        vm::call(GbAddr{0x48F7F0, 0x48F480}, _gb);
         return _gb.get_b(0);
     }
     // void removeSfxControllerSpeakerInfo(@SSfxInfo info, EControllerSpeaker s)
@@ -7304,72 +7306,72 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, info);
         _gb.set_i(1, s);
-        vm::call(0x411FA0, _gb);
+        vm::call(GbAddr{0x411FA0, 0x411DB0}, _gb);
     }
     // void removeTweakVar(string label)
     //   thunk 0x2D8800  (impl 0x31E190)
     inline void removeTweakVar(const char* label) {
         vm::Block _gb;
         _gb.set_p(0, label);
-        vm::call(0x2D8800, _gb);
+        vm::call(GbAddr{0x2D8800, 0x2D8610}, _gb);
     }
     // void resetBreakers()
     //   thunk 0x2E39D0  (via call)
     inline void resetBreakers() {
         vm::Block _gb;
-        vm::call(0x2E39D0, _gb);
+        vm::call(GbAddr{0x2E39D0, 0x2E37E0}, _gb);
     }
     // void resetGravity()
     //   thunk 0x1F82E0  (impl 0x1ECC60)
     inline void resetGravity() {
         vm::Block _gb;
-        vm::call(0x1F82E0, _gb);
+        vm::call(GbAddr{0x1F82E0, 0x1F8220}, _gb);
     }
     // void resetScorchMarks()
     //   thunk 0x27DA60  (impl 0x27DA40)
     inline void resetScorchMarks() {
         vm::Block _gb;
-        vm::call(0x27DA60, _gb);
+        vm::call(GbAddr{0x27DA60, 0x27D880}, _gb);
     }
     // void restartLevel()
     //   thunk 0x1F8180  (impl 0x1EC850)
     inline void restartLevel() {
         vm::Block _gb;
-        vm::call(0x1F8180, _gb);
+        vm::call(GbAddr{0x1F8180, 0x1F80C0}, _gb);
     }
     // void restartStreamingCinemat(string cinematName)
     //   thunk 0x476610  (via call)
     inline void restartStreamingCinemat(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(0, cinematName);
-        vm::call(0x476610, _gb);
+        vm::call(GbAddr{0x476610, 0x4762A0}, _gb);
     }
     // void rollCredits()
     //   thunk 0x2D85A0  (via indirect)
     inline void rollCredits() {
         vm::Block _gb;
-        vm::call(0x2D85A0, _gb);
+        vm::call(GbAddr{0x2D85A0, 0x2D83B0}, _gb);
     }
     // void saveCheckpoint(string checkpointName)
     //   thunk 0x1F81C0  (impl 0x1EC970)
     inline void saveCheckpoint(const char* checkpointName) {
         vm::Block _gb;
         _gb.set_p(0, checkpointName);
-        vm::call(0x1F81C0, _gb);
+        vm::call(GbAddr{0x1F81C0, 0x1F8100}, _gb);
     }
     // void setAllowDamageTally(bool flag)
     //   thunk 0x1F8160  (impl 0x1EC810)
     inline void setAllowDamageTally(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x1F8160, _gb);
+        vm::call(GbAddr{0x1F8160, 0x1F80A0}, _gb);
     }
     // bool setAmbience(string name)
     //   thunk 0x411FB0  (via call)
     inline bool setAmbience(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x411FB0, _gb);
+        vm::call(GbAddr{0x411FB0, 0x411DC0}, _gb);
         return _gb.get_b(0);
     }
     // void setCurrentObjective(string test)
@@ -7377,14 +7379,14 @@ namespace Global {
     inline void setCurrentObjective(const char* test) {
         vm::Block _gb;
         _gb.set_p(0, test);
-        vm::call(0x1F8200, _gb);
+        vm::call(GbAddr{0x1F8200, 0x1F8140}, _gb);
     }
     // void setDamageFog(bool flag)
     //   thunk 0x1E6A10  (impl 0x1E6A00)
     inline void setDamageFog(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x1E6A10, _gb);
+        vm::call(GbAddr{0x1E6A10, 0x1E6A10}, _gb);
     }
     // void setDisplayBoxed(int slot, bool boxed = true)
     //   thunk 0x1F8070  (impl 0x1EC490)
@@ -7392,7 +7394,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_i(0, slot);
         _gb.set_b(1, boxed);
-        vm::call(0x1F8070, _gb);
+        vm::call(GbAddr{0x1F8070, 0x1F7FB0}, _gb);
     }
     // void setDisplayColor(int slot, float red, float green, float blue)
     //   thunk 0x1F8010  (impl 0x1EC410)
@@ -7402,7 +7404,7 @@ namespace Global {
         _gb.set_f(1, red);
         _gb.set_f(2, green);
         _gb.set_f(3, blue);
-        vm::call(0x1F8010, _gb);
+        vm::call(GbAddr{0x1F8010, 0x1F7F50}, _gb);
     }
     // void setDisplayMaxWidth(int slot, float maxWidth = -1.0)
     //   thunk 0x1F8090  (impl 0x1EC4B0)
@@ -7410,7 +7412,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_i(0, slot);
         _gb.set_f(1, maxWidth);
-        vm::call(0x1F8090, _gb);
+        vm::call(GbAddr{0x1F8090, 0x1F7FD0}, _gb);
     }
     // void setDisplayPosition(int slot, int xPosition, int yPosition, ETextAlignX alignment)
     //   thunk 0x1F8030  (impl 0x1EC440)
@@ -7420,7 +7422,7 @@ namespace Global {
         _gb.set_i(1, xPosition);
         _gb.set_i(2, yPosition);
         _gb.set_i(3, alignment);
-        vm::call(0x1F8030, _gb);
+        vm::call(GbAddr{0x1F8030, 0x1F7F70}, _gb);
     }
     // void setDisplaySize(int slot, float size)
     //   thunk 0x1F8050  (impl 0x1EC470)
@@ -7428,7 +7430,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_i(0, slot);
         _gb.set_f(1, size);
-        vm::call(0x1F8050, _gb);
+        vm::call(GbAddr{0x1F8050, 0x1F7F90}, _gb);
     }
     // void setFog(int r, int g, int b, float beginDistance, float endDistance, float maxValue, float rampTime)
     //   thunk 0x2E3A30  (via call)
@@ -7441,63 +7443,63 @@ namespace Global {
         _gb.set_f(4, endDistance);
         _gb.set_f(5, maxValue);
         _gb.set_f(6, rampTime);
-        vm::call(0x2E3A30, _gb);
+        vm::call(GbAddr{0x2E3A30, 0x2E3840}, _gb);
     }
     // void setGlobalWindHeading(float angle)
     //   thunk 0x2E3A80  (impl 0x4A86C0)
     inline void setGlobalWindHeading(float angle) {
         vm::Block _gb;
         _gb.set_f(0, angle);
-        vm::call(0x2E3A80, _gb);
+        vm::call(GbAddr{0x2E3A80, 0x2E3890}, _gb);
     }
     // void setGlobalWindMagnitudeMax(float mag)
     //   thunk 0x2E3A90  (impl 0x4A86E0)
     inline void setGlobalWindMagnitudeMax(float mag) {
         vm::Block _gb;
         _gb.set_f(0, mag);
-        vm::call(0x2E3A90, _gb);
+        vm::call(GbAddr{0x2E3A90, 0x2E38A0}, _gb);
     }
     // void setGlobalWindMagnitudeMin(float mag)
     //   thunk 0x2E3AA0  (impl 0x4A8700)
     inline void setGlobalWindMagnitudeMin(float mag) {
         vm::Block _gb;
         _gb.set_f(0, mag);
-        vm::call(0x2E3AA0, _gb);
+        vm::call(GbAddr{0x2E3AA0, 0x2E38B0}, _gb);
     }
     // void setGlobalWindPitch(float angle)
     //   thunk 0x2E3AB0  (impl 0x4A8720)
     inline void setGlobalWindPitch(float angle) {
         vm::Block _gb;
         _gb.set_f(0, angle);
-        vm::call(0x2E3AB0, _gb);
+        vm::call(GbAddr{0x2E3AB0, 0x2E38C0}, _gb);
     }
     // void setGravity(vector v)
     //   thunk 0x1F82A0  (via call)
     inline void setGravity(Vector3 v) {
         vm::Block _gb;
         _gb.set_v(0, v);
-        vm::call(0x1F82A0, _gb);
+        vm::call(GbAddr{0x1F82A0, 0x1F81E0}, _gb);
     }
     // void setLevelDescription(string name)
     //   thunk 0x2D8820  (via none)
     inline void setLevelDescription(const char* name) {
         vm::Block _gb;
         _gb.set_p(0, name);
-        vm::call(0x2D8820, _gb);
+        vm::call(GbAddr{0x2D8820, 0x2D8630}, _gb);
     }
     // void setMovieCaptureEnable(bool flag)
     //   thunk 0x2D8850  (via indirect)
     inline void setMovieCaptureEnable(bool flag) {
         vm::Block _gb;
         _gb.set_b(0, flag);
-        vm::call(0x2D8850, _gb);
+        vm::call(GbAddr{0x2D8850, 0x2D8660}, _gb);
     }
     // bool setMusic(string name)
     //   thunk 0x411FE0  (via call)
     inline bool setMusic(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x411FE0, _gb);
+        vm::call(GbAddr{0x411FE0, 0x411DF0}, _gb);
         return _gb.get_b(0);
     }
     // void setProtonBeamMaxLength(float length)
@@ -7505,14 +7507,14 @@ namespace Global {
     inline void setProtonBeamMaxLength(float length) {
         vm::Block _gb;
         _gb.set_f(0, length);
-        vm::call(0x277B30, _gb);
+        vm::call(GbAddr{0x277B30, 0x277950}, _gb);
     }
     // bool setReverb(string name)
     //   thunk 0x412010  (via call)
     inline bool setReverb(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x412010, _gb);
+        vm::call(GbAddr{0x412010, 0x411E20}, _gb);
         return _gb.get_b(0);
     }
     // void setSfxInfo(@SSfxInfo info, string name)
@@ -7521,7 +7523,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(0, info);
         _gb.set_p(1, name);
-        vm::call(0x412040, _gb);
+        vm::call(GbAddr{0x412040, 0x411E50}, _gb);
     }
     // void setSfxSpatializedInfo(@SSfxInfo info, @CVector pos)
     //   thunk 0x412060  (via none)
@@ -7530,7 +7532,7 @@ namespace Global {
         _gb.set_p(0, self);
         _gb.set_p(1, info);
         _gb.set_p(2, pos);
-        vm::call(0x412060, _gb);
+        vm::call(GbAddr{0x412060, 0x411E70}, _gb);
     }
     // void setSfxTrackedInfo(@SSfxInfo info, @CVector pos, @void data)
     //   thunk 0x412070  (via none)
@@ -7539,7 +7541,7 @@ namespace Global {
         _gb.set_p(0, info);
         _gb.set_p(1, pos);
         _gb.set_p(2, data);
-        vm::call(0x412070, _gb);
+        vm::call(GbAddr{0x412070, 0x411E80}, _gb);
     }
     // void setSkyboxAngle(float pitch, float bank, float heading, bool slam = false)
     //   thunk 0x2E3AC0  (via call)
@@ -7549,7 +7551,7 @@ namespace Global {
         _gb.set_f(1, bank);
         _gb.set_f(2, heading);
         _gb.set_b(3, slam);
-        vm::call(0x2E3AC0, _gb);
+        vm::call(GbAddr{0x2E3AC0, 0x2E38D0}, _gb);
     }
     // void setTimeFactor(float timeFactor, float rampTime = 0.0f)
     //   thunk 0x3B03B0  (impl 0x3B11C0)
@@ -7557,7 +7559,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_f(0, timeFactor);
         _gb.set_f(1, rampTime);
-        vm::call(0x3B03B0, _gb);
+        vm::call(GbAddr{0x3B03B0, 0x3B01C0}, _gb);
     }
     // bool simplePatternMatch(String pattern, String testString)
     //   thunk 0x48F830  (via call)
@@ -7565,7 +7567,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(1, pattern);
         _gb.set_p(2, testString);
-        vm::call(0x48F830, _gb);
+        vm::call(GbAddr{0x48F830, 0x48F4C0}, _gb);
         return _gb.get_b(0);
     }
     // float sin(float in)
@@ -7573,21 +7575,21 @@ namespace Global {
     inline float sin(float in) {
         vm::Block _gb;
         _gb.set_f(1, in);
-        vm::call(0x48F860, _gb);
+        vm::call(GbAddr{0x48F860, 0x48F4F0}, _gb);
         return _gb.get_f(0);
     }
     // void snapProfile()
     //   thunk 0x2D8870  (via none)
     inline void snapProfile() {
         vm::Block _gb;
-        vm::call(0x2D8870, _gb);
+        vm::call(GbAddr{0x2D8870, 0x2D8680}, _gb);
     }
     // float sqrt(float in)
     //   thunk 0x48F890  (via call)
     inline float sqrt(float in) {
         vm::Block _gb;
         _gb.set_f(1, in);
-        vm::call(0x48F890, _gb);
+        vm::call(GbAddr{0x48F890, 0x48F520}, _gb);
         return _gb.get_f(0);
     }
     // int startEffect(string effectName, vector position, vector orientation)
@@ -7597,7 +7599,7 @@ namespace Global {
         _gb.set_p(1, effectName);
         _gb.set_v(2, position);
         _gb.set_v(5, orientation);
-        vm::call(0x35A3F0, _gb);
+        vm::call(GbAddr{0x35A3F0, 0x35A200}, _gb);
         return _gb.get_i(0);
     }
     // int startSfx(string name)
@@ -7605,7 +7607,7 @@ namespace Global {
     inline int startSfx(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x412140, _gb);
+        vm::call(GbAddr{0x412140, 0x411F50}, _gb);
         return _gb.get_i(0);
     }
     // int startSfxInfo(@SSfxInfo info)
@@ -7613,7 +7615,7 @@ namespace Global {
     inline int startSfxInfo(void* info) {
         vm::Block _gb;
         _gb.set_p(1, info);
-        vm::call(0x412090, _gb);
+        vm::call(GbAddr{0x412090, 0x411EA0}, _gb);
         return _gb.get_i(0);
     }
     // int startSfxPaused(string name)
@@ -7621,7 +7623,7 @@ namespace Global {
     inline int startSfxPaused(const char* name) {
         vm::Block _gb;
         _gb.set_p(1, name);
-        vm::call(0x4120B0, _gb);
+        vm::call(GbAddr{0x4120B0, 0x411EC0}, _gb);
         return _gb.get_i(0);
     }
     // int startSfxSpatialized(string name, vector pos)
@@ -7630,7 +7632,7 @@ namespace Global {
         vm::Block _gb;
         _gb.set_p(1, name);
         _gb.set_v(2, pos);
-        vm::call(0x4120D0, _gb);
+        vm::call(GbAddr{0x4120D0, 0x411EE0}, _gb);
         return _gb.get_i(0);
     }
     // int startSfxTracked(string name, @CVector pos, @void data)
@@ -7640,7 +7642,7 @@ namespace Global {
         _gb.set_p(1, name);
         _gb.set_p(2, pos);
         _gb.set_p(3, data);
-        vm::call(0x412110, _gb);
+        vm::call(GbAddr{0x412110, 0x411F20}, _gb);
         return _gb.get_i(0);
     }
     // void stopStreamingCinemat(string cinematName)
@@ -7648,14 +7650,14 @@ namespace Global {
     inline void stopStreamingCinemat(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(0, cinematName);
-        vm::call(0x476640, _gb);
+        vm::call(GbAddr{0x476640, 0x4762D0}, _gb);
     }
     // float streamingCinematGetDuration(string cinematName)
     //   thunk 0x4766B0  (via call)
     inline float streamingCinematGetDuration(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(1, cinematName);
-        vm::call(0x4766B0, _gb);
+        vm::call(GbAddr{0x4766B0, 0x476340}, _gb);
         return _gb.get_f(0);
     }
     // float streamingCinematGetFrame(string cinematName)
@@ -7663,7 +7665,7 @@ namespace Global {
     inline float streamingCinematGetFrame(const char* cinematName) {
         vm::Block _gb;
         _gb.set_p(1, cinematName);
-        vm::call(0x476700, _gb);
+        vm::call(GbAddr{0x476700, 0x476390}, _gb);
         return _gb.get_f(0);
     }
     // @CActor tryFindActorByName(string actorName)
@@ -7671,45 +7673,45 @@ namespace Global {
     inline void* tryFindActorByName(const char* actorName) {
         vm::Block _gb;
         _gb.set_p(1, actorName);
-        vm::call(0x2D8880, _gb);
+        vm::call(GbAddr{0x2D8880, 0x2D8690}, _gb);
         return _gb.get_p(0);
     }
     // void unloadMixSnapshot()
     //   thunk 0x412160  (via none)
     inline void unloadMixSnapshot() {
         vm::Block _gb;
-        vm::call(0x412160, _gb);
+        vm::call(GbAddr{0x412160, 0x411F70}, _gb);
     }
     // void unlockSpiritGuideEctoplasm()
     //   thunk 0x1F8380  (impl 0x1ECDD0)
     inline void unlockSpiritGuideEctoplasm() {
         vm::Block _gb;
-        vm::call(0x1F8380, _gb);
+        vm::call(GbAddr{0x1F8380, 0x1F82C0}, _gb);
     }
     // void unlockSpiritGuideLibrarian()
     //   thunk 0x1F8390  (impl 0x1ECDF0)
     inline void unlockSpiritGuideLibrarian() {
         vm::Block _gb;
-        vm::call(0x1F8390, _gb);
+        vm::call(GbAddr{0x1F8390, 0x1F82D0}, _gb);
     }
     // void unlockSpiritGuideSlothGhost()
     //   thunk 0x1F83C0  (impl 0x1ECE70)
     inline void unlockSpiritGuideSlothGhost() {
         vm::Block _gb;
-        vm::call(0x1F83C0, _gb);
+        vm::call(GbAddr{0x1F83C0, 0x1F8300}, _gb);
     }
     // void unlockSpiritGuideTraceEvidence()
     //   thunk 0x1F8370  (impl 0x1ECDB0)
     inline void unlockSpiritGuideTraceEvidence() {
         vm::Block _gb;
-        vm::call(0x1F8370, _gb);
+        vm::call(GbAddr{0x1F8370, 0x1F82B0}, _gb);
     }
     // float wrapPi(float value)
     //   thunk 0x48F8D0  (via call)
     inline float wrapPi(float value) {
         vm::Block _gb;
         _gb.set_f(1, value);
-        vm::call(0x48F8D0, _gb);
+        vm::call(GbAddr{0x48F8D0, 0x48F560}, _gb);
         return _gb.get_f(0);
     }
 } // namespace Global
@@ -7722,7 +7724,7 @@ namespace HSound {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_p(2, name);
-        vm::call(0x35AE50, _gb);
+        vm::call(GbAddr{0x35AE50, 0x35AC60}, _gb);
         return _gb.get_b(0);
     }
     // void constructor()
@@ -7730,21 +7732,21 @@ namespace HSound {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x35AE90, _gb);
+        vm::call(GbAddr{0x35AE90, 0x35ACA0}, _gb);
     }
     // void destructor()
     //   thunk 0x35AEB0  (via call)
     inline void destructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x35AEB0, _gb);
+        vm::call(GbAddr{0x35AEB0, 0x35ACC0}, _gb);
     }
     // void release()
     //   thunk 0x35AF00  (via call)
     inline void release(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x35AF00, _gb);
+        vm::call(GbAddr{0x35AF00, 0x35AD10}, _gb);
     }
 } // namespace HSound
 
@@ -7755,14 +7757,14 @@ namespace HSoundInstance {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x35AD30, _gb);
+        vm::call(GbAddr{0x35AD30, 0x35AB40}, _gb);
     }
     // void destructor()
     //   thunk 0x35AD50  (via none)
     inline void destructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x35AD50, _gb);
+        vm::call(GbAddr{0x35AD50, 0x35AB60}, _gb);
     }
     // void start(@HSound handle, @Vector pos = NULL)
     //   thunk 0x35AD60  (via call)
@@ -7771,14 +7773,14 @@ namespace HSoundInstance {
         _gb.set_p(0, self);
         _gb.set_p(1, handle);
         _gb.set_p(2, pos);
-        vm::call(0x35AD60, _gb);
+        vm::call(GbAddr{0x35AD60, 0x35AB70}, _gb);
     }
     // void stop()
     //   thunk 0x35ADF0  (impl 0x4199E0)
     inline void stop(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x35ADF0, _gb);
+        vm::call(GbAddr{0x35ADF0, 0x35AC00}, _gb);
     }
 } // namespace HSoundInstance
 
@@ -7789,13 +7791,13 @@ namespace SBipedCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x37530, _gb);
+        vm::call(GbAddr{0x37530, 0x37530}, _gb);
     }
     // void destructor()
     //   thunk 0x37550  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x37550, _gb);
+        vm::call(GbAddr{0x37550, 0x37550}, _gb);
     }
 } // namespace SBipedCombatComponentInfo
 
@@ -7806,13 +7808,13 @@ namespace SBipedLargeCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3D830, _gb);
+        vm::call(GbAddr{0x3D830, 0x3D830}, _gb);
     }
     // void destructor()
     //   thunk 0x3D850  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x3D850, _gb);
+        vm::call(GbAddr{0x3D850, 0x3D850}, _gb);
     }
 } // namespace SBipedLargeCombatComponentInfo
 
@@ -7823,13 +7825,13 @@ namespace SDOFPlanes {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x41A9D0, _gb);
+        vm::call(GbAddr{0x41A9D0, 0x41A7E0}, _gb);
     }
     // void destructor()
     //   thunk 0x41AA20  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x41AA20, _gb);
+        vm::call(GbAddr{0x41AA20, 0x41A830}, _gb);
     }
 } // namespace SDOFPlanes
 
@@ -7840,13 +7842,13 @@ namespace SDamageInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x1FD410, _gb);
+        vm::call(GbAddr{0x1FD410, 0x1FD240}, _gb);
     }
     // void destructor()
     //   thunk 0x1FD470  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x1FD470, _gb);
+        vm::call(GbAddr{0x1FD470, 0x1FD2A0}, _gb);
     }
 } // namespace SDamageInfo
 
@@ -7857,13 +7859,13 @@ namespace SEvasionInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED2F0, _gb);
+        vm::call(GbAddr{0xED2F0, 0xED2F0}, _gb);
     }
     // void destructor()
     //   thunk 0xED310  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0xED310, _gb);
+        vm::call(GbAddr{0xED310, 0xED310}, _gb);
     }
 } // namespace SEvasionInfo
 
@@ -7874,13 +7876,13 @@ namespace SFlyerMediumCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xA57D0, _gb);
+        vm::call(GbAddr{0xA57D0, 0xA57D0}, _gb);
     }
     // void destructor()
     //   thunk 0xA57F0  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0xA57F0, _gb);
+        vm::call(GbAddr{0xA57F0, 0xA57F0}, _gb);
     }
 } // namespace SFlyerMediumCombatComponentInfo
 
@@ -7891,13 +7893,13 @@ namespace SFlyerSmallCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xA94D0, _gb);
+        vm::call(GbAddr{0xA94D0, 0xA94D0}, _gb);
     }
     // void destructor()
     //   thunk 0xA94F0  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0xA94F0, _gb);
+        vm::call(GbAddr{0xA94F0, 0xA94F0}, _gb);
     }
 } // namespace SFlyerSmallCombatComponentInfo
 
@@ -7908,13 +7910,13 @@ namespace SGBCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xED320, _gb);
+        vm::call(GbAddr{0xED320, 0xED320}, _gb);
     }
     // void destructor()
     //   thunk 0xED340  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0xED340, _gb);
+        vm::call(GbAddr{0xED340, 0xED340}, _gb);
     }
 } // namespace SGBCombatComponentInfo
 
@@ -7925,13 +7927,13 @@ namespace SGhostCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xBF660, _gb);
+        vm::call(GbAddr{0xBF660, 0xBF660}, _gb);
     }
     // void destructor()
     //   thunk 0xBF680  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0xBF680, _gb);
+        vm::call(GbAddr{0xBF680, 0xBF680}, _gb);
     }
 } // namespace SGhostCombatComponentInfo
 
@@ -7942,13 +7944,13 @@ namespace SGhostFleeInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0xBF620, _gb);
+        vm::call(GbAddr{0xBF620, 0xBF620}, _gb);
     }
     // void destructor()
     //   thunk 0xBF650  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0xBF650, _gb);
+        vm::call(GbAddr{0xBF650, 0xBF650}, _gb);
     }
 } // namespace SGhostFleeInfo
 
@@ -7959,13 +7961,13 @@ namespace SJointData {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3CE410, _gb);
+        vm::call(GbAddr{0x3CE410, 0x3CE220}, _gb);
     }
     // void destructor()
     //   thunk 0x3CE450  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x3CE450, _gb);
+        vm::call(GbAddr{0x3CE450, 0x3CE260}, _gb);
     }
     // bool setPosFromTag(@CActor actor, string tagName)
     //   thunk 0x3CE460  (via call)
@@ -7974,7 +7976,7 @@ namespace SJointData {
         _gb.set_p(1, self);
         _gb.set_p(2, actor);
         _gb.set_p(3, tagName);
-        vm::call(0x3CE460, _gb);
+        vm::call(GbAddr{0x3CE460, 0x3CE270}, _gb);
         return _gb.get_b(0);
     }
 } // namespace SJointData
@@ -7985,13 +7987,13 @@ namespace SMaterialVariable {
     //   thunk 0x3AAA50  (via none)
     inline void constructor() {
         vm::Block _gb;
-        vm::call(0x3AAA50, _gb);
+        vm::call(GbAddr{0x3AAA50, 0x3AA860}, _gb);
     }
     // void destructor()
     //   thunk 0x3AAA60  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x3AAA60, _gb);
+        vm::call(GbAddr{0x3AAA60, 0x3AA870}, _gb);
     }
 } // namespace SMaterialVariable
 
@@ -8002,13 +8004,13 @@ namespace SScriptWalkInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x84700, _gb);
+        vm::call(GbAddr{0x84700, 0x84700}, _gb);
     }
     // void destructor()
     //   thunk 0x84720  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x84720, _gb);
+        vm::call(GbAddr{0x84720, 0x84720}, _gb);
     }
 } // namespace SScriptWalkInfo
 
@@ -8019,13 +8021,13 @@ namespace SScuttlerCombatComponentInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x155A90, _gb);
+        vm::call(GbAddr{0x155A90, 0x155A90}, _gb);
     }
     // void destructor()
     //   thunk 0x155AB0  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x155AB0, _gb);
+        vm::call(GbAddr{0x155AB0, 0x155AB0}, _gb);
     }
 } // namespace SScuttlerCombatComponentInfo
 
@@ -8036,13 +8038,13 @@ namespace SSfxInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x411E20, _gb);
+        vm::call(GbAddr{0x411E20, 0x411C30}, _gb);
     }
     // void destructor()
     //   thunk 0x411E40  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x411E40, _gb);
+        vm::call(GbAddr{0x411E40, 0x411C50}, _gb);
     }
 } // namespace SSfxInfo
 
@@ -8053,13 +8055,13 @@ namespace SShakeCameraInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x205F80, _gb);
+        vm::call(GbAddr{0x205F80, 0x205DB0}, _gb);
     }
     // void destructor()
     //   thunk 0x205FA0  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x205FA0, _gb);
+        vm::call(GbAddr{0x205FA0, 0x205DD0}, _gb);
     }
 } // namespace SShakeCameraInfo
 
@@ -8070,13 +8072,13 @@ namespace SSlimeAttackInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x15C040, _gb);
+        vm::call(GbAddr{0x15C040, 0x15C040}, _gb);
     }
     // void destructor()
     //   thunk 0x15C090  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x15C090, _gb);
+        vm::call(GbAddr{0x15C090, 0x15C090}, _gb);
     }
 } // namespace SSlimeAttackInfo
 
@@ -8087,14 +8089,14 @@ namespace SSpawnInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x15E0B0, _gb);
+        vm::call(GbAddr{0x15E0B0, 0x15E0B0}, _gb);
     }
     // void destructor()
     //   thunk 0x15E0F0  (via call)
     inline void destructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x15E0F0, _gb);
+        vm::call(GbAddr{0x15E0F0, 0x15E0F0}, _gb);
     }
 } // namespace SSpawnInfo
 
@@ -8105,13 +8107,13 @@ namespace STerrainTypeInfo {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x43EF80, _gb);
+        vm::call(GbAddr{0x43EF80, 0x43ED90}, _gb);
     }
     // void destructor()
     //   thunk 0x43EFA0  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x43EFA0, _gb);
+        vm::call(GbAddr{0x43EFA0, 0x43EDB0}, _gb);
     }
 } // namespace STerrainTypeInfo
 
@@ -8122,13 +8124,13 @@ namespace SWaveformControl {
     inline void constructor(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x3504A0, _gb);
+        vm::call(GbAddr{0x3504A0, 0x3502B0}, _gb);
     }
     // void destructor()
     //   thunk 0x3504C0  (via none)
     inline void destructor() {
         vm::Block _gb;
-        vm::call(0x3504C0, _gb);
+        vm::call(GbAddr{0x3504C0, 0x3502D0}, _gb);
     }
 } // namespace SWaveformControl
 
@@ -8139,7 +8141,7 @@ namespace String {
     inline float atof(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2D3810, _gb);
+        vm::call(GbAddr{0x2D3810, 0x2D3620}, _gb);
         return _gb.get_f(0);
     }
     // int atoi()
@@ -8147,7 +8149,7 @@ namespace String {
     inline int atoi(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2D3850, _gb);
+        vm::call(GbAddr{0x2D3850, 0x2D3660}, _gb);
         return _gb.get_i(0);
     }
     // String getCharacter(int N)
@@ -8156,7 +8158,7 @@ namespace String {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, N);
-        vm::call(0x2D3880, _gb);
+        vm::call(GbAddr{0x2D3880, 0x2D3690}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // String left(int n)
@@ -8165,7 +8167,7 @@ namespace String {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, n);
-        vm::call(0x2D38F0, _gb);
+        vm::call(GbAddr{0x2D38F0, 0x2D3700}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // int length()
@@ -8173,7 +8175,7 @@ namespace String {
     inline int length(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2D3970, _gb);
+        vm::call(GbAddr{0x2D3970, 0x2D3780}, _gb);
         return _gb.get_i(0);
     }
     // String right(int n)
@@ -8182,7 +8184,7 @@ namespace String {
         vm::Block _gb;
         _gb.set_p(1, self);
         _gb.set_i(2, n);
-        vm::call(0x2D39A0, _gb);
+        vm::call(GbAddr{0x2D39A0, 0x2D37B0}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
     // String substring(int start, int run)
@@ -8192,7 +8194,7 @@ namespace String {
         _gb.set_p(1, self);
         _gb.set_i(2, start);
         _gb.set_i(3, run);
-        vm::call(0x2D3A50, _gb);
+        vm::call(GbAddr{0x2D3A50, 0x2D3860}, _gb);
         return static_cast<const char*>(_gb.get_p(0));
     }
 } // namespace String
@@ -8204,7 +8206,7 @@ namespace Vector {
     inline float length(void* self) {
         vm::Block _gb;
         _gb.set_p(1, self);
-        vm::call(0x2D3D70, _gb);
+        vm::call(GbAddr{0x2D3D70, 0x2D3B80}, _gb);
         return _gb.get_f(0);
     }
     // void normalize()
@@ -8212,14 +8214,14 @@ namespace Vector {
     inline void normalize(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x2D3DC0, _gb);
+        vm::call(GbAddr{0x2D3DC0, 0x2D3BD0}, _gb);
     }
     // void zero()
     //   thunk 0x2D3E40  (via none)
     inline void zero(void* self) {
         vm::Block _gb;
         _gb.set_p(0, self);
-        vm::call(0x2D3E40, _gb);
+        vm::call(GbAddr{0x2D3E40, 0x2D3C50}, _gb);
     }
 } // namespace Vector
 
