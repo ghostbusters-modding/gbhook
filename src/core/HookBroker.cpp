@@ -6,6 +6,7 @@
 #include "registry/PatchRegistry.h"
 #include "ProcessMemory.h"
 #include "registry/VtableRegistry.h"
+#include "target/Target.h"
 
 #include <cstdio>
 #include <cstring>
@@ -37,15 +38,50 @@ namespace
 
     const char* Who(const char* owner) { return (owner && *owner) ? owner : "gbhook"; }
 
-    // "ghost+0x1F1210" inside the image, an absolute address anywhere else.
-    const char* Where(const void* p, char* buf, size_t cap)
+    constexpr uintptr_t kImageSpan = 0x8000000;
+
+    // The RVA inside ghost.exe, or false for an address outside it.
+    bool RvaOf(const void* p, uint32_t* rva)
     {
         const uintptr_t at = (uintptr_t)p, base = (uintptr_t)gameBase;
-        if (base && at >= base && at - base < 0x8000000)
-            snprintf(buf, cap, "ghost+0x%llX", (unsigned long long)(at - base));
-        else
+        if (!base || at < base || at - base >= kImageSpan) return false;
+        *rva = (uint32_t)(at - base);
+        return true;
+    }
+
+    // "ghost+0x1F1210" inside the image, an absolute address anywhere else. A known Epic site also names its Steam RVA.
+    const char* Where(const void* p, char* buf, size_t cap)
+    {
+        uint32_t rva = 0;
+        if (!RvaOf(p, &rva))
+        {
             snprintf(buf, cap, "%p", p);
+            return buf;
+        }
+        const Target::Site* s = Target::SiteCovering(rva, GbhPluginBuild);
+        if (s && GbhPluginBuild != GBH_BUILD_STEAM)
+            snprintf(buf, cap, "ghost+0x%X (Steam 0x%X)", rva, s->steam + (rva - s->epic));
+        else
+            snprintf(buf, cap, "ghost+0x%X", rva);
         return buf;
+    }
+
+    // A known site must hold this build's own bytes before anything is written into its window.
+    bool GuardOk(const void* at, size_t n, const char* who, const char* what)
+    {
+        uint32_t rva = 0;
+        if (!RvaOf(at, &rva)) return true;
+        const int build = GbhPluginBuild;
+        const Target::Site* s = Target::SiteCovering(rva, build);
+        if (!s && n) s = Target::SiteCovering(rva + (uint32_t)n - 1, build);
+        if (!s) return true;   // not one of gbhook's sites: the caller checks its own bytes
+        uint8_t now[Target::kGuardBytes];
+        const uintptr_t site = (uintptr_t)gameBase + Target::RvaOf(*s, build);
+        if (g_mem->Read(site, now, sizeof now) && Target::GuardHolds(*s, build, now)) return true;
+        char w[64];
+        Log::Writef("HOOK", "GUARD %s %s: the code is not what the %s build holds there -- '%s' refused, site left alone",
+                    what, Where((const void*)site, w, sizeof w), Target::Name(build), who);
+        return false;
     }
 
     Entry* Find(void* target)
@@ -147,6 +183,12 @@ namespace HookBroker
         {
             Log::Writef("HOOK", "CONFLICT %s: '%s' wants a detour where '%s' holds a byte patch -- refusing",
                         Where(target, w, sizeof w), who, p->owner);
+            LeaveCriticalSection(&g_lock);
+            return nullptr;
+        }
+
+        if (!GuardOk(target, kFingerprint, who, "detour"))
+        {
             LeaveCriticalSection(&g_lock);
             return nullptr;
         }
@@ -271,6 +313,12 @@ namespace HookBroker
         {
             Log::Writef("HOOK", "CONFLICT patch %s: '%s' wants it inside the prologue '%s' detoured at %p -- refusing",
                         Where(at, w, sizeof w), who, e->owner, e->target);
+            LeaveCriticalSection(&g_lock);
+            return nullptr;
+        }
+
+        if (!GuardOk(at, n, who, "patch"))
+        {
             LeaveCriticalSection(&g_lock);
             return nullptr;
         }

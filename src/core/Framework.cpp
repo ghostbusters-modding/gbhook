@@ -8,6 +8,7 @@
 #include <cstring>
 
 char* gameBase = nullptr;
+extern "C" { GBHOOK_EXPORT int GbhPluginBuild = GBH_BUILD_STEAM; }
 
 namespace
 {

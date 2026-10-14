@@ -12,7 +12,7 @@
 
 namespace
 {
-    constexpr uintptr_t kTableRva  = 0x7BD740;   // 20 x { int chapter, int index, const char* file }, firehouse.lvl on
+    constexpr GbAddr kTableRva  = { 0x7BD740, 0x7B9F20 };   // 20 x { int chapter, int index, const char* file }, firehouse.lvl on
     constexpr int       kTableRows = 20;
     constexpr int       kNameCap   = 64;
 

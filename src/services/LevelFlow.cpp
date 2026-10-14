@@ -19,21 +19,22 @@
 namespace
 {
     // Level flow globals, ghost-relative. docs/engine/RE_NOTES.md section 4, SOURCEMAP.md section 1.
-    constexpr uintptr_t kPendingLevel = 0x23229D0;   // char[]      the pending level file, "NAME.LVL"
-    constexpr uintptr_t kPendingCp    = 0x1671800;   // char[0x100] the pending checkpoint name
-    constexpr uintptr_t kReloadFlag   = 0x16520FC;   // u8  reload the pending level now
-    constexpr uintptr_t kActionSel    = 0x20D43D0;   // int front-end action, 5 = load pending
-    constexpr uintptr_t kActionPend   = 0x20D43CD;   // u8  front-end action pending
-    constexpr uintptr_t kChainFlag    = 0x4A9F1;     // CGame + 0x4A9F1, u8 "this load is a chain"
+    constexpr GbAddr kPendingLevel = { 0x23229D0, 0x227A780 };   // char[]      the pending level file, "NAME.LVL"
+    constexpr GbAddr kPendingCp    = { 0x1671800, 0x15C8B30 };   // char[0x100] the pending checkpoint name
+    constexpr GbAddr kReloadFlag   = { 0x16520FC, 0x15C8EA1 };   // u8  reload the pending level now
+    constexpr GbAddr kActionSel    = { 0x20D43D0, 0x202C180 };   // int front-end action, 5 = load pending
+    constexpr GbAddr kActionPend   = { 0x20D43CD, 0x202C17D };   // u8  front-end action pending
+    // CGame fields from +0x4A598 sit 0x10 lower on Epic.
+    constexpr GbAddr    kChainFlag    = { 0x4A9F1, 0x4A9E1 };   // CGame + 0x4A9F1, u8 "this load is a chain"
 
     // The live level's checkpoint table, filled by its setupLevel(): the engine's loads speak the display name.
-    constexpr uintptr_t kCpTable      = 0x4A9F4;     // CGame + 0x4A9F4, 25 rows
+    constexpr GbAddr    kCpTable      = { 0x4A9F4, 0x4A9E4 };   // CGame + 0x4A9F4, 25 rows
     constexpr size_t    kCpRow        = 0x304;       // +0 display name, +0x100 level, +0x200 prototype, +0x300 valid
     constexpr int       kCpRows       = 25;
 
     // What the action poll itself does before returning 5; the menu loop then runs its own load-and-teardown case.
-    constexpr uintptr_t kFnScreenClose = 0x246BA0;
-    constexpr uintptr_t kFnMenuCleanup = 0x246A50;
+    constexpr GbAddr kFnScreenClose = { 0x246BA0, 0x2469C0 };
+    constexpr GbAddr kFnMenuCleanup = { 0x246A50, 0x246870 };
 
     char          g_lastLevel[64]    = { 0 };
     char          g_feLoadLvl[64]    = { 0 };

@@ -17,9 +17,9 @@
 namespace
 {
     // ---- CMainMenu: the row broker ---------------------------------------------------------------------
-    constexpr uintptr_t kHideFnRva   = 0x20F020;   // char __fastcall isRowHidden(this, idx): hides 0, 1 and 3 by index
-    constexpr uintptr_t kDispatchRva = 0x20ECD0;   // void __fastcall activateRow(this, row)
-    constexpr uintptr_t kRefillRva   = 0x20E900;   // slot 80: every label from the string table; hooked for ours
+    constexpr GbAddr kHideFnRva   = { 0x20F020, 0x20EE50 };   // char __fastcall isRowHidden(this, idx): hides 0, 1 and 3 by index
+    constexpr GbAddr kDispatchRva = { 0x20ECD0, 0x20EB00 };   // void __fastcall activateRow(this, row)
+    constexpr GbAddr kRefillRva   = { 0x20E900, 0x20E730 };   // slot 80: every label from the string table; hooked for ours
     constexpr int       kMainRows    = 7;
     constexpr uintptr_t kMainLabel0  = 0x170;      // row labels, engine Strings, stride 0x38
     constexpr uintptr_t kMainStride  = 0x38;
@@ -38,16 +38,16 @@ namespace
     };
 
     // ---- CLevelMenu: the page --------------------------------------------------------------------------
-    constexpr uintptr_t kAllocRva     = 0x2C4760;   // operator new(size_t); the stock case and populate use the same
-    constexpr uintptr_t kLevelCtorRva = 0x20F8C0;   // CLevelMenu::CLevelMenu(), zeroes the row fields
-    constexpr uintptr_t kRowCtorRva   = 0x2251B0;   // row descriptor ctor
-    constexpr uintptr_t kStrAssignRva = 0x323C00;   // String = const char*
-    constexpr uintptr_t kPushRva      = 0x299650;   // parent+0x40 = child, child+0x10 = parent, parent state 5
-    constexpr uintptr_t kOwnerLinkRva = 0x2985C0;   // rows -> owner, then parks the selection
-    constexpr uintptr_t kLevelVtRva   = 0x7CA868;   // CLevelMenu::vftable, 116 slots
-    constexpr uintptr_t kMainVtRva    = 0x7CA190;   // CMainMenu::vftable, probed for the hidden-row slot
-    constexpr uintptr_t kLocalizeRva  = 0x291D20;   // String* localize(String* out, const char* key)
-    constexpr uintptr_t kStrDtorRva   = 0x324480;   // String::~String
+    constexpr GbAddr kAllocRva     = { 0x2C4760, 0x2C4570 };   // operator new(size_t); the stock case and populate use the same
+    constexpr GbAddr kLevelCtorRva = { 0x20F8C0, 0x20F6F0 };   // CLevelMenu::CLevelMenu(), zeroes the row fields
+    constexpr GbAddr kRowCtorRva   = { 0x2251B0, 0x224FE0 };   // row descriptor ctor
+    constexpr GbAddr kStrAssignRva = { 0x323C00, 0x323A10 };   // String = const char*
+    constexpr GbAddr kPushRva      = { 0x299650, 0x299470 };   // parent+0x40 = child, child+0x10 = parent, parent state 5
+    constexpr GbAddr kOwnerLinkRva = { 0x2985C0, 0x2983E0 };   // rows -> owner, then parks the selection
+    constexpr GbAddr kLevelVtRva   = { 0x7CA868, 0x7C96C8 };   // CLevelMenu::vftable, 116 slots
+    constexpr GbAddr kMainVtRva    = { 0x7CA190, 0x7C8FF0 };   // CMainMenu::vftable, probed for the hidden-row slot
+    constexpr GbAddr kLocalizeRva  = { 0x291D20, 0x291B40 };   // String* localize(String* out, const char* key)
+    constexpr GbAddr kStrDtorRva   = { 0x324480, 0x324290 };   // String::~String
     constexpr int       kVtSlots      = 116;
     constexpr int       kSlotDtor     = 0;          // the deleting destructor, chained: the parent runs it after the close
     constexpr int       kSlotHide     = 16;         // +0x080 chained: the "page is hidden" signal, ESC or ours

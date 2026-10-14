@@ -59,7 +59,7 @@ namespace Log
         // _fsopen with _SH_DENYNO, not fopen_s: fopen_s opens non-shareable, and then nothing can tail the log live.
         g_file = _fsopen(g_path, "w", _SH_DENYNO);
 
-        Writef("BOOT", "gbhook %s -- %s", Framework::kVersionString, GBHOOK_TARGET_NAME);
+        Writef("BOOT", "gbhook %s", Framework::kVersionString);
     }
 
     void Write(const char* tag, const char* line)                      { Emit(nullptr, tag, line); }
