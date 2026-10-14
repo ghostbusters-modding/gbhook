@@ -3,6 +3,16 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## Unreleased
+
+- gbhook runs on the Epic Games build of the game as well as the Steam build. It finds the
+  build from the exe header at start. On any other build it installs no hook and loads no mod.
+- Before gbhook writes to one of its own hook sites, it checks the code there. If the code is
+  not what that build holds, gbhook leaves the site alone and writes it to the log.
+- Mods built with this SDK hold both address sets and load on either build. A mod built with
+  an older SDK loads on Steam only. On Epic it is refused, and the Mods page says why.
+- Steam achievements stay blocked on Steam. The Epic build has no such block.
+
 ## 0.3.2 (2026-10-08)
 
 - Steam achievements are blocked while gbhook is loaded. A modded run cannot unlock an

@@ -53,5 +53,7 @@ namespace ModSet
     bool Names(const std::string& entry, const Record& r);
 
     // `off` is gbhook.ini's mods_disabled: ids or folder names, any case. It beats a refusal too.
-    Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off = {});
+    // `build` is the running ghost.exe, GBH_BUILD_*: a plugin that cannot run on it is refused.
+    Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off = {},
+                   int build = GBH_BUILD_STEAM);
 }

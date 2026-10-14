@@ -46,6 +46,20 @@ int main()
       CHECK_EQ(Manifest::Validate(m), "built for ghost.exe (unset), this framework targets " GBHOOK_TARGET_MD5
                                       " -- an offset table applied to the wrong build crashes unreadably"); }
 
+    // Builds: a Steam-only manifest is refused on Epic, a manifest for both loads on either.
+    { GbhManifest m = Good();
+      CHECK_EQ(Manifest::Validate(m, GBH_BUILD_STEAM), "");
+      CHECK_EQ(Manifest::Validate(m, GBH_BUILD_EPIC),
+               "Steam only: this is the Epic ghost.exe and the mod's addresses are wrong for it. "
+               "Get a version of the mod built for both"); }
+    { GbhManifest m = Good(); strcpy(m.target_md5, GBHOOK_TARGET_BOTH);
+      CHECK_EQ(std::string(m.target_md5), "0b89556c07e5b737efe444351227e747+epic");
+      CHECK(sizeof GBHOOK_TARGET_BOTH <= sizeof m.target_md5);
+      CHECK_EQ(Manifest::Validate(m, GBH_BUILD_STEAM), "");
+      CHECK_EQ(Manifest::Validate(m, GBH_BUILD_EPIC), ""); }
+    { GbhManifest m = Good(); strcpy(m.target_md5, GBHOOK_TARGET_MD5_EPIC);
+      CHECK(!Manifest::Validate(m, GBH_BUILD_EPIC).empty()); }
+
     // Field reads an array that fills its slot without a terminator.
     { char raw[4] = { 'a', 'b', 'c', 'd' };
       CHECK_EQ(Manifest::Field(raw, 4), "abcd");

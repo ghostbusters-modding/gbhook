@@ -11,8 +11,8 @@
 
 namespace Manifest
 {
-    // The refusal, or empty when this framework can load the binary.
-    std::string Validate(const GbhManifest& m);
+    // The refusal, or empty when this framework can load the binary on `build` (GBH_BUILD_*).
+    std::string Validate(const GbhManifest& m, int build = GBH_BUILD_STEAM);
 
     // A fixed char array that is not required to be terminated when it fills its slot.
     std::string Field(const char* p, size_t cap);

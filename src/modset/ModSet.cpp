@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #include "ModSet.h"
 #include "format/Manifest.h"
+#include "target/Target.h"
 
 #include <algorithm>
 #include <cctype>
@@ -36,7 +37,7 @@ namespace
     }
 
     // Judgement over one folder on its own.
-    ModSet::Record Judge(const ModSet::Candidate& c)
+    ModSet::Record Judge(const ModSet::Candidate& c, int build)
     {
         ModSet::Record r;
         r.root   = c.root;
@@ -79,7 +80,7 @@ namespace
             case ModSet::Binary::Ok:         break;
             }
 
-            const std::string why = Manifest::Validate(c.manifest);
+            const std::string why = Manifest::Validate(c.manifest, build);
             if (!why.empty()) { r.refusal = "plugin '" + p + "': " + why; return r; }
 
             // The two facts stated in both places: a mismatch means one was edited after the build.
@@ -96,6 +97,13 @@ namespace
                 return r;
             }
             r.exclusiveHooks = Manifest::ExclusiveHooks(c.manifest);
+            for (const std::string& h : r.exclusiveHooks)
+                if (build != GBH_BUILD_STEAM && !Target::TranslateClaim(h, build, nullptr))
+                {
+                    r.refusal = "plugin '" + p + "' claims " + h + ", which has no " + Target::Name(build) +
+                                " address -- the mod cannot run on this build";
+                    return r;
+                }
         }
 
         r.accepted = true;
@@ -111,11 +119,11 @@ namespace ModSet
         return k == Lower(r.folder) || (!r.mod.id.empty() && k == Lower(r.mod.id));
     }
 
-    Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off)
+    Result Resolve(const std::vector<Candidate>& found, const std::vector<std::string>& off, int build)
     {
         std::vector<Record> recs;
         recs.reserve(found.size());
-        for (const Candidate& c : found) recs.push_back(Judge(c));
+        for (const Candidate& c : found) recs.push_back(Judge(c, build));
 
         for (Record& r : recs)
         {
@@ -171,10 +179,11 @@ namespace ModSet
             for (size_t j = i + 1; j < recs.size(); ++j)
             {
                 if (!recs[j].accepted) continue;
+                // Claims compare by their Steam RVA, the one identity of a site on either build.
                 for (const std::string& a : recs[i].exclusiveHooks)
                     for (const std::string& b : recs[j].exclusiveHooks)
-                        if (a == b)
-                            out.conflicts.push_back("hook " + a + " claimed by both '" + recs[i].mod.id + "' and '" +
+                        if (Target::ClaimKey(a) == Target::ClaimKey(b))
+                            out.conflicts.push_back("hook " + Target::ClaimKey(a) + " claimed by both '" + recs[i].mod.id + "' and '" +
                                                     recs[j].mod.id + "' -- whichever loads first wins and the other is refused at install time");
                 for (const std::string& a : recs[i].mod.content)
                     for (const std::string& b : recs[j].mod.content)

@@ -183,6 +183,46 @@ int main()
         CHECK_EQ(r.records[0].exclusiveHooks[0], "ghost+0x46A110");
     }
 
+    // Epic: an old-SDK plugin is refused with a reason the Mods page shows; a plugin for both loads.
+    {
+        Candidate old = Cand("Old", Ini("old", "plugin = Old.dll\n"), Binary::Ok);
+        old.manifest = Mf("old");
+        ModSet::Result epic = Resolve({ old }, {}, GBH_BUILD_EPIC);
+        CHECK(!epic.records[0].accepted);
+        CHECK_EQ(epic.records[0].refusal, "plugin 'Old.dll': Steam only: this is the Epic ghost.exe and the mod's "
+                                          "addresses are wrong for it. Get a version of the mod built for both");
+        CHECK(Resolve({ old }, {}, GBH_BUILD_STEAM).records[0].accepted);
+
+        Candidate both = Cand("Both", Ini("both", "plugin = Both.dll\n"), Binary::Ok);
+        both.manifest = Mf("both");
+        strcpy(both.manifest.target_md5, GBHOOK_TARGET_BOTH);
+        strcpy(both.manifest.exclusive_hooks[0], "ghost+0x248190");
+        strcpy(both.manifest.exclusive_hooks[1], "ghost+0x46A110|0x469D80");
+        CHECK(Resolve({ both }, {}, GBH_BUILD_EPIC).records[0].accepted);
+        CHECK(Resolve({ both }, {}, GBH_BUILD_STEAM).records[0].accepted);
+
+        // A claim with no Epic site: refused on Epic only.
+        strcpy(both.manifest.exclusive_hooks[2], "ghost+0x123450");
+        ModSet::Result r = Resolve({ both }, {}, GBH_BUILD_EPIC);
+        CHECK(!r.records[0].accepted);
+        CHECK_EQ(r.records[0].refusal, "plugin 'Both.dll' claims ghost+0x123450, which has no Epic address -- "
+                                       "the mod cannot run on this build");
+        CHECK(Resolve({ both }, {}, GBH_BUILD_STEAM).records[0].accepted);
+    }
+
+    // Claims compare by the Steam RVA, whatever form each mod wrote.
+    {
+        Candidate a = Cand("A", Ini("a", "plugin = A.dll\n"), Binary::Ok); a.manifest = Mf("a");
+        Candidate b = Cand("B", Ini("b", "plugin = B.dll\n"), Binary::Ok); b.manifest = Mf("b");
+        strcpy(a.manifest.target_md5, GBHOOK_TARGET_BOTH);
+        strcpy(b.manifest.target_md5, GBHOOK_TARGET_BOTH);
+        strcpy(a.manifest.exclusive_hooks[0], "ghost+0x46a110|0x469D80");
+        strcpy(b.manifest.exclusive_hooks[0], "ghost+0x46A110|0x469D80");
+        ModSet::Result r = Resolve({ a, b }, {}, GBH_BUILD_EPIC);
+        CHECK_EQ(r.conflicts.size(), (size_t)1);
+        CHECK_EQ(r.conflicts[0], "hook ghost+0x46A110 claimed by both 'a' and 'b' -- whichever loads first wins and the other is refused at install time");
+    }
+
     // Duplicate ids: the first folder keeps it.
     {
         ModSet::Result r = Resolve({ Cand("A", Ini("a")), Cand("B", Ini("a")) });
