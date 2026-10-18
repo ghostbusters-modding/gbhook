@@ -11,6 +11,10 @@ namespace Pump
     void Install();
     bool Installed();
 
+    // False once the pump has been silent for 100 ms, as under the freeze. FrozenTick then runs from the level tick.
+    bool RanRecently();
+    void FrozenTick();
+
     // Called on the main thread every tick until it returns true. After Install. `what` names it in the log.
     typedef bool (*Job)(void* user);
     bool Park(Job fn, void* user, const char* what);

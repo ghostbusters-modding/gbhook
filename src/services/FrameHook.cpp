@@ -31,6 +31,7 @@ namespace
 
         Commands::Drain();
         Events::FireFrame();
+        if (Pump::Installed() && !Pump::RanRecently()) Pump::FrozenTick();
         if (oTick) oTick(a, b, c, d);
     }
 }

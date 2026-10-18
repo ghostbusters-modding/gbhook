@@ -11,6 +11,9 @@ section 1 says when it would not.
 - A frame that draws more than 40 scenes no longer closes the game. The engine's GPU
   profiler has 40 slots per frame and does not check the limit. gbhook turns the profiler
   off. Set `gpu_profiler_off = 0` in `gbhook.ini` to keep it.
+- Key bindings and `on_pump` now work while a mod holds `pause()` in a level. The freeze
+  stopped the engine update that runs the pump, so a pausing menu got no keys. gbhook now
+  runs them from the level tick while the pump is silent.
 
 ## 0.3.2 (2026-10-08)
 

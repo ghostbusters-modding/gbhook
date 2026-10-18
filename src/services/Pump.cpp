@@ -30,6 +30,7 @@ namespace
     volatile LONG    g_jobCount  = 0;
     bool             g_installed = false;
     volatile DWORD   g_thread    = 0;
+    volatile LONG    g_lastPumpMs = 0;
 
     // Four pointer-sized arguments forwarded whatever the true signature is, the hedge the reference took.
     typedef void (__fastcall* tPump)(void*, void*, void*, void*);
@@ -81,6 +82,7 @@ namespace
     void __fastcall PumpDetour(void* a, void* b, void* c, void* d)
     {
         if (oPump) oPump(a, b, c, d);
+        InterlockedExchange(&g_lastPumpMs, (LONG)GetTickCount());
         if (!g_thread)
         {
             g_thread = GetCurrentThreadId();
@@ -111,6 +113,20 @@ namespace Pump
     }
 
     bool Installed() { return g_installed; }
+
+    bool RanRecently()
+    {
+        const DWORD last = (DWORD)InterlockedCompareExchange(&g_lastPumpMs, 0, 0);
+        return last != 0 && (GetTickCount() - last) < 100;
+    }
+
+    // The freeze skips the engine update that holds the pump, so the level tick fires the pump's subscribers.
+    void FrozenTick()
+    {
+        Events::FirePump();
+        Bindings::Flush();
+        World::Reassert();
+    }
 
     bool Park(Job fn, void* user, const char* what)
     {
