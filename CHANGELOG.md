@@ -3,6 +3,12 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## Unreleased
+
+- A script that faults again and again no longer floods `gbhook.log`. The same fault in a row
+  is written once with a count, and at most 20 fault lines are written each second. More than
+  1000 faults in one second log one warning.
+
 ## 0.3.3 (2026-10-18)
 
 - A control left unbound in `settings.ini` (code -1 with a key type) no longer closes the

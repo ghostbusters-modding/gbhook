@@ -242,9 +242,63 @@ namespace
     typedef void (__fastcall* tGtfo)(const char*, int);
     tGtfo oGtfo = nullptr;
 
+    // A native that faults with a code >= 0 is retried in the same frame, so one bad script can fault millions of times.
+    constexpr unsigned kGtfoLinesPerSec = 20;
+    constexpr unsigned kGtfoStormPerSec = 1000;
+    char     g_gtfoLast[160] = {};
+    int      g_gtfoLastCode  = 0;
+    unsigned g_gtfoRepeats   = 0;   // copies of the last line not yet written
+    unsigned g_gtfoLines     = 0;   // lines written in this second
+    unsigned g_gtfoSeen      = 0;   // faults in this second, written or not
+    unsigned g_gtfoDropped   = 0;   // distinct lines over the cap in this second
+    ULONGLONG g_gtfoSecond   = 0;
+    bool     g_gtfoStorm     = false;
+
+    void GtfoFlushRepeats()
+    {
+        if (g_gtfoRepeats)
+            Log::Writef("GTFO", "script fault (%d): %s (repeated %u more times)", g_gtfoLastCode, g_gtfoLast, g_gtfoRepeats);
+        g_gtfoRepeats = 0;
+    }
+
     void __fastcall GtfoDetour(const char* msg, int code)
     {
-        Log::Writef("GTFO", "script fault (%d): %s", code, msg ? msg : "(null)");
+        char text[sizeof g_gtfoLast];
+        lstrcpynA(text, msg ? msg : "(null)", (int)sizeof text);
+
+        const ULONGLONG now = GetTickCount64();
+        if (now - g_gtfoSecond >= 1000)
+        {
+            GtfoFlushRepeats();
+            if (g_gtfoDropped)
+                Log::Writef("GTFO", "%u more distinct script faults in the last second were not logged", g_gtfoDropped);
+            if (g_gtfoStorm && g_gtfoSeen < kGtfoStormPerSec)
+                Log::Write("GTFO", "script fault storm ended");
+            if (g_gtfoSeen < kGtfoStormPerSec) g_gtfoStorm = false;
+            g_gtfoSecond = now;
+            g_gtfoLines = g_gtfoSeen = g_gtfoDropped = 0;
+        }
+
+        if (++g_gtfoSeen == kGtfoStormPerSec && !g_gtfoStorm)
+        {
+            g_gtfoStorm = true;
+            Log::Writef("GTFO", "WARNING %u script faults in one second: a script is retrying a failing native. "
+                                "Repeats are counted, not logged", kGtfoStormPerSec);
+        }
+
+        if (code == g_gtfoLastCode && strcmp(text, g_gtfoLast) == 0 && g_gtfoLines > 0)
+            ++g_gtfoRepeats;
+        else if (g_gtfoLines < kGtfoLinesPerSec)
+        {
+            GtfoFlushRepeats();
+            Log::Writef("GTFO", "script fault (%d): %s", code, text);
+            lstrcpynA(g_gtfoLast, text, (int)sizeof g_gtfoLast);
+            g_gtfoLastCode = code;
+            ++g_gtfoLines;
+        }
+        else
+            ++g_gtfoDropped;
+
         if (oGtfo) oGtfo(msg, code);
     }
 
