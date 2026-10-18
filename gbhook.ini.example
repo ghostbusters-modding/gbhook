@@ -8,6 +8,10 @@ mods_root = mods
 # Mods to leave off, by id or folder name. The Mods page's Disable and Enable write this line.
 # mods_disabled = mymod, SomeContentMod
 
+# The engine's GPU profiler closes the game when a frame draws more than 40 scenes.
+# gbhook turns it off. Set 0 to keep it on.
+# gpu_profiler_off = 1
+
 # A mod's own settings live under its id, as <id>.<key>. The mod's previews/modinfo.ini
 # lists the keys it reads and their defaults. A line here overrides one of them.
 # mymod.spawn_rate = 12

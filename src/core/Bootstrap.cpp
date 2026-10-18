@@ -59,6 +59,52 @@ namespace
         else if (HookBroker::PatchWrite(nullptr, at, &kRet, 1))
             Log::Write("BOOT", "achievements blocked for this run");
     }
+
+    // A control saved as -1 with a key type reaches the key table as index -1, and the engine's bounds check kills the game.
+    using ClearKeyFn = char(__fastcall*)(void*, int);
+    ClearKeyFn    oClearKey = nullptr;
+    volatile LONG g_badKeyLogged = 0;
+
+    char __fastcall ClearKeyDetour(void* input, int code)
+    {
+        if ((unsigned)code < 600) return oClearKey(input, code);
+        if (InterlockedExchange(&g_badKeyLogged, 1) == 0)
+            Log::Writef("GUARD", "a control is bound to key %d, outside the key table: skipped, the game would have closed. "
+                                 "Check the controls in settings.ini", code);
+        return 0;
+    }
+
+    void GuardUnboundControls()
+    {
+        static const uint8_t kExpect[] = { 0x48, 0x83, 0xEC, 0x28, 0x48, 0x63, 0xCA };   // sub rsp,28h; movsxd rcx,edx
+        void* at = gameBase + HookTargets::clearKey;
+        if (memcmp(at, kExpect, sizeof kExpect) != 0)
+            Log::Write("GUARD", "key clear is not the expected code: unbound controls are NOT guarded");
+        else if (HookBroker::Install(nullptr, at, (void*)&ClearKeyDetour, (void**)&oClearKey, GBH_HOOK_EXCLUSIVE))
+            Log::Write("GUARD", "unbound controls guarded (key clear)");
+        else
+            Log::Write("GUARD", "key clear hook FAILED to install: unbound controls are NOT guarded");
+    }
+
+    // Past 40 scene passes in a frame the profiler reads a QPC value as an ID3D11Query and the game dies in d3d11.
+    // The fix turns it off: the frame end writes 0 to its enable flag and every stamp returns at once.
+    void DisableGpuProfiler()
+    {
+        if (!Settings::GetBool("gpu_profiler_off", true))
+        {
+            Log::Write("GUARD", "GPU profiler left on (gpu_profiler_off = 0): more than 40 scenes in a frame closes the game");
+            return;
+        }
+        static const uint8_t kExpect[] = { 0x41, 0xC6, 0x46, 0x08, 0x01 };   // mov byte [r14+8], 1
+        static const uint8_t kOff = 0x00;
+        uint8_t* at = reinterpret_cast<uint8_t*>(gameBase + HookTargets::gpuProfilerEnable);
+        if (memcmp(at, kExpect, sizeof kExpect) != 0)
+            Log::Write("GUARD", "GPU profiler frame end is not the expected code: the profiler is NOT disabled");
+        else if (HookBroker::PatchWrite(nullptr, at + 4, &kOff, 1))
+            Log::Write("GUARD", "GPU profiler disabled");
+        else
+            Log::Write("GUARD", "GPU profiler patch FAILED: the profiler is NOT disabled");
+    }
 }
 
 extern "C" DWORD WINAPI GbHookMain(LPVOID)
@@ -79,8 +125,10 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     // Armed before anything can fault, so a crash inside ghost.exe is reported as a ghost-relative address.
     FaultLogger::Install();
     BlockAchievements();
+    GuardUnboundControls();
 
     Settings::Load();
+    DisableGpuProfiler();
 
     // Discovery reads files only, so it runs before any service exists; a conflict is named while all parties are inert.
     Mods::Scan();

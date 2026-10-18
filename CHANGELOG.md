@@ -3,6 +3,15 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
+## 0.3.3 (2026-10-18)
+
+- A control left unbound in `settings.ini` (code -1 with a key type) no longer closes the
+  game. The engine cleared key -1 and its bounds check ended the process, for example on
+  Next Weapon in some levels. gbhook skips that key and logs it once.
+- A frame that draws more than 40 scenes no longer closes the game. The engine's GPU
+  profiler has 40 slots per frame and does not check the limit. gbhook turns the profiler
+  off. Set `gpu_profiler_off = 0` in `gbhook.ini` to keep it.
+
 ## 0.3.2 (2026-10-08)
 
 - Steam achievements are blocked while gbhook is loaded. A modded run cannot unlock an

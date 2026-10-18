@@ -46,4 +46,11 @@ namespace HookTargets
 
     // CGame vtable+0x390, the only achievement unlock: Steam and the save flag both. gbhook patches it to ret.
     static constexpr uintptr_t achievementUnlock = 0x1F3DF0;
+
+    // Clears one entry of the 600-entry key table, char __fastcall(input, int code). Bounds-checked: a bad code fast-fails.
+    static constexpr uintptr_t clearKey = 0x403320;
+
+    // GPU scene profiler: 5 x 40 timestamp slots, never bounds-checked. Its frame end re-enables it every present.
+    static constexpr uintptr_t gpuProfiler       = 0x265AFC0;
+    static constexpr uintptr_t gpuProfilerEnable = 0x3E69F8;   // mov byte [r14+8], 1; gbhook patches the 1 to 0
 }
