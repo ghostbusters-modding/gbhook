@@ -8,6 +8,12 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#if defined(_WIN32)
+#  define GBHOOK_EXPORT __declspec(dllexport)
+#else
+#  define GBHOOK_EXPORT __attribute__((visibility("default")))
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -15,9 +21,20 @@ extern "C" {
 /* Bumped only by a breaking change. struct_size for appending to GbH. */
 #define GBHOOK_ABI_VERSION      1
 
-/* The one ghost.exe build every offset was verified against. A mod naming another build is refused. */
+/* The Steam build. A mod built with GBHOOK_PLUGIN names it and loads on Steam only. */
 #define GBHOOK_TARGET_MD5       "0b89556c07e5b737efe444351227e747"
 #define GBHOOK_TARGET_NAME      "Ghostbusters: TVG Remastered (Steam, x64)"
+
+/* The Epic build. A manifest naming GBHOOK_TARGET_BOTH holds both address sets and loads on either build. */
+#define GBHOOK_TARGET_MD5_EPIC  "017d9364e5d8249e5bfe43b9090ddfc9"
+#define GBHOOK_TARGET_BOTH      GBHOOK_TARGET_MD5 "+epic"
+
+/* The running build. gbhook loads nothing on any other. */
+#define GBH_BUILD_STEAM         0
+#define GBH_BUILD_EPIC          1
+
+/* The mod's own copy of the running build, written by gbhook before GbhPluginInit. GbAddr reads it. */
+GBHOOK_EXPORT extern int GbhPluginBuild;
 
 /* Load stages. A mod names its stage in modinfo.ini, so these numbers never reach a shipped binary. */
 typedef enum GbhStage {
@@ -67,15 +84,10 @@ typedef struct GbhManifest {
     uint32_t struct_size;                         /* sizeof(GbhManifest) at build time */
     uint32_t abi_version;                         /* GBHOOK_ABI_VERSION; cross-checked against modinfo.ini */
     char     id[64];                              /* cross-checked against modinfo.ini */
-    char     target_md5[40];                      /* GBHOOK_TARGET_MD5 */
-    char     exclusive_hooks[GBH_MAX_EXCLUSIVE][64];  /* "ghost+0xHEX", terminated by an empty entry */
+    char     target_md5[40];                      /* GBHOOK_TARGET_MD5, or GBHOOK_TARGET_BOTH */
+    char     exclusive_hooks[GBH_MAX_EXCLUSIVE][64];  /* "ghost+0xSTEAM" or "ghost+0xSTEAM|0xEPIC", ended by an empty entry */
 } GbhManifest;
 
-#if defined(_WIN32)
-#  define GBHOOK_EXPORT __declspec(dllexport)
-#else
-#  define GBHOOK_EXPORT __attribute__((visibility("default")))
-#endif
 
 /* Looked up by exported name in a file that is never executed, so it must not be C++-mangled. */
 #ifdef __cplusplus
@@ -87,17 +99,25 @@ typedef struct GbhManifest {
 #define GBH_EXPORT_MANIFEST     "GbhPluginManifest"   /* data, required */
 #define GBH_EXPORT_INIT         "GbhPluginInit"       /* code, required */
 
-/* GBHOOK_PLUGIN("mymod"); at file scope in exactly one translation unit. */
-#define GBHOOK_PLUGIN(id_) \
+#define GBH_EXPORT_BUILD        "GbhPluginBuild"      /* data, written before init; absent in an older SDK */
+
+#define GBHOOK_MANIFEST_(id_, target_) \
+    GBHOOK_LINKAGE GBHOOK_EXPORT int GbhPluginBuild = GBH_BUILD_STEAM; \
     GBHOOK_LINKAGE GBHOOK_EXPORT const GbhManifest GbhPluginManifest = { \
-        GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5, {{0}} }
+        GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, target_,
+
+/* GBHOOK_PLUGIN("mymod"); at file scope in exactly one translation unit. Steam only. */
+#define GBHOOK_PLUGIN(id_)              GBHOOK_MANIFEST_(id_, GBHOOK_TARGET_MD5) {{0}} }
 
 /* Long form, for exclusive hook claims:
  *   GBHOOK_PLUGIN_EXCLUSIVE("gbcoop") { "ghost+0x46A110", "" } GBHOOK_PLUGIN_END; */
-#define GBHOOK_PLUGIN_EXCLUSIVE(id_) \
-    GBHOOK_LINKAGE GBHOOK_EXPORT const GbhManifest GbhPluginManifest = { \
-        GBH_MANIFEST_MAGIC, sizeof(GbhManifest), GBHOOK_ABI_VERSION, id_, GBHOOK_TARGET_MD5,
+#define GBHOOK_PLUGIN_EXCLUSIVE(id_)    GBHOOK_MANIFEST_(id_, GBHOOK_TARGET_MD5)
 #define GBHOOK_PLUGIN_END }
+
+/* The same for a mod whose every address is a GbAddr: it loads on Steam and Epic. Each claim names
+ * its Epic site as "ghost+0xSTEAM|0xEPIC" unless the site is in gb/HookTargets.h. */
+#define GBHOOK_PLUGIN_BOTH(id_)            GBHOOK_MANIFEST_(id_, GBHOOK_TARGET_BOTH) {{0}} }
+#define GBHOOK_PLUGIN_BOTH_EXCLUSIVE(id_)  GBHOOK_MANIFEST_(id_, GBHOOK_TARGET_BOTH)
 
 /* ---------------------------------------------------------------------------
  *  Events. Every callback runs under the framework's guard: the first fault names the mod and the event,
@@ -369,6 +389,11 @@ typedef struct GbhApi {
 
     /* -- settings, written: gbhook.ini "<id>.<key>" on disk and for the next setting() read. NULL removes it -- */
     int (*setting_set)(const char* key, const char* value);        /* GBH_ERR_ARG on a key or value that would not read back */
+
+    /* -- appended after setting_set: gbh_api_has(api, game_build) gates it -------------------------------- */
+
+    /* -- the running ghost.exe: GBH_BUILD_STEAM or GBH_BUILD_EPIC -- */
+    int (*game_build)(void);
 } GbhApi;
 
 /* True when the framework is new enough to carry `member`. */

@@ -39,7 +39,7 @@ namespace ModsPage
     struct Header
     {
         std::string version;   // gbhook's
-        std::string targetMd5; // the ghost.exe build every offset was verified against
+        std::string targetMd5; // the running ghost.exe build
         std::vector<std::string> roots;          // configured
         std::vector<std::string> missingRoots;   // configured and absent
     };

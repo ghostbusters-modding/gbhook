@@ -141,7 +141,7 @@ namespace Mods
             }
         }
 
-        g_result = ModSet::Resolve(found, Ini::List(Settings::Get("mods_disabled", "")));
+        g_result = ModSet::Resolve(found, Ini::List(Settings::Get("mods_disabled", "")), GbhPluginBuild);
 
         int accepted = 0, implicit = 0, off = 0, refused = 0;
         for (const ModSet::Record& r : g_result.records)

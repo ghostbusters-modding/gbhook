@@ -17,7 +17,15 @@ namespace gbh
     // The table, stashed once by bind() so nothing has to thread it through.
     inline const GbhApi*& api_ref()           { static const GbhApi* a = nullptr; return a; }
     inline const GbhApi*  api()               { return api_ref(); }
-    inline void           bind(const GbhApi* a) { api_ref() = a; }
+    // Also re-reads the running build into GbhPluginBuild, which gbhook already wrote before init.
+    inline void bind(const GbhApi* a)
+    {
+        api_ref() = a;
+        if (gbh_api_has(a, game_build)) GbhPluginBuild = a->game_build();
+    }
+
+    // GBH_BUILD_STEAM or GBH_BUILD_EPIC. A framework older than the entry runs on Steam only.
+    inline int game_build() { return gbh_api_has(api(), game_build) ? api()->game_build() : GBH_BUILD_STEAM; }
 
     // ---- log: your mod id is added by the framework, so `tag` names the subsystem ----
     inline void log(const char* tag, const char* line) { if (api()) api()->log(tag, line); }

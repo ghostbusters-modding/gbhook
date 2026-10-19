@@ -340,6 +340,8 @@ namespace
     }
     int SettingSet(const char* key, const char* value) { return Settings::SetFor(Who(GBH_CALLER()), key, value); }
 
+    int GameBuild() { return GbhPluginBuild; }
+
     GbhApi g_api;
     bool   g_built = false;
 }
@@ -453,6 +455,8 @@ namespace Api
 
         g_api.mods_page_add = ModsPageAdd;
         g_api.setting_set   = SettingSet;
+
+        g_api.game_build = GameBuild;
 
         g_built = true;
         return &g_api;

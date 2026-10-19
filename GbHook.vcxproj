@@ -73,6 +73,7 @@
     <ClCompile Include="src\format\Manifest.cpp" />
     <ClCompile Include="src\format\PeExport.cpp" />
     <ClCompile Include="src\modset\ModSet.cpp" />
+    <ClCompile Include="src\target\Target.cpp" />
     <ClCompile Include="src\mod\PeFile.cpp" />
     <ClCompile Include="src\mod\Discovery.cpp" />
     <ClCompile Include="src\pod\Pod.cpp" />
@@ -138,6 +139,8 @@
     <ClInclude Include="src\format\Pe.h" />
     <ClInclude Include="src\format\PeExport.h" />
     <ClInclude Include="src\modset\ModSet.h" />
+    <ClInclude Include="src\target\Target.h" />
+    <None Include="src\target\SiteTable.inc" />
     <ClInclude Include="src\mod\PeFile.h" />
     <ClInclude Include="src\mod\Discovery.h" />
     <ClInclude Include="src\pod\Pod.h" />
@@ -191,6 +194,7 @@
     <ClInclude Include="sdk\include\gb\HookTargets.h" />
     <ClInclude Include="sdk\include\gb\Globals.h" />
     <ClInclude Include="sdk\include\gb\Offsets.h" />
+    <ClInclude Include="sdk\include\gb\Build.h" />
     <None Include="src\core\GbHook.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

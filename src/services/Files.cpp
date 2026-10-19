@@ -16,15 +16,15 @@
 namespace
 {
     // ---- RVAs (ghost.exe 0b89556c07e5b737efe444351227e747) --------------------
-    constexpr uintptr_t kRvaListFiles   = 0x3B9980;   // void listFiles(CStrList*, dir, pattern)
-    constexpr uintptr_t kRvaStrListCtor = 0x326BE0;
-    constexpr uintptr_t kRvaStrListDtor = 0x326C00;   // frees the elements too
-    constexpr uintptr_t kRvaStrListAt   = 0x327060;   // char* CStrList::at(int)
-    constexpr uintptr_t kRvaStreamCtor  = 0x463AD0;   // CInStreamFile, 0x28 bytes
-    constexpr uintptr_t kRvaStreamDtor  = 0x463EF0;
-    constexpr uintptr_t kRvaStreamOpen  = 0x465180;   // bool open(name, mode): memory, then PODs, then loose
-    constexpr uintptr_t kRvaStreamRead  = 0x465B70;   // int read(dst, len): the decompressed asset; -1 at EOF
-    constexpr uintptr_t kRvaStreamSize  = 0x464DD0;   // the RAW stream size, wrong for a deflated entry
+    constexpr GbAddr kRvaListFiles   = { 0x3B9980, 0x3B9790 };   // void listFiles(CStrList*, dir, pattern)
+    constexpr GbAddr kRvaStrListCtor = { 0x326BE0, 0x3269F0 };
+    constexpr GbAddr kRvaStrListDtor = { 0x326C00, 0x326A10 };   // frees the elements too
+    constexpr GbAddr kRvaStrListAt   = { 0x327060, 0x326E70 };   // char* CStrList::at(int)
+    constexpr GbAddr kRvaStreamCtor  = { 0x463AD0, 0x463760 };   // CInStreamFile, 0x28 bytes
+    constexpr GbAddr kRvaStreamDtor  = { 0x463EF0, 0x463B80 };
+    constexpr GbAddr kRvaStreamOpen  = { 0x465180, 0x464E10 };   // bool open(name, mode): memory, then PODs, then loose
+    constexpr GbAddr kRvaStreamRead  = { 0x465B70, 0x465800 };   // int read(dst, len): the decompressed asset; -1 at EOF
+    constexpr GbAddr kRvaStreamSize  = { 0x464DD0, 0x464A60 };   // the RAW stream size, wrong for a deflated entry
 
     constexpr uintptr_t kStrListCount = 0x08;         // CStrList { vftable, int count, int cap, char** items }
     constexpr size_t    kStrListSlack = 64;           // the ctor writes 0x18; the rest is paranoia

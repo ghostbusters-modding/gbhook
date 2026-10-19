@@ -11,6 +11,7 @@
 #include "format/Ini.h"
 #include "menu/ModRows.h"
 #include "menu/ModsPage.h"
+#include "target/Target.h"
 
 #include <windows.h>
 #include <cstddef>
@@ -112,7 +113,7 @@ namespace
             g_mods.push_back(m);
         }
         g_header.version      = Framework::kVersionString;
-        g_header.targetMd5    = GBHOOK_TARGET_MD5;
+        g_header.targetMd5    = Target::Md5(GbhPluginBuild);
         g_header.roots        = Ini::List(Settings::Get("mods_root", "mods"));
         g_header.missingRoots = Mods::MissingRoots();
     }

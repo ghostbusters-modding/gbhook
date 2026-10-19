@@ -111,6 +111,9 @@ namespace Host
             GbhPluginInitFn init = (GbhPluginInitFn)GetProcAddress(e.module, GBH_EXPORT_INIT);
             if (!init) { Fail(e, "the DLL has no " GBH_EXPORT_INIT " export"); continue; }
 
+            // The mod's GbAddr reads its own copy. An older SDK has none, and discovery let it in on Steam only.
+            if (int* build = (int*)GetProcAddress(e.module, GBH_EXPORT_BUILD)) *build = GbhPluginBuild;
+
             bool faulted = false;
             const int rc = CallInit(init, Api::Table(), &faulted);
             if (faulted) { Fail(e, "faulted inside " GBH_EXPORT_INIT); continue; }

@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdint>
+#include "gb/Build.h"
 #include <string>
 #include <vector>
 
@@ -17,10 +18,10 @@
 namespace
 {
     // ---- RVAs (ghost.exe 0b89556c07e5b737efe444351227e747) ----------------
-    const uintptr_t kRvaGPod     = 0xDE54F0;   // CPod**  -> the live CGhostPod
-    const uintptr_t kRvaGhostPod = 0xDCF330;   // CGhostPod*, the boot source of gPod
-    const uintptr_t kRvaMountPod = 0x456E30;   // bool CPod::mountPod(this,name,err512,hashed)
-    const uintptr_t kRvaSortPods = 0x455800;   // void CPod::sortByRevision(this) == vtable[2]
+    constexpr GbAddr kRvaGPod     = { 0xDE54F0, 0xD3D510 };   // CPod**  -> the live CGhostPod
+    constexpr GbAddr kRvaGhostPod = { 0xDCF330, 0xD2B330 };   // CGhostPod*, the boot source of gPod
+    constexpr GbAddr kRvaMountPod = { 0x456E30, 0x456B10 };   // bool CPod::mountPod(this,name,err512,hashed)
+    constexpr GbAddr kRvaSortPods = { 0x455800, 0x4554E0 };   // void CPod::sortByRevision(this) == vtable[2]
 
     // ---- CPod / CPodFile members ------------------------------------------
     const uintptr_t kPodCount    = 0x08;       // int

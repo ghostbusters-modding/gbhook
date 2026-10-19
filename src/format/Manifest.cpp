@@ -15,7 +15,7 @@ namespace Manifest
         return std::string(p, n);
     }
 
-    std::string Validate(const GbhManifest& m)
+    std::string Validate(const GbhManifest& m, int build)
     {
         if (memcmp(m.magic, GBH_MANIFEST_MAGIC, 8) != 0)
             return "manifest magic mismatch (stale SDK?)";
@@ -36,10 +36,14 @@ namespace Manifest
             return "empty id in manifest";
 
         const std::string md5 = Field(m.target_md5, sizeof m.target_md5);
+        if (md5 == GBHOOK_TARGET_BOTH) return "";
         if (md5 != GBHOOK_TARGET_MD5)
             return "built for ghost.exe " + (md5.empty() ? std::string("(unset)") : md5) +
                    ", this framework targets " GBHOOK_TARGET_MD5
                    " -- an offset table applied to the wrong build crashes unreadably";
+        if (build != GBH_BUILD_STEAM)
+            return "Steam only: this is the Epic ghost.exe and the mod's addresses are wrong for it. "
+                   "Get a version of the mod built for both";
 
         return "";
     }

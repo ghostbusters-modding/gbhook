@@ -10,9 +10,11 @@
 #include <string>
 
 #include "gbhook/gbhook.h"
+#include "gb/Build.h"
 
 // ghost.exe module base. Published by Bootstrap before any service starts, constant afterwards.
 extern char* gameBase;
+// gbhook's own GbhPluginBuild is the running build: set by Bootstrap first, then constant.
 
 namespace Framework
 {

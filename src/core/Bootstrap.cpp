@@ -28,6 +28,7 @@
 #include "services/Window.h"
 #include "services/World.h"
 #include "gb/HookTargets.h"
+#include "target/Target.h"
 
 #include <cstring>
 
@@ -53,6 +54,11 @@ namespace
     {
         static const uint8_t kExpect[] = { 0x40, 0x53, 0x48, 0x83, 0xEC, 0x30 };   // push rbx; sub rsp,30h
         static const uint8_t kRet = 0xC3;
+        if (!HookTargets::achievementUnlock.present())
+        {
+            Log::Writef("BOOT", "achievements are not blocked: the block is for the Steam build only");
+            return;
+        }
         void* at = gameBase + HookTargets::achievementUnlock;
         if (memcmp(at, kExpect, sizeof kExpect) != 0)
             Log::Write("BOOT", "achievement unlock is not the expected code: achievements are NOT blocked");
@@ -114,6 +120,17 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     Log::Init();
     EnsureSaveFolder();
     Log::Writef("BOOT", "attached to ghost.exe at %p", gameBase);
+
+    // Before any address is used. On an unknown build every address would be a guess, so nothing is written.
+    const int build = Target::Identify(reinterpret_cast<const uint8_t*>(gameBase), 0x1000);
+    if (build == Target::kUnknown)
+    {
+        Log::Write("BOOT", "ABORT -- this ghost.exe is not the Steam or the Epic build gbhook knows. "
+                           "No hook is installed and no mod is loaded. gbhook is inert this run.");
+        return 1;
+    }
+    GbhPluginBuild = build;
+    Log::Writef("BOOT", "ghost.exe is the %s build (md5 %s)", Target::Name(build), Target::Md5(build));
 
     if (!HookBroker::Init())
     {
