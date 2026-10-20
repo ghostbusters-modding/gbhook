@@ -127,6 +127,7 @@ namespace
         int               subN;
         SubRow            shown[kScreenRows];
         int               shownN;
+        int               dropped;   // rows build() added past the screen
     };
     Page  g_pages[kMaxDepth];
     int   g_depth       = 0;         // pages pushed and not yet hidden
@@ -219,11 +220,16 @@ namespace
 
     void RebuildRows(Page& p)
     {
-        p.subN = 0;
+        const int before = p.dropped;
+        p.subN    = 0;
+        p.dropped = 0;
         if (!p.desc.build) return;
         g_building = &p;
         if (!CallBuild(p.desc.build, p.desc.user)) Log::Write("NMENU", "FAULT in a page's build callback");
         g_building = nullptr;
+        if (p.dropped && p.dropped != before)   // a mod may refresh every frame
+            Log::Writef("NMENU", "page %d is full: %d row(s) past the %d-row screen were dropped",
+                        (int)(&p - g_pages) + 1, p.dropped, kScreenRows);
     }
 
     enum Shape { kUnchanged, kRelabel, kReshape };
@@ -647,7 +653,7 @@ namespace NativeMenu
     {
         if (!g_building) return GBH_ERR_STATE;
         Page& p = *g_building;
-        if (p.subN >= kScreenRows) return GBH_ERR_STATE;
+        if (p.subN >= kScreenRows) { ++p.dropped; return GBH_ERR_STATE; }
         lstrcpynA(p.sub[p.subN].label, label ? label : "", GBH_NATIVE_LABEL_CAP);
         p.sub[p.subN].action = action;
         ++p.subN;

@@ -24,6 +24,11 @@ namespace LevelsPage
     // Everything `found` names that the career table does not, sorted, one row per name, any case.
     Page Custom(const std::vector<std::string>& career, const std::vector<std::string>& found);
 
+    constexpr int kMore = -2;   // the last row of a full screen: opens the rest of the list
+
+    // At most `cap` rows of `all` from `first`. A list that runs on ends in a More row and sets `next`, else next = 0.
+    std::vector<Rows::Row> Slice(const Page& all, size_t first, size_t cap, size_t* next);
+
     constexpr int kStart = 0;   // the checkpoint page's first row: the level from its beginning
 
     // The checkpoint page: Level Start, then one row per registered name, "checkpoint_Lobby" shown as "Lobby".

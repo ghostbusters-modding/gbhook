@@ -12,7 +12,10 @@
 
 namespace Mods
 {
-    // Once, at boot. Logs every folder's verdict, every conflict, and the resolved code order.
+    // Before Scan: only the PREBOOT plugins, so they can beat the boot screens on a slow cold disk.
+    void ScanPreboot();
+
+    // Once, at boot. Logs every folder's verdict, every conflict, and the resolved code order. Replaces Result().
     void Scan();
 
     const ModSet::Result&           Result();

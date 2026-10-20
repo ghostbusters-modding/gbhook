@@ -46,6 +46,30 @@ int main()
     CHECK_EQ(e.rows[0].action, Rows::kInert);
     CHECK_EQ(LevelsPage::Custom({}, { "b.lvl", "a.lvl" }).rows[0].label, "a");
 
+    // Slice: a short list fits whole; a long one keeps cap-1 levels per screen and ends in More.
+    LevelsPage::Page big;
+    for (int i = 0; i < 85; ++i) { big.rows.push_back({ "l" + std::to_string(i), i }); big.levels.push_back("l" + std::to_string(i)); }
+    size_t next = 99;
+    CHECK_EQ(LevelsPage::Slice(u, 0, 40, &next).size(), (size_t)2);
+    CHECK_EQ(next, (size_t)0);
+    std::vector<Rows::Row> s1 = LevelsPage::Slice(big, 0, 40, &next);
+    CHECK_EQ(s1.size(), (size_t)40);
+    CHECK_EQ(s1[38].action, 38);
+    CHECK_EQ(s1[39].label, "More...");
+    CHECK_EQ(s1[39].action, LevelsPage::kMore);
+    CHECK_EQ(next, (size_t)39);
+    std::vector<Rows::Row> s2 = LevelsPage::Slice(big, next, 40, &next);
+    CHECK_EQ(s2[0].action, 39);
+    CHECK_EQ(next, (size_t)78);
+    std::vector<Rows::Row> s3 = LevelsPage::Slice(big, next, 40, &next);
+    CHECK_EQ(s3.size(), (size_t)7);
+    CHECK_EQ(s3[6].action, 84);
+    CHECK_EQ(next, (size_t)0);
+    big.rows.resize(40);
+    CHECK_EQ(LevelsPage::Slice(big, 0, 40, &next).size(), (size_t)40);   // exactly a screen: no More
+    CHECK_EQ(next, (size_t)0);
+    CHECK_EQ(LevelsPage::Slice(big, 40, 40, &next).size(), (size_t)0);
+
     // Checkpoints: the start first, then the names without their prefix, actions 1-based into the input.
     std::vector<Rows::Row> cp = LevelsPage::Checkpoints({ "checkpoint_Start", "checkpoint_Lobby2a", "oddName" });
     CHECK_EQ(cp.size(), (size_t)4);

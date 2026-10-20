@@ -99,47 +99,68 @@ namespace
         }
         return c;
     }
-}
 
-namespace Mods
-{
-    void Scan()
+    // Every folder under every root. `prebootOnly` reads just modinfo.ini until a folder proves to be a PREBOOT plugin.
+    std::vector<ModSet::Candidate> Walk(bool prebootOnly, int* notMods)
     {
-        if (g_scanned) return;
-        g_scanned = true;
-
         std::vector<ModSet::Candidate> found;
-        int notMods = 0;
-
         for (const std::string& raw : Ini::List(Settings::Get("mods_root", "mods")))
         {
             const std::string root = AbsoluteRoot(raw);
             if (!IsDir(root))
             {
-                Log::Writef("MODS", "root %s does not exist", root.c_str());
-                g_missingRoots.push_back(root);
+                if (!prebootOnly)
+                {
+                    Log::Writef("MODS", "root %s does not exist", root.c_str());
+                    g_missingRoots.push_back(root);
+                }
                 continue;
             }
-            Log::Writef("MODS", "root %s", root.c_str());
+            if (!prebootOnly) Log::Writef("MODS", "root %s", root.c_str());
             for (const std::string& folder : SubDirs(root))
             {
-                // Every folder is a mod unless it has none of the three: the manager's file, a gbhook/ half, an asset root.
                 const std::string dir = root + "\\" + folder;
                 std::string    text;
-                const bool     hasModInfo   = ReadWhole(dir + "\\previews\\modinfo.ini", text);
-                const bool     hasGbhookDir = IsDir(dir + "\\gbhook");
-                bool           hasAssets    = false;
+                const bool     hasModInfo = ReadWhole(dir + "\\previews\\modinfo.ini", text);
+                ModIni::Result ini        = hasModInfo ? ModIni::Parse(text) : ModIni::Result{};
+                if (prebootOnly && (ini.mod.stage != GBH_STAGE_PREBOOT || ini.mod.plugin.empty())) continue;
+
+                // Every folder is a mod unless it has none of the three: the manager's file, a gbhook/ half, an asset root.
+                const bool hasGbhookDir = IsDir(dir + "\\gbhook");
+                bool       hasAssets    = false;
                 for (const std::string& sub : SubDirs(dir))
                     if (Content::IsAssetRoot(sub)) { hasAssets = true; break; }
-                if (!hasModInfo && !hasGbhookDir && !hasAssets) { ++notMods; continue; }
+                if (!hasModInfo && !hasGbhookDir && !hasAssets) { if (notMods) ++*notMods; continue; }
 
-                ModIni::Result ini = hasModInfo ? ModIni::Parse(text) : ModIni::Result{};
                 ModSet::Candidate c = Gather(root, folder, hasModInfo, std::move(ini));
                 c.hasGbhookDir = hasGbhookDir;
                 c.hasAssets    = hasAssets;
                 found.push_back(std::move(c));
             }
         }
+        return found;
+    }
+}
+
+namespace Mods
+{
+    void ScanPreboot()
+    {
+        const ULONGLONG t0 = GetTickCount64();
+        g_result = ModSet::Resolve(Walk(true, nullptr), Ini::List(Settings::Get("mods_disabled", "")), GbhPluginBuild);
+        int n = 0;
+        for (const ModSet::Record& r : g_result.records) if (r.accepted) ++n;
+        Log::Writef("MODS", "preboot: %d mod(s) found ahead of the full scan in %llu ms", n, GetTickCount64() - t0);
+    }
+
+    void Scan()
+    {
+        if (g_scanned) return;
+        g_scanned = true;
+
+        const ULONGLONG t0 = GetTickCount64();
+        int notMods = 0;
+        const std::vector<ModSet::Candidate> found = Walk(false, &notMods);
 
         g_result = ModSet::Resolve(found, Ini::List(Settings::Get("mods_disabled", "")), GbhPluginBuild);
 
@@ -172,8 +193,8 @@ namespace Mods
         for (const std::string& c : g_result.conflicts)
             Log::Writef("MODS", "CONFLICT %s", c.c_str());
 
-        Log::Writef("MODS", "%d mod folder(s), %d accepted (%d without an id), %d off, %d refused, %d folder(s) that are not mods",
-                    (int)found.size(), accepted, implicit, off, refused, notMods);
+        Log::Writef("MODS", "%d mod folder(s), %d accepted (%d without an id), %d off, %d refused, %d folder(s) that are not mods, %llu ms",
+                    (int)found.size(), accepted, implicit, off, refused, notMods, GetTickCount64() - t0);
     }
 
     const ModSet::Result&           Result()       { return g_result; }

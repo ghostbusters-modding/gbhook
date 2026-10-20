@@ -23,6 +23,9 @@ namespace Host
     // LoadLibrary and GbhPluginInit for every accepted mod at `stage`, in code order. Returns how many came up.
     int  Init(GbhStage stage);
 
+    // After the full scan replaces the preboot result. A mod already loaded keeps its module and state.
+    void Rebind();
+
     // Mark a loaded mod inert after a fault or a refused call. Its code stays mapped.
     void Disable(const char* id, const char* why);
 

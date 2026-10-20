@@ -3,7 +3,7 @@
 Framework releases. The ABI version stays at 1 while the table only grows; `docs/ABI.md`
 section 1 says when it would not.
 
-## Unreleased
+## 0.4.1 (2026-10-20)
 
 - A preboot mod such as FastBoot now loads before gbhook scans the full mods folder. On a cold
   start the scan took two seconds, and the epilepsy warning was already on screen.

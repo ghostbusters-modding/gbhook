@@ -147,13 +147,16 @@ extern "C" DWORD WINAPI GbHookMain(LPVOID)
     Settings::Load();
     DisableGpuProfiler();
 
+    // PREBOOT before the full scan: its one job is beating the engine's boot screens, and a cold scan can take seconds.
+    Mods::ScanPreboot();
+    Settings::Attach(Mods::Result());
+    Framework::NoteStage(GBH_STAGE_PREBOOT);
+    Host::Init(GBH_STAGE_PREBOOT);
+
     // Discovery reads files only, so it runs before any service exists; a conflict is named while all parties are inert.
     Mods::Scan();
     Settings::Attach(Mods::Result());
-
-    // PREBOOT straight after the scan: its one job is beating the engine's boot screens.
-    Framework::NoteStage(GBH_STAGE_PREBOOT);
-    Host::Init(GBH_STAGE_PREBOOT);
+    Host::Rebind();
 
     // The pump first, then the content build on its own thread
     Pump::Install();

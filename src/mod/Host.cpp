@@ -25,10 +25,9 @@ namespace
 
     std::vector<Entry>* g_entries = nullptr;
 
-    void Ensure()
+    std::vector<Entry>* Build()
     {
-        if (g_entries) return;
-        g_entries = new std::vector<Entry>();
+        auto* out = new std::vector<Entry>();
         for (const ModSet::Record& r : Mods::Result().records)
         {
             Entry e;
@@ -38,8 +37,14 @@ namespace
             e.status.id = r.mod.id;
             if (r.disabled)      { e.status.state = Host::State::Off;    e.status.note = "disabled in gbhook.ini"; }
             else if (!r.accepted) { e.status.state = Host::State::Failed; e.status.note = r.refusal; }
-            g_entries->push_back(e);
+            out->push_back(e);
         }
+        return out;
+    }
+
+    void Ensure()
+    {
+        if (!g_entries) g_entries = Build();
     }
 
     Entry* ById(const char* id)
@@ -134,6 +139,28 @@ namespace Host
         }
         Log::Writef("MODS", "stage %s: %d of %d mod(s) up", ModIni::StageName(stage), up, seen);
         return up;
+    }
+
+    void Rebind()
+    {
+        std::vector<Entry>* fresh = Build();
+        if (g_entries)
+            for (const Entry& o : *g_entries)
+            {
+                if (o.status.state == State::Pending) continue;
+                Entry* e = nullptr;
+                for (Entry& f : *fresh)
+                    if (_stricmp(f.dir.c_str(), o.dir.c_str()) == 0) { e = &f; break; }
+                if (e && e->rec->accepted)
+                {
+                    e->module = o.module;
+                    e->status = o.status;
+                }
+                else if (o.module)
+                    Log::Writef("MODS", "warning %s: refused by the full scan, but it already runs from preboot", o.status.id.c_str());
+            }
+        // A preboot detour may be reading the old list on the main thread, so it is published whole and never freed.
+        g_entries = fresh;
     }
 
     void Disable(const char* id, const char* why)

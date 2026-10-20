@@ -37,6 +37,22 @@ namespace LevelsPage
         return p;
     }
 
+    std::vector<Rows::Row> Slice(const Page& all, size_t first, size_t cap, size_t* next)
+    {
+        *next = 0;
+        std::vector<Rows::Row> out;
+        if (cap == 0 || first >= all.rows.size()) return out;
+        const size_t left = all.rows.size() - first;
+        const size_t take = left <= cap ? left : cap - 1;
+        out.assign(all.rows.begin() + (std::ptrdiff_t)first, all.rows.begin() + (std::ptrdiff_t)(first + take));
+        if (take < left)
+        {
+            out.push_back({ "More...", kMore });
+            *next = first + take;
+        }
+        return out;
+    }
+
     std::vector<Rows::Row> Checkpoints(const std::vector<std::string>& registered)
     {
         std::vector<Rows::Row> rows;
