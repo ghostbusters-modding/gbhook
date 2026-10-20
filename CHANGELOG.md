@@ -5,6 +5,13 @@ section 1 says when it would not.
 
 ## Unreleased
 
+- A preboot mod such as FastBoot now loads before gbhook scans the full mods folder. On a cold
+  start the scan took two seconds, and the epilepsy warning was already on screen.
+- The Custom level list shows more than 40 levels. A full screen ends in a "More..." row
+  that opens the next screen. A native page that drops rows now writes that to the log.
+
+## 0.4.0 (2026-10-20)
+
 - A script that faults again and again no longer floods `gbhook.log`. The same fault in a row
   is written once with a count, and at most 20 fault lines are written each second. More than
   1000 faults in one second log one warning.
@@ -15,10 +22,6 @@ section 1 says when it would not.
 - Mods built with this SDK hold both address sets and load on either build. A mod built with
   an older SDK loads on Steam only. On Epic it is refused, and the Mods page says why.
 - Steam achievements stay blocked on Steam. The Epic build has no such block.
-- A preboot mod such as FastBoot now loads before gbhook scans the full mods folder. On a cold
-  start the scan took two seconds, and the epilepsy warning was already on screen.
-- The Custom level list shows more than 40 levels. A full screen ends in a "More..." row
-  that opens the next screen. A native page that drops rows now writes that to the log.
 
 ## 0.3.3 (2026-10-18)
 
